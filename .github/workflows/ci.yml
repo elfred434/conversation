@@ -54,11 +54,27 @@ jobs:
           else
             echo "::warning::Secret KEYSTORE_PASS absent -> signature debug (mises a jour impossibles)"
           fi
-      - run: flutter build apk --release --build-number=${{ github.run_number }}
+      - name: Build APKs (split per ABI + obfuscation)
+        run: |
+          flutter build apk --release --split-per-abi \
+            --build-number=${{ github.run_number }} \
+            --obfuscate --split-debug-info=build/symbols
       - uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: apk-arm64
+          path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk-armeabi
+          path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk-x86_64
+          path: build/app/outputs/flutter-apk/app-x86_64-release.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dart-symbols
+          path: build/symbols/
 
   build-web:
     needs: analyze-test
@@ -140,6 +156,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
+      - name: Rename artifacts
+        run: |
+          V=${{ github.run_number }}
+          mv apk-arm64/app-arm64-v8a-release.apk      "FluentFlow-v$V-arm64.apk"
+          mv apk-armeabi/app-armeabi-v7a-release.apk  "FluentFlow-v$V-arm32.apk"
+          mv apk-x86_64/app-x86_64-release.apk        "FluentFlow-v$V-x86_64.apk"
+          mv web-zip/web.zip                          "FluentFlow-v$V-web.zip"
+          mv linux-zip/linux.zip                      "FluentFlow-v$V-linux.zip"
+          mv windows-zip/windows.zip                  "FluentFlow-v$V-windows.zip"
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -147,12 +172,17 @@ jobs:
           name: Build v${{ github.run_number }}
           body: |
             Build automatique depuis main.
-            - APK Android (app-release-apk)
-            - Web (web-zip)
-            - Linux (linux-zip)
-            - Windows (windows-zip)
+
+            **Android — choisir selon son téléphone :**
+            - `FluentFlow-vX-arm64.apk` → la grande majorité des téléphones depuis 2018 (recommandé)
+            - `FluentFlow-vX-arm32.apk` → téléphones 32 bits plus anciens
+            - `FluentFlow-vX-x86_64.apk` → émulateurs / Chromebooks
+
+            La voix naturelle est téléchargeable une fois depuis Paramètres (~63 Mo, hors-ligne ensuite).
           files: |
-            app-release-apk/app-release.apk
-            web-zip/web.zip
-            linux-zip/linux.zip
-            windows-zip/windows.zip
+            FluentFlow-v${{ github.run_number }}-arm64.apk
+            FluentFlow-v${{ github.run_number }}-arm32.apk
+            FluentFlow-v${{ github.run_number }}-x86_64.apk
+            FluentFlow-v${{ github.run_number }}-web.zip
+            FluentFlow-v${{ github.run_number }}-linux.zip
+            FluentFlow-v${{ github.run_number }}-windows.zip
