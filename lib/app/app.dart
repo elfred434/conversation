@@ -9,7 +9,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'English Conversation',
+      title: 'FluentFlow',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: router,
