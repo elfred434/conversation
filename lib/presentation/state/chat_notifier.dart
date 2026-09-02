@@ -6,24 +6,24 @@ import 'package:english_conversation_app/domain/entities/scenario.dart';
 import 'package:english_conversation_app/domain/entities/conversation_session.dart';
 import 'package:english_conversation_app/domain/usecases/start_conversation.dart';
 import 'package:english_conversation_app/domain/usecases/send_message.dart';
-import 'package:english_conversation_app/domain/usecases/correct_text.dart';
 import 'package:english_conversation_app/domain/repositories/history_repository.dart';
 import 'package:english_conversation_app/domain/repositories/progress_repository.dart';
+import 'package:english_conversation_app/domain/utils/correction_trailer.dart';
 import 'package:english_conversation_app/presentation/state/chat_state.dart';
 
 /// Orchestre la conversation : streaming, historique et corrections.
+///
+/// ECONOMIE D'APPELS : la correction grammaticale est fusionnee dans l'appel
+/// principal du tuteur. Le LLM ajoute en fin de reponse une balise
+/// @@CORRECTION@@{...} (instruction dans le system prompt) ; on la retire de
+/// l'affichage et on l'attache a la bulle utilisateur. Un SEUL appel LLM par
+/// message, au lieu de deux -> deux fois moins de quota / rate-limits.
 class ChatNotifier extends StateNotifier<ChatState> {
-  ChatNotifier(
-    this._start,
-    this._send,
-    this._correct,
-    this._history,
-    this._progress,
-  ) : super(const ChatState());
+  ChatNotifier(this._start, this._send, this._history, this._progress)
+      : super(const ChatState());
 
   final StartConversation _start;
   final SendMessage _send;
-  final CorrectText _correct;
   final HistoryRepository _history;
   final ProgressRepository _progress;
 
@@ -77,8 +77,7 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
     final buffer = StringBuffer();
     try {
-      await for (final chunk
-          in _start(level: level, scenarioId: scenarioId)) {
+      await for (final chunk in _start(level: level, scenarioId: scenarioId)) {
         buffer.write(chunk);
         state = state.copyWith(messages: _updateAssistant(buffer.toString()));
       }
@@ -86,6 +85,13 @@ class ChatNotifier extends StateNotifier<ChatState> {
       state = state.copyWith(error: _redact(e.toString()));
     } finally {
       state = state.copyWith(isStreaming: false);
+      // Nettoyage defensif : la salutation ne devrait pas contenir de balise.
+      final parsed = extractCorrectionTrailer(buffer.toString());
+      if (parsed.hasTrailer) {
+        state = state.copyWith(
+          messages: _updateAssistant(parsed.content.trim()),
+        );
+      }
       await _persist();
     }
   }
@@ -130,10 +136,51 @@ class ChatNotifier extends StateNotifier<ChatState> {
       state = state.copyWith(error: _redact(e.toString()));
     } finally {
       state = state.copyWith(isStreaming: false);
-      await _persist();
     }
 
-    _applyCorrection(userMsg.id, trimmed);
+    // Correction incluse dans la reponse (1 seul appel LLM au total).
+    await _extractCorrection(userMsg.id, assistantId, buffer.toString());
+    await _persist();
+  }
+
+  /// Extrait la balise de correction de la reponse : epure la bulle du
+  /// tuteur, attache la correction a la bulle utilisateur et enregistre le
+  /// type d'erreur pour le suivi de progression.
+  Future<void> _extractCorrection(
+    String userMessageId,
+    String assistantId,
+    String fullText,
+  ) async {
+    final parsed = extractCorrectionTrailer(fullText);
+    if (!parsed.hasTrailer) return;
+
+    final display = parsed.content.trim();
+    state = state.copyWith(
+      messages: _updateAssistantById(
+        assistantId,
+        display.isEmpty ? '…' : display,
+      ),
+    );
+
+    final correction = parsed.correction;
+    if (correction != null && (correction.corrected?.isNotEmpty ?? false)) {
+      state = state.copyWith(
+        messages: [
+          for (final m in state.messages)
+            if (m.id == userMessageId)
+              m.copyWith(correction: correction.corrected)
+            else
+              m,
+        ],
+      );
+      if (correction.category != null) {
+        try {
+          await _progress.recordCorrection(correction.category!);
+        } catch (_) {
+          // La progression ne doit jamais faire echouer la conversation.
+        }
+      }
+    }
   }
 
   Future<void> _persist() async {
@@ -162,37 +209,4 @@ class ChatNotifier extends StateNotifier<ChatState> {
         for (final m in state.messages)
           if (m.id == id) m.copyWith(content: content) else m,
       ];
-
-  /// Corrige la phrase de l'utilisateur (best-effort, non bloquant) et
-  /// enregistre le type d'erreur pour le suivi de progression.
-  void _applyCorrection(String messageId, String userText) async {
-    if (_level == null) return;
-    // Mode "ecoute" (ex: Raconte ta journee) : pas de correction.
-    Scenario? scenario;
-    for (final s in kScenarios) {
-      if (s.id == _scenarioId) {
-        scenario = s;
-        break;
-      }
-    }
-    if (scenario != null && !scenario.correct) return;
-    try {
-      final result = await _correct(userText: userText, level: _level!);
-      if (result?.corrected == null || result!.corrected!.isEmpty) return;
-      state = state.copyWith(
-        messages: [
-          for (final m in state.messages)
-            if (m.id == messageId)
-              m.copyWith(correction: result.corrected)
-            else
-              m,
-        ],
-      );
-      if (result.category != null) {
-        await _progress.recordCorrection(result.category!);
-      }
-    } catch (_) {
-      // Erreur de correction non bloquante.
-    }
-  }
 }

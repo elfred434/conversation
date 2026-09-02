@@ -4,6 +4,7 @@ analyzer:
     - android/**
     - web/**
     - linux/**
+    - windows/**
 linter:
   rules:
     prefer_const_constructors: true

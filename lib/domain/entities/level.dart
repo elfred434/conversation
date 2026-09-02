@@ -1,3 +1,5 @@
+import 'package:english_conversation_app/domain/utils/correction_trailer.dart';
+
 /// Niveaux CEFR utilises par l'app (tous niveaux, selection dans l'UI).
 enum CefrLevel { a1, a2, b1, b2, c1, c2 }
 
@@ -46,13 +48,21 @@ extension CefrLevelX on CefrLevel {
 }
 
 /// Construit le system prompt envoye au LLM en fonction du niveau et
-/// eventuellement d'un scenario. [correct] active la correction grammaticale.
-String buildSystemPrompt(CefrLevel level, {String? scenarioPrompt, bool correct = true}) {
-  final correctionNote = correct
-      ? 'If the user makes a mistake, mention a brief correction after your reply.'
-      : 'Listen more than you teach: respond naturally and encouragingly, ask follow-up '
-          'questions, and do NOT correct grammar or spelling. Let the user express '
-          'themselves freely.';
+/// eventuellement d'un scenario. [correct] active la correction grammaticale
+/// via une balise en fin de reponse (un seul appel LLM par message).
+String buildSystemPrompt(CefrLevel level,
+    {String? scenarioPrompt, bool correct = true}) {
+  String correctionNote;
+  if (correct) {
+    correctionNote = '''
+If the user's last message contains a mistake (grammar, spelling, tense, article, preposition or word order), end your ENTIRE reply with exactly one extra line in this strict JSON format, with nothing after it:
+$kCorrectionMarker{"corrected":"<the user's sentence, corrected>","category":"<article|preposition|tense|spelling|word_order|other>","explanation":"<very short explanation in English>"}
+Only add that line when there is a genuine mistake; if the sentence is already correct, do not add it. You may also mention the correction briefly and kindly in your reply.''';
+  } else {
+    correctionNote = 'Listen more than you teach: respond naturally and encouragingly, '
+        'ask follow-up questions, and do NOT correct grammar or spelling. Let the user '
+        'express themselves freely.';
+  }
   final base = '''
 You are a friendly English conversation partner helping the user practice spoken English.
 ${level.instruction}

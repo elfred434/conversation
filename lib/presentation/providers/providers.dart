@@ -6,7 +6,6 @@ import 'package:english_conversation_app/domain/repositories/conversation_reposi
 import 'package:english_conversation_app/domain/repositories/user_repository.dart';
 import 'package:english_conversation_app/domain/usecases/start_conversation.dart';
 import 'package:english_conversation_app/domain/usecases/send_message.dart';
-import 'package:english_conversation_app/domain/usecases/correct_text.dart';
 import 'package:english_conversation_app/domain/usecases/get_user_profile.dart';
 import 'package:english_conversation_app/data/datasources/remote/openai_client.dart';
 import 'package:english_conversation_app/data/datasources/remote/gemini_client.dart';
@@ -22,7 +21,9 @@ import 'package:english_conversation_app/data/repositories/history_repository_im
 import 'package:english_conversation_app/domain/repositories/progress_repository.dart';
 import 'package:english_conversation_app/data/repositories/progress_repository_impl.dart';
 import 'package:english_conversation_app/domain/entities/lesson.dart';
+import 'package:english_conversation_app/domain/entities/exercise.dart';
 import 'package:english_conversation_app/data/repositories/lesson_repository.dart';
+import 'package:english_conversation_app/domain/usecases/targeted_exercises.dart';
 import 'package:english_conversation_app/presentation/state/chat_notifier.dart';
 import 'package:english_conversation_app/presentation/state/chat_state.dart';
 import 'package:english_conversation_app/presentation/providers/settings_notifier.dart';
@@ -78,8 +79,6 @@ final startConversationProvider = Provider<StartConversation>(
     (ref) => StartConversation(ref.watch(conversationRepositoryProvider)));
 final sendMessageProvider = Provider<SendMessage>(
     (ref) => SendMessage(ref.watch(conversationRepositoryProvider)));
-final correctTextProvider = Provider<CorrectText>(
-    (ref) => CorrectText(ref.watch(conversationRepositoryProvider)));
 final getUserProfileProvider = Provider<GetUserProfile>(
     (ref) => GetUserProfile(ref.watch(userRepositoryProvider)));
 
@@ -97,11 +96,16 @@ final lessonsProvider = FutureProvider<List<Lesson>>(
     (ref) => ref.watch(lessonRepositoryProvider).loadLessons());
 final practicePhraseProvider = StateProvider<String?>((ref) => null);
 
+/// File d'exercices cibles, priorisee selon les erreurs les plus frequentes.
+final targetedExercisesProvider = FutureProvider<List<Exercise>>((ref) async {
+  final stats = await ref.watch(progressRepositoryProvider).getStats();
+  return pickTargetedExercises(kExercises, stats);
+});
+
 final chatProvider =
     StateNotifierProvider<ChatNotifier, ChatState>((ref) => ChatNotifier(
           ref.watch(startConversationProvider),
           ref.watch(sendMessageProvider),
-          ref.watch(correctTextProvider),
           ref.watch(historyRepositoryProvider),
           ref.watch(progressRepositoryProvider),
         ));

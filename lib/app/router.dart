@@ -6,6 +6,7 @@ import 'package:english_conversation_app/presentation/screens/settings/settings_
 import 'package:english_conversation_app/presentation/screens/pronunciation/pronunciation_screen.dart';
 import 'package:english_conversation_app/presentation/screens/progress/progress_screen.dart';
 import 'package:english_conversation_app/presentation/screens/lessons/lessons_screen.dart';
+import 'package:english_conversation_app/presentation/screens/exercises/exercises_screen.dart';
 
 /// Configuration centralisee des routes (GoRouter).
 final router = GoRouter(
@@ -38,6 +39,10 @@ final router = GoRouter(
     GoRoute(
       path: '/lessons',
       builder: (context, state) => const LessonsScreen(),
+    ),
+    GoRoute(
+      path: '/exercises',
+      builder: (context, state) => const ExercisesScreen(),
     ),
   ],
 );

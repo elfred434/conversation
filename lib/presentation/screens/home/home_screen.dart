@@ -77,6 +77,12 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 OutlinedButton.icon(
+                  onPressed: () => context.push('/exercises'),
+                  icon: const Icon(Icons.fitness_center),
+                  label: const Text('Exercices ciblés'),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
                   onPressed: () => context.push('/progress'),
                   icon: const Icon(Icons.emoji_events),
                   label: const Text('Ma progression'),

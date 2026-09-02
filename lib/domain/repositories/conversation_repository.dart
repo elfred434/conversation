@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:english_conversation_app/domain/entities/conversation_message.dart';
 import 'package:english_conversation_app/domain/entities/level.dart';
-import 'package:english_conversation_app/domain/entities/correction_result.dart';
 
 /// Contrat de la couche domaine pour la conversation avec le LLM.
 abstract class ConversationRepository {
@@ -12,14 +11,12 @@ abstract class ConversationRepository {
   });
 
   /// Envoie le message utilisateur et diffuse la reponse (flux de texte).
+  /// La correction grammaticale eventuelle est incluse dans la reponse du
+  /// tuteur (balise en fin de message) : un seul appel LLM par tour.
   Stream<String> sendMessageChunks({
     required CefrLevel level,
     required List<ConversationMessage> history,
     required String userText,
     String? scenarioId,
   });
-
-  /// Corrige une phrase de l'utilisateur (best-effort, peut renvoyer null).
-  Future<CorrectionResult?> correctText(String userText,
-      {required CefrLevel level});
 }
