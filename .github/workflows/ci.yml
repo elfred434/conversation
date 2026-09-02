@@ -48,7 +48,8 @@ jobs:
             echo "$KEYSTORE_PASS" | openssl enc -d -aes-256-cbc -pbkdf2 \
               -in android/upload_key.p12.enc \
               -out android/app/upload_key.p12 -pass stdin
-            echo "FLUTTER_KEYSTORE_PATH=android/app/upload_key.p12" >> $GITHUB_ENV
+            # Chemin relatif au module android/app (ou Gradle resolve file())
+            echo "FLUTTER_KEYSTORE_PATH=upload_key.p12" >> $GITHUB_ENV
             echo "FLUTTER_KEYSTORE_PASSWORD=$KEYSTORE_PASS" >> $GITHUB_ENV
           else
             echo "::warning::Secret KEYSTORE_PASS absent -> signature debug (mises a jour impossibles)"
