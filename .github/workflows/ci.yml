@@ -78,13 +78,10 @@ jobs:
           name: linux-zip
           path: linux.zip
 
-  # Windows : non bloquant pour la release tant que le build n'est pas fiabilise.
-  # continue-on-error => le run reste vert et la release part sans windows.zip.
-  # En cas d'echec, le log verbose est publie sur la branche "ci-logs"
-  # (repo public => lisible sans authentification) pour diagnostic autonome.
+  # Windows est de nouveau fiable (fix STL1011 dans windows/CMakeLists.txt) :
+  # il est donc inclus dans la release.
   build-windows:
     needs: analyze-test
-    continue-on-error: true
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -124,7 +121,7 @@ jobs:
 
   release:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: [build-android, build-web, build-linux]
+    needs: [build-android, build-web, build-linux, build-windows]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -138,8 +135,9 @@ jobs:
             - APK Android (app-release-apk)
             - Web (web-zip)
             - Linux (linux-zip)
-            - Windows : des que le build est fiabilise
+            - Windows (windows-zip)
           files: |
             app-release-apk/app-release.apk
             web-zip/web.zip
             linux-zip/linux.zip
+            windows-zip/windows.zip
