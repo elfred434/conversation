@@ -39,5 +39,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/configure-pages@v5
+        with:
+          # active Pages (source: GitHub Actions) automatiquement si possible
+          enablement: true
       - id: deployment
         uses: actions/deploy-pages@v4
