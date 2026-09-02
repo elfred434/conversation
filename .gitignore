@@ -1,24 +1,4 @@
-# Flutter / Dart
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-build/
-*.iml
-*.log
-
-# Local config / secrets (do NOT commit real keys)
-.env
-.env.*
-!.env.example
-
-# OS / editor
+node_modules
+dist
+*.local
 .DS_Store
-.idea/
-.vscode/
-
-# Keystore Android (jamais en clair dans le repo)
-android/app/upload_key.p12
-*.jks
