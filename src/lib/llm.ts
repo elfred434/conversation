@@ -26,9 +26,9 @@ export const PROVIDERS: Record<ProviderId, ProviderMeta> = {
   gemini: {
     label: 'Google AI Studio (Gemini)',
     baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
-    defaultModel: 'gemini-1.5-flash',
+    defaultModel: 'gemini-2.5-flash',
     needsKey: true,
-    hint: 'Clé gratuite sur aistudio.google.com',
+    hint: 'Clé gratuite sur aistudio.google.com — ~1 500 req/jour avec Flash',
   },
   groq: {
     label: 'Groq',
