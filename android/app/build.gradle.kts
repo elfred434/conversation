@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.english_conversation_app"
+    namespace = "com.elfred434.fluentflow"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,25 +15,39 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.english_conversation_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // Identifiant applicatif definitif de FluentFlow.
+        applicationId = "com.elfred434.fluentflow"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
-        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
-        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
-        // flag during build.
+        // versionCode vient de pubspec, ou de --build-number en CI
+        // (github.run_number => strictement croissant => mises a jour en place).
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            // Signature stable depuis la CI : le keystore est dechiffre par le
+            // workflow (secret KEYSTORE_PASS) et expose via ces variables d'env.
+            val ksPath = System.getenv("FLUTTER_KEYSTORE_PATH")
+            val ksPassword = System.getenv("FLUTTER_KEYSTORE_PASSWORD")
+            if (ksPath != null && ksPassword != null) {
+                storeFile = file(ksPath)
+                storePassword = ksPassword
+                keyAlias = System.getenv("FLUTTER_KEY_ALIAS") ?: "fluentflow"
+                keyPassword = ksPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Utilise la cle d'upload si disponible (CI), sinon debug (local).
+            signingConfig =
+                if (System.getenv("FLUTTER_KEYSTORE_PATH") != null)
+                    signingConfigs.getByName("release")
+                else
+                    signingConfigs.getByName("debug")
         }
     }
 }
