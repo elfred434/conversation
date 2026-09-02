@@ -1,27 +1,86 @@
-import { useEffect, useMemo, useState, type CSSProperties } from 'react'
-import { ArrowRight, Check, Lightbulb, RotateCcw, X } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Settings2, Sparkles, WifiOff, X } from 'lucide-react'
 import { CATEGORY_LABELS, EXERCISES, pickTargetedExercises } from '../lib/exercises'
+import { generateExercises } from '../lib/aiExercises'
 import { isAnswerCloseEnough } from '../lib/similarity'
 import { useApp } from '../state/store'
+import type { Exercise } from '../lib/exercises'
+
+const COUNT = 10
+
+type Phase = 'loading' | 'active' | 'result'
+type Source = 'ai' | 'bank'
 
 export default function Exercises(): JSX.Element {
-  const { progress, go } = useApp()
+  const { progress, level, settings, go } = useApp()
   const [round, setRound] = useState(0)
-  const list = useMemo(
-    () => pickTargetedExercises(EXERCISES, progress, 10),
-    // Recalcule la file a chaque nouvelle manche (progression a jour).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [round],
-  )
+  const [phase, setPhase] = useState<Phase>('loading')
+  const [source, setSource] = useState<Source>('bank')
+  const [genError, setGenError] = useState<string | null>(null)
+  const [list, setList] = useState<Exercise[]>([])
   const [index, setIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [checked, setChecked] = useState(false)
   const [wasCorrect, setWasCorrect] = useState(false)
   const [answer, setAnswer] = useState('')
 
+  // Miroirs pour l'effet (on ne regenere PAS quand l'utilisateur touche un reglage).
+  const settingsRef = useRef(settings)
+  settingsRef.current = settings
+  const levelRef = useRef(level)
+  levelRef.current = level
+  const progressRef = useRef(progress)
+  progressRef.current = progress
+  const previousRef = useRef<string[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    const ac = new AbortController()
+    setPhase('loading')
+    setGenError(null)
+    setIndex(0)
+    setScore(0)
+    setChecked(false)
+    setWasCorrect(false)
+    setAnswer('')
+
+    const run = async (): Promise<void> => {
+      try {
+        const lvl = levelRef.current ?? 'b1'
+        const generated = await generateExercises(
+          settingsRef.current,
+          lvl,
+          progressRef.current,
+          COUNT,
+          previousRef.current,
+          ac.signal,
+        )
+        if (cancelled) return
+        previousRef.current = generated.map((e) => e.question)
+        setList(generated)
+        setSource('ai')
+        setGenError(null)
+        setPhase('active')
+      } catch (e) {
+        if (cancelled || ac.signal.aborted) return
+        const msg = e instanceof Error ? e.message : String(e)
+        setList(pickTargetedExercises(EXERCISES, progressRef.current, COUNT))
+        setSource('bank')
+        setGenError(msg === 'NO_KEY' ? null : msg)
+        setPhase('active')
+      }
+    }
+    void run()
+    return () => {
+      cancelled = true
+      ac.abort()
+    }
+    // Only regenerates to a new "round".
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [round])
+
   const ex = list[index]
-  const finished = index >= list.length
-  const blankParts = ex && !finished ? ex.question.split('___') : []
+  const blankParts = ex ? ex.question.split('___') : []
   const isBlank = blankParts.length === 2
 
   const check = (): void => {
@@ -33,36 +92,64 @@ export default function Exercises(): JSX.Element {
   }
 
   const next = (): void => {
+    if (index + 1 >= list.length) {
+      setPhase('result')
+      return
+    }
     setIndex((i) => i + 1)
     setChecked(false)
     setWasCorrect(false)
     setAnswer('')
   }
 
-  const restart = (): void => {
-    setRound((r) => r + 1)
-    setIndex(0)
-    setScore(0)
-    setChecked(false)
-    setWasCorrect(false)
-    setAnswer('')
+  const restart = (): void => setRound((r) => r + 1)
+
+  if (phase === 'loading') {
+    return (
+      <div>
+        <button className="back" onClick={() => go('home')}>
+          <ArrowLeft size={16} /> Accueil
+        </button>
+        <h1 className="title">Exercices ciblés</h1>
+        <p className="subtitle">Priorisés selon tes erreurs les plus fréquentes en conversation.</p>
+        <div className="card center ex-loading">
+          <span className="typing" aria-label="Génération en cours">
+            <i />
+            <i />
+            <i />
+          </span>
+          <p style={{ margin: '8px 0 0' }}>
+            <Sparkles size={15} style={{ verticalAlign: '-2px', color: 'var(--cyan)' }} /> L'IA prépare des
+            exercices sur mesure…
+          </p>
+          <p className="muted" style={{ margin: '4px 0 0', fontSize: '0.85rem' }}>
+            d'après tes {progress.total} erreur{progress.total > 1 ? 's' : ''} corrigée
+            {progress.total > 1 ? 's' : ''} en conversation
+          </p>
+        </div>
+      </div>
+    )
   }
 
-  if (finished) {
+  if (phase === 'result') {
     const ratio = score / Math.max(1, list.length)
     return (
       <div>
         <button className="back" onClick={() => go('home')}>
-          ← Accueil
+          <ArrowLeft size={16} /> Accueil
         </button>
         <h1 className="title center">Terminé !</h1>
         <div className="card center ex-result">
           <ScoreBig score={score} total={list.length} />
           <p className="muted">
-            {ratio >= 0.8 ? 'Excellent, continue comme ça !' : ratio >= 0.5 ? 'Bien ! Encore un petit effort.' : 'Chaque erreur corrigée te fait progresser.'}
+            {ratio >= 0.8
+              ? 'Excellent, continue comme ça !'
+              : ratio >= 0.5
+                ? 'Bien ! Encore un petit effort.'
+                : 'Chaque erreur corrigée te fait progresser.'}
           </p>
           <button className="btn" onClick={restart}>
-            <RotateCcw size={17} /> Recommencer
+            <Sparkles size={17} /> Nouvelle série par l'IA
           </button>
         </div>
       </div>
@@ -72,10 +159,46 @@ export default function Exercises(): JSX.Element {
   return (
     <div>
       <button className="back" onClick={() => go('home')}>
-        ← Accueil
+        <ArrowLeft size={16} /> Accueil
       </button>
       <h1 className="title">Exercices ciblés</h1>
       <p className="subtitle">Priorisés selon tes erreurs les plus fréquentes en conversation.</p>
+
+      <div className="gen-note">
+        {source === 'ai' ? (
+          <>
+            <Sparkles size={14} /> Série personnalisée générée par l'IA
+            <button
+              className="icon-btn"
+              style={{ marginLeft: 'auto', width: 32, height: 32, padding: 0 }}
+              onClick={restart}
+              title="Régénérer une nouvelle série"
+            >
+              <RotateCcw size={14} />
+            </button>
+          </>
+        ) : (
+          <>
+            <WifiOff size={14} /> Banque hors-ligne intégrée
+          </>
+        )}
+      </div>
+
+      {source === 'bank' && (
+        <p className="note">
+          {genError ? (
+            <>IA indisponible ({genError}) — exercices de la banque intégrée.</>
+          ) : (
+            <>
+              Ajoute une clé API dans{' '}
+              <button className="back" style={{ display: 'inline', padding: 0 }} onClick={() => go('settings')}>
+                Paramètres
+              </button>{' '}
+              pour des exercices générés par IA.
+            </>
+          )}
+        </p>
+      )}
 
       <div className={`card ${checked && wasCorrect ? 'glow' : ''}`}>
         <div className="ex-top">
@@ -127,12 +250,22 @@ export default function Exercises(): JSX.Element {
                 <div>
                   Bonne réponse : <strong>{ex.answer}</strong>
                 </div>
-                {ex.hint && <div className="hint"><Lightbulb size={15} /> {ex.hint}</div>}
+                {ex.hint && (
+                  <div className="hint">
+                    <Lightbulb size={15} /> {ex.hint}
+                  </div>
+                )}
               </>
             )}
-            {wasCorrect && ex.hint && <div className="hint"><Lightbulb size={15} /> {ex.hint}</div>}
+            {wasCorrect && ex.hint && (
+              <div className="hint">
+                <Lightbulb size={15} /> {ex.hint}
+              </div>
+            )}
             <button className="btn btn-block" style={{ marginTop: 14 }} onClick={next}>
-              {index + 1 >= list.length ? 'Voir le résultat' : (
+              {index + 1 >= list.length ? (
+                'Voir le résultat'
+              ) : (
                 <>
                   Suivant <ArrowRight size={16} />
                 </>
@@ -150,6 +283,11 @@ export default function Exercises(): JSX.Element {
           </button>
         )}
       </div>
+
+      <p className="note center" style={{ marginTop: 4 }}>
+        <Settings2 size={13} style={{ verticalAlign: '-2px' }} /> La vérification des réponses reste locale et
+        instantanée (similarité) — seul le contenu est généré par l'IA.
+      </p>
     </div>
   )
 }

@@ -1385,3 +1385,27 @@ details[open] .chev {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- Generation IA des exercices ---------- */
+.ex-loading {
+  padding: 36px 20px;
+}
+.ex-loading .typing {
+  justify-content: center;
+}
+.ex-loading .typing i {
+  width: 9px;
+  height: 9px;
+}
+.gen-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 4px 0 10px;
+}
+.gen-note svg {
+  flex: none;
+  color: var(--cyan);
+}

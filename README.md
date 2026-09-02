@@ -8,7 +8,7 @@ Apprendre l'anglais en discutant — **application web** (site 100 % statique, a
 - ✅ **Corrections grammaticales** catégorisées (articles, prépositions, temps, orthographe, ordre des mots) — **fusionnées dans un seul appel LLM** (économie de quota)
 - 🎤🔊 **Voix** : saisie vocale (Web Speech API) + lecture à voix haute avec **voix naturelles** au choix (Edge/Chrome)
 - 🗣 **Prononciation** : écouter → répéter → score de similarité mot à mot
-- 🎯 **Exercices ciblés** : priorisés selon tes erreurs les plus fréquentes
+- 🎯 **Exercices ciblés générés par l'IA** : adaptés à ton niveau et priorisés selon tes erreurs les plus fréquentes (repli automatique sur une banque hors-ligne intégrée)
 - 📚 **Leçons hors-ligne** embarquées
 - 🏅 **Progression** : badges + statistiques par type d'erreur
 - 💾 **Sessions** : tes conversations sont sauvegardées localement et reprenables
