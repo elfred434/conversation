@@ -327,3 +327,50 @@ Make the headline larger (about 28px, Inter, letter-spacing 0.02em) and increase
 2. Exporter le favori en Figma (référence visuelle) et/ou code.
 3. Sur go : implémenter les tokens § 3.1 + les 8 recettes § 3.2 dans `src/styles.css`
    (motion réel : entrances, stagger, streaming mot à mot, anneau de score, aurora ambiant).
+
+---
+
+## 6. Analyse de l'export Stitch (zip `c450505`, 12 écrans)
+
+> Extraction : `/home/user/stitch_design/` (workspace, non versionné — le zip reste la source).
+> Verdict global : **fidélité ~90 % au Style Core** — verre dépoli, halos bioluminescents, gradient
+> réservé aux moments clés, Inter 17/1.65, UI française, footer « FluentFlow • Apprendre en toute
+> sérénité ». Le motif vague est présent (séparateurs, anneau de score, logo). Très bon travail Stitch.
+
+### 6.1 Grille d'arbitrage par écran
+
+| Écran (dossier) | Décision | Détail |
+|---|---|---|
+| `logo` | ✅ **Adopter** | Vague-bulle line-art dégradé navy→cyan — motif parfait du slow design. Variante fond blanc réservée aux contextes clairs ; sur le site on garde l'icône navy. |
+| `onboarding_bienvenue` | ✅ **Adopter (amélioration UX)** | Grille 2 colonnes de **grandes cartes** de niveau (A1 Débutant → C2 Maîtrise) au lieu de petits chips : plus lentes, plus « tap doux ». Labels identiques aux nôtres. |
+| `accueil_fluentflow_dashboard` | ⭐ **Gardé comme référence** | Variante la plus fidèle à notre monocolonne : pill « Niveau : B1 », **séparateurs en ligne de vague** entre sections, cartes scénarios emoji+titre+description, historique avec poubelle. |
+| `accueil_fluentflow` | ❌ **Rejeter la nav, piocher** | Top nav ACCUEIL/CONVERSATIONS/PROGRESSION + avatar = trop « web app », casse le focus méditatif monocolonne. À piocher : médaillons d'icônes circulaires des scénarios, meta « Hier, 14:30 • 8 min » sur l'historique (les Sessions gagnent un champ `updatedAt`). |
+| `conversation_tutorat_ai` (+ `_style_core`) | ✅ **Adopter** | 1) **Pill de correction avec mot barré** : « I am ~~do~~ doing well » — narration visuelle de la faute, on a déjà `corrected`, il faut passer la correction à un mini-format structuré (ou surligner le diff). 2) **Date-pill « AUJOURD'HUI »** centrée en tête de chat. 3) **Orbe lumineux** = avatar du tuteur (bioluminescence). 4) Tag catégorie « VOCABULAIRE » discret dans la bulle. 5) **Barre de saisie combinée** : mic + champ + bouton d'envoi circulaire gradient dans une seule pilule — plus calme que nos 3 boutons. |
+| `prononciation_fluentflow` | ✅ **Adopter tel quel** | L'anneau lumineux 86 % « PRÉCISION » = notre `pronunciationScore()` ; les chips mots verts/rouge-barré = notre `scoreWords()` (données déjà là !) ; cartes cible avec bouton écouter ; boutons gradient+outline. Signature motion : anneau tracé en 1,2 s + compteur. |
+| `ma_progression_fluentflow` | ✅ Base | Médailles BRONZE/ARGENT/OR (gagnées = lueur, à venir = estompées), carte « Types d'erreurs » barres gradient + compte. Fidèle à nos données réelles. |
+| `ma_progression` (variant) | ⚠️ **Adapter** | Les **arcs de progression vers le prochain badge** (10 ✓ complet, 50 arc partiel, 100 estompé) sont une vraie amélioration — calculable (total/n). ❌ Rejeter : les % « maîtrise » par catégorie (on compte des **erreurs**, pas une maîtrise — rester honnête) et le filtre « Derniers 30 jours » (pas de dates dans `ff_progress`). |
+| `le_ons_fluentflow` | ✅ **Adopter (avec vraies données)** | Accordéons avec chips de difficulté (Bases/Intermédiaire/Avancé — étiquettes statiques raisonnables) ; ❌ les compteurs « 12/8/15 Leçons » sont de la fiction Stitch → afficher `lesson.phrases.length` réel. Rangées EN bold + FR muted + 🔊 + « Pratiquer » : on a déjà tout. |
+| `exercices_fluentflow` | ✅ **Adopter (joyau)** | **Le blank inline** : la réponse se tape DANS la phrase (« She ▁▁▁ to school yesterday. », souligné, largeur ~ longueur de la réponse) quand `question` contient `___` ; sinon champ classique. États : chip catégorie + « QUESTION 3/10 » en caps, VÉRIFIER discret en caps, succès = **lueur cyan qui fleurit** sur la carte + pill « ✔ Bravo », indice 💡 italique, SUIVANT gradient. Double état affiché = notre story de transition. |
+| `param_tres_fluentflow` | ✅ **Adapter** | Adopter : note « Clé stockée uniquement dans ce navigateur (LocalStorage). », œil 👁 sur le champ clé, **toggle switch** pour la lecture auto (au lieu du checkbox), carte « Données locales » avec **liseré rouge gauche** + « Cette action est irréversible. ». ❌ Rejeter : fournisseur « Anthropic » (inventé — nos 5 providers restent), layout 2 colonnes (rester monocolonne), voix « Amélie FR » (nos voix = EN, choix utilisateur). |
+
+### 6.2 Décisions globales d'harmonisation
+
+1. **Fond** : on garde `#0B1229` (marque) — certains écrans Stitch dérivent vers `#11131b` plus neutre ; standardiser sur le nôtre.
+2. **Chrome** : pas de top-nav ; header minimal logo+engrenage (variant dashboard) + **footer** « FluentFlow • Apprendre en toute sérénité » adopté partout.
+3. **Séparateurs de vague** entre sections de l'accueil (motif signature, animation lente ±2 px en 20 s possible plus tard).
+4. **Données d'abord** : tout ce qui exige des données inexistantes (% maîtrise, filtres de dates, compteurs de leçons fictifs) est écarté — l'honnêteté « real vs heuristic » prime.
+5. **Corrections** : afficher la pill avec le mot fautif barré quand le diff est trivial (1 mot remplacé) ; sinon la pill simple actuelle.
+
+### 6.3 Mapping motion (principes §2 → éléments adoptés)
+
+| Élément adopté | Motion slow motion (implémentation `styles.css`) |
+|---|---|
+| Navigation entre vues | fondu + translateY(12px) 700 ms, cascade enfants 80 ms (P1, P2) |
+| Bulles de chat | scale .96 + blur 4px → net, 450 ms ; correction pill se déplie 500 ms (P4) |
+| Typing indicator | 3 points-bulles qui montent en boucle 1,8 s (P5) |
+| Anneau de score | `stroke-dashoffset` 1 200 ms + compteur 0→N (P5) |
+| Médailles | bob flottant 4 s ; gagnée = shine balayé 1,2 s (P5) |
+| Barres de progression | poussent 900 ms expo-out, ordre décroissant (P2, P5) |
+| Exercice réussi | lueur cyan qui fleurit 800 ms (P4) — jamais de shake sec |
+| CTA principal | halo respirant, cycle 6 s (P6) |
+| Aurora de fond | 3 halos dérivent en 50 s ; séparateurs de vague ondulent 20 s (P3) |
