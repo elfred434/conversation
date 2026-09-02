@@ -1,6 +1,6 @@
 export type CefrLevel = 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'c2'
 
-export type ProviderId = 'openai' | 'openrouter' | 'gemini' | 'groq' | 'ollama'
+export type ProviderId = 'openai' | 'openrouter' | 'gemini' | 'groq' | 'ollama' | 'webllm'
 
 export interface Settings {
   provider: ProviderId

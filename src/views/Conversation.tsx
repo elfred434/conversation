@@ -13,6 +13,7 @@ export default function Conversation(): JSX.Element {
   const [listening, setListening] = useState(false)
   const [interim, setInterim] = useState('')
   const [micError, setMicError] = useState<string | null>(null)
+  const [aiPrep, setAiPrep] = useState<string | null>(null)
   const stopListenRef = useRef<(() => void) | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
@@ -21,6 +22,19 @@ export default function Conversation(): JSX.Element {
   }, [conv?.messages, interim])
 
   useEffect(() => () => stopListenRef.current?.(), [])
+
+  // Progression de la preparation de l'IA integree (telechargement / chargement)
+  useEffect(() => {
+    const h = (e: Event): void => {
+      const d = (e as CustomEvent<{ progress?: number; text?: string; done?: boolean }>).detail
+      if (d?.done) setAiPrep(null)
+      else if (typeof d?.progress === 'number' && d.progress > 0 && d.progress < 1)
+        setAiPrep(`${Math.round(d.progress * 100)} %${d.text ? ` — ${d.text}` : ''}`)
+      else if (d?.text) setAiPrep(d.text)
+    }
+    window.addEventListener('ff-ai-progress', h)
+    return () => window.removeEventListener('ff-ai-progress', h)
+  }, [])
 
   if (!conv) {
     return (
@@ -133,6 +147,9 @@ export default function Conversation(): JSX.Element {
       </div>
 
       {conv.error && <div className="error">{conv.error}</div>}
+      {aiPrep && conv?.streaming && (
+        <p className="auto-note">✦ Préparation de l'IA intégrée (première fois seulement) : {aiPrep}</p>
+      )}
       {micError && <div className="error">{micError}</div>}
 
       <div className="inputbar">

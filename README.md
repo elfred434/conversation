@@ -13,7 +13,7 @@ Apprendre l'anglais en discutant — **application web** (site 100 % statique, a
 - 🏅 **Progression** : badges + statistiques par type d'erreur
 - 💾 **Sessions** : tes conversations sont sauvegardées localement et reprenables
 
-Fournisseurs IA supportés : **OpenAI, OpenRouter, Gemini, Groq, Ollama (local)** — clé stockée uniquement dans ton navigateur.
+Fournisseurs IA supportés : **IA intégrée (dans ton navigateur, sans clé — Gemini Nano ou modèle WebGPU)**, OpenAI, OpenRouter, Gemini, Groq, Ollama (local) — clé éventuelle stockée uniquement dans ton navigateur.
 
 ## Développement
 

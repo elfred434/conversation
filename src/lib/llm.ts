@@ -44,6 +44,13 @@ export const PROVIDERS: Record<ProviderId, ProviderMeta> = {
     needsKey: false,
     hint: 'Sur ta machine : OLLAMA_ORIGINS="*" ollama serve (autorise le navigateur)',
   },
+  webllm: {
+    label: 'IA intégrée (navigateur)',
+    baseUrl: '',
+    defaultModel: 'Llama-3.2-1B-Instruct-q4f16_1-MLC',
+    needsKey: false,
+    hint: 'Tourne dans le navigateur, sans clé — Gemini Nano (Chrome) ou modèle WebGPU téléchargé une seule fois (~700 Mo)',
+  },
 }
 
 export interface ChatMsg {
@@ -159,14 +166,60 @@ async function* streamGemini(
   }
 }
 
+/** Duree maximale d'attente du premier jet du modele. */
+const FIRST_TOKEN_TIMEOUT = 30000
+
+/** Fait echouer le flux si aucun premier jet n'arrive dans les 30 s (modele qui pend). */
+async function* guardFirstToken(gen: AsyncGenerator<string>): AsyncGenerator<string> {
+  const it = gen[Symbol.asyncIterator]()
+  let first = true
+  for (;;) {
+    if (first) {
+      let timer: ReturnType<typeof setTimeout> | undefined
+      try {
+        const res = await Promise.race([
+          it.next(),
+          new Promise<never>((_, rej) => {
+            timer = setTimeout(
+              () =>
+                rej(
+                  new Error(
+                    "Le modèle ne répond pas depuis 30 s. Vérifie ta clé et le modèle, ou choisis « IA intégrée (navigateur) ».",
+                  ),
+                ),
+              FIRST_TOKEN_TIMEOUT,
+            )
+          }),
+        ])
+        if (res.done) return
+        if (res.value) yield res.value
+        first = false
+      } finally {
+        if (timer) clearTimeout(timer)
+      }
+    } else {
+      const res = await it.next()
+      if (res.done) return
+      yield res.value
+    }
+  }
+}
+
 /** Diffuse la reponse du tuteur morceau par morceau (messages inclut le tour user). */
-export function streamChat(
+export async function* streamChat(
   s: Settings,
   system: string,
   messages: ChatMsg[],
   signal?: AbortSignal,
 ): AsyncGenerator<string> {
-  return s.provider === 'gemini'
-    ? streamGemini(s, system, messages, signal)
-    : streamOpenAi(s, system, messages, signal)
+  if (s.provider === 'webllm') {
+    const m = await import('./webllm')
+    yield* guardFirstToken(m.streamBrowserAI(s, system, messages, signal))
+    return
+  }
+  yield* guardFirstToken(
+    s.provider === 'gemini'
+      ? streamGemini(s, system, messages, signal)
+      : streamOpenAi(s, system, messages, signal),
+  )
 }

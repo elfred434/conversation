@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { Eye, EyeOff, MessageCircle, Play, ShieldCheck, Trash2, TriangleAlert, Volume2 } from 'lucide-react'
 import { PROVIDERS } from '../lib/llm'
 import { onVoicesChanged, getVoices, speak, ttsSupported } from '../lib/tts'
 import { useApp } from '../state/store'
-import type { ProviderId } from '../types'
+import type { ProviderId, Settings as SettingsData } from '../types'
+import { ensureBrowserAI, nativeAIAvailable, webgpuSupported } from '../lib/webllm'
 
 export default function Settings(): JSX.Element {
   const { settings, updateSettings, clearSessions, go } = useApp()
@@ -100,6 +101,7 @@ export default function Settings(): JSX.Element {
           </label>
         )}
         <p className="note">{meta.hint}</p>
+        {settings.provider === 'webllm' && <BrowserAIStatus settings={settings} />}
       </div>
 
       <div className="card">
@@ -178,6 +180,60 @@ export default function Settings(): JSX.Element {
       <p className="note center" style={{ marginTop: 18 }}>
         Les réglages sont enregistrés automatiquement à chaque modification.
       </p>
+    </div>
+  )
+}
+
+/** Etat + preparation du modele IA integre (Gemini Nano ou WebLLM/WebGPU). */
+function BrowserAIStatus({ settings }: { settings: SettingsData }): JSX.Element {
+  const [txt, setTxt] = useState<string>(
+    nativeAIAvailable()
+      ? 'Gemini Nano de Chrome détecté — gratuit, déjà dans le navigateur.'
+      : webgpuSupported()
+        ? 'Un modèle (~700 Mo) sera téléchargé une seule fois, puis 100 % hors-ligne.'
+        : "Indisponible : ce navigateur n'a pas WebGPU (utilise Chrome ou Edge récent).",
+  )
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+  const [pct, setPct] = useState<number | null>(null)
+
+  useEffect(() => {
+    const h = (e: Event): void => {
+      const d = (e as CustomEvent<{ progress?: number; done?: boolean }>).detail
+      if (d?.done) setPct(null)
+      else if (typeof d?.progress === 'number' && d.progress > 0 && d.progress <= 1)
+        setPct(Math.round(d.progress * 100))
+    }
+    window.addEventListener('ff-ai-progress', h)
+    return () => window.removeEventListener('ff-ai-progress', h)
+  }, [])
+
+  const prepare = async (): Promise<void> => {
+    setBusy(true)
+    setErr(null)
+    try {
+      const engine = await ensureBrowserAI(settings)
+      setTxt(`IA intégrée prête ✓ (${engine})`)
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="browser-ai">
+      <p className="note" style={{ marginBottom: 8 }}>{txt}</p>
+      {pct !== null && (
+        <div className="progressbar" style={{ marginBottom: 10 }}>
+          <i style={{ '--p': String(pct / 100) } as CSSProperties} />
+        </div>
+      )}
+      {pct !== null && <p className="note">Téléchargement : {pct} %</p>}
+      {err && <div className="error">{err}</div>}
+      <button className="btn btn-outline btn-sm" onClick={prepare} disabled={busy || !webgpuSupported()}>
+        {busy ? 'Préparation…' : 'Préparer le modèle maintenant'}
+      </button>
     </div>
   )
 }
