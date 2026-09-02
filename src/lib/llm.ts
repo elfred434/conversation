@@ -33,9 +33,9 @@ export const PROVIDERS: Record<ProviderId, ProviderMeta> = {
   groq: {
     label: 'Groq',
     baseUrl: 'https://api.groq.com/openai/v1',
-    defaultModel: 'llama-3.3-70b-versatile',
+    defaultModel: 'openai/gpt-oss-120b',
     needsKey: true,
-    hint: 'Clé gratuite sur console.groq.com',
+    hint: 'Clé gratuite sur console.groq.com — ~1 000 req/jour (aussi : qwen/qwen3.8-27b, openai/gpt-oss-20b)',
   },
   ollama: {
     label: 'Ollama (local)',
@@ -47,9 +47,9 @@ export const PROVIDERS: Record<ProviderId, ProviderMeta> = {
   cerebras: {
     label: 'Cerebras (gratuit)',
     baseUrl: 'https://api.cerebras.ai/v1',
-    defaultModel: 'llama-3.3-70b',
+    defaultModel: 'gpt-oss-120b',
     needsKey: true,
-    hint: 'Cle gratuite sur cloud.cerebras.ai — 1M de tokens/jour',
+    hint: 'Clé gratuite sur cloud.cerebras.ai — 1M de tokens/jour',
   },
   webllm: {
     label: 'IA intégrée (navigateur)',

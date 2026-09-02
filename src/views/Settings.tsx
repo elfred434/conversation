@@ -28,6 +28,8 @@ export default function Settings(): JSX.Element {
       apiKey: settings.keys[next] ?? '',
       keys: { ...settings.keys, [settings.provider]: settings.apiKey },
       baseUrl: '',
+      // le modele par defaut du nouveau fournisseur s'applique (champ vide)
+      model: '',
     })
   }
 

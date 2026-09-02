@@ -1,6 +1,5 @@
 import type { Settings } from '../types'
 import type { ChatMsg } from './llm'
-import { resolveModel } from './llm'
 
 /** IA integree : tourne DANS le navigateur, sans cle API ni serveur.
  *  1) Gemini Nano via l'API LanguageModel de Chrome si disponible (gratuit, deja la)
@@ -79,6 +78,23 @@ interface WebLlmEngine {
 
 let enginePromise: Promise<WebLlmEngine> | null = null
 
+/** Resout le modele WebLLM a utiliser : celui configure SEULEMENT s'il existe dans le
+ *  catalogue web-llm ; sinon repli silencieux sur le modele integre (evite le crash
+ *  ModelNotFoundError quand le champ Modèle contient un ID d'un autre fournisseur). */
+async function resolveWebLlmModel(s: Settings): Promise<string> {
+  const wanted = s.model.trim()
+  if (!wanted || wanted === BROWSER_MODEL) return BROWSER_MODEL
+  try {
+    const webllm = await import('@mlc-ai/web-llm')
+    const known = webllm.prebuiltAppConfig.model_list.some((m) => m.model_id === wanted)
+    if (known) return wanted
+  } catch {
+    return BROWSER_MODEL
+  }
+  emitProgress({ text: `« ${wanted} » n'est pas un modèle local connu — utilisation de ${BROWSER_MODEL}` })
+  return BROWSER_MODEL
+}
+
 async function getWebLlmEngine(
   model: string,
   onProg: (d: AiProgress) => void,
@@ -104,7 +120,7 @@ async function* webllmStream(
   messages: ChatMsg[],
   onProg: (d: AiProgress) => void,
 ): AsyncGenerator<string> {
-  const engine = await getWebLlmEngine(resolveModel(s), onProg)
+  const engine = await getWebLlmEngine(await resolveWebLlmModel(s), onProg)
   const chunks = await engine.chat.completions.create({
     messages: [{ role: 'system', content: system }, ...messages],
     stream: true,
@@ -151,7 +167,7 @@ export async function ensureBrowserAI(s: Settings): Promise<string> {
   if (!webgpuSupported()) {
     throw new Error('WebGPU indisponible sur ce navigateur')
   }
-  await getWebLlmEngine(resolveModel(s), emitProgress)
+  await getWebLlmEngine(await resolveWebLlmModel(s), emitProgress)
   emitProgress({ done: true })
   return 'Modèle WebLLM téléchargé (WebGPU)'
 }
