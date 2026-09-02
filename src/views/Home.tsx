@@ -1,9 +1,11 @@
+import { BookOpen, MessageCircle, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { LEVELS, SCENARIOS } from '../lib/prompts'
 import { dayLabel } from '../lib/dayLabel'
 import { useApp } from '../state/store'
 import type { Scenario } from '../lib/prompts'
 
-const SC_EMOJI: Record<string, string> = { daily: '☀️', travel: '✈️', work: '💼', myday: '🌙' }
+const SC_ICONS: Record<string, LucideIcon> = { daily: Sun, travel: Plane, work: Briefcase, myday: Moon }
 
 function WaveDivider(): JSX.Element {
   return (
@@ -14,14 +16,17 @@ function WaveDivider(): JSX.Element {
 }
 
 function ScenarioCard({ s, onOpen }: { s: Scenario; onOpen: () => void }): JSX.Element {
+  const Icon = SC_ICONS[s.id] ?? MessageCircle
   return (
     <div className="card clickable sc-card" onClick={onOpen}>
-      <span className="sc-icon">{SC_EMOJI[s.id] ?? '💬'}</span>
+      <span className="sc-icon">
+        <Icon size={22} />
+      </span>
       <span className="grow">
         <strong>{s.title}</strong>
         <div className="muted">{s.description}</div>
       </span>
-      <span className="muted">›</span>
+      <ChevronRight size={18} style={{ color: 'var(--muted)', flex: 'none' }} />
     </div>
   )
 }
@@ -37,8 +42,14 @@ export default function Home(): JSX.Element {
       <h1 className="title center">Prêt à parler anglais ?</h1>
       <p className="subtitle center">
         Choisis un scénario ou lance-toi dans une conversation libre, à ton rythme.
-        {level && <> </>}
-        {!level && <button className="back" onClick={() => go('onboarding')}>choisir un niveau</button>}
+        {!level && (
+          <>
+ {' '}
+          <button className="back" onClick={() => go('onboarding')}>
+            choisir un niveau
+          </button>
+        </>
+        )}
       </p>
 
       {SCENARIOS.map((s) => (
@@ -46,41 +57,55 @@ export default function Home(): JSX.Element {
       ))}
 
       <button className="btn btn-block btn-breathe" onClick={() => startConversation(null)}>
-        💬 Conversation libre
+        <MessageCircle size={19} /> Conversation libre
       </button>
 
       <WaveDivider />
 
       <div className="chips" style={{ justifyContent: 'center' }}>
-        <button className="chip" onClick={() => go('pronunciation')}>🎤 Prononciation</button>
-        <button className="chip" onClick={() => go('lessons')}>📚 Leçons</button>
-        <button className="chip" onClick={() => go('exercises')}>🎯 Exercices ciblés</button>
-        <button className="chip" onClick={() => go('progress')}>🏅 Ma progression</button>
+        <button className="chip" onClick={() => go('pronunciation')}>
+          <Mic size={15} /> Prononciation
+        </button>
+        <button className="chip" onClick={() => go('lessons')}>
+          <BookOpen size={15} /> Leçons
+        </button>
+        <button className="chip" onClick={() => go('exercises')}>
+          <Target size={15} /> Exercices ciblés
+        </button>
+        <button className="chip" onClick={() => go('progress')}>
+          <Award size={15} /> Ma progression
+        </button>
       </div>
 
       {sessions.length > 0 && (
         <>
           <h3 style={{ margin: '18px 0 12px' }}>Mes conversations</h3>
-          {sessions.map((s) => (
-            <div key={s.id} className="card clickable hist-card" onClick={() => resumeSession(s.id)} title="Reprendre">
-              <span className="grow">
-                <strong>{s.title}</strong>
-                <div className="hist-meta">
-                  {dayLabel(s.ts)} · {s.messages.length} messages
-                </div>
-              </span>
-              <button
-                className="trash-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  deleteSession(s.id)
-                }}
-                aria-label={`Supprimer ${s.title}`}
-              >
-                🗑
-              </button>
-            </div>
-          ))}
+          {sessions.map((s) => {
+            const Icon = SC_ICONS[s.scenarioId] ?? MessageCircle
+            return (
+              <div key={s.id} className="card clickable hist-card" onClick={() => resumeSession(s.id)} title="Reprendre">
+                <span className="sc-icon" style={{ width: 38, height: 38 }}>
+                  <Icon size={18} />
+                </span>
+                <span className="grow">
+                  <strong>{s.title}</strong>
+                  <div className="hist-meta">
+                    {dayLabel(s.ts)} · {s.messages.length} messages
+                  </div>
+                </span>
+                <button
+                  className="trash-btn"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    deleteSession(s.id)
+                  }}
+                  aria-label={`Supprimer ${s.title}`}
+                >
+                  <Trash2 size={17} />
+                </button>
+              </div>
+            )
+          })}
         </>
       )}
     </div>

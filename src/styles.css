@@ -154,6 +154,8 @@ body::after {
   letter-spacing: 0.3px;
 }
 .icon-btn {
+  display: grid;
+  place-items: center;
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
@@ -250,7 +252,7 @@ h1.title {
   gap: 12px;
   margin-bottom: 6px;
 }
-.card-emoji {
+.card-icon {
   width: 40px;
   height: 40px;
   border-radius: 13px;
@@ -258,7 +260,7 @@ h1.title {
   border: 1px solid var(--glass-border);
   display: grid;
   place-items: center;
-  font-size: 1.15rem;
+  color: var(--cyan);
   flex: none;
 }
 .card-title {
@@ -362,6 +364,9 @@ h1.title {
   margin: 12px 0;
 }
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
   color: var(--text);
@@ -493,6 +498,8 @@ label.field > span,
   flex: 1;
 }
 .eye-btn {
+  display: grid;
+  place-items: center;
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
@@ -685,7 +692,7 @@ input[type='checkbox'] {
   border: 1px solid var(--glass-border);
   display: grid;
   place-items: center;
-  font-size: 1.3rem;
+  color: var(--cyan);
   flex: none;
 }
 .hist-card {
@@ -883,6 +890,8 @@ input[type='checkbox'] {
   box-shadow: none;
 }
 .mic-btn {
+  display: grid;
+  place-items: center;
   flex: none;
   width: 44px;
   height: 44px;
@@ -922,6 +931,8 @@ input[type='checkbox'] {
   }
 }
 .send-btn {
+  display: grid;
+  place-items: center;
   flex: none;
   width: 44px;
   height: 44px;
@@ -1013,19 +1024,17 @@ input[type='checkbox'] {
     stroke-dashoffset: var(--c);
   }
 }
-.medal .medal-emoji {
+.medal .medal-icon {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: 1.7rem;
 }
 .medal.earned .mwrap {
   filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.35));
 }
-.medal.locked .medal-emoji {
+.medal.locked .medal-icon {
   opacity: 0.3;
-  filter: grayscale(1);
 }
 .medal-label {
   font-size: 0.78rem;
@@ -1253,6 +1262,9 @@ details[open] .chev {
   animation: fadeUp var(--dur-in) var(--ease-soft) both;
 }
 .answer-feedback .verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-weight: 700;
 }
 .answer-feedback .verdict.ok {
@@ -1262,9 +1274,16 @@ details[open] .chev {
   color: var(--danger);
 }
 .hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
   color: var(--muted);
   font-style: italic;
   font-size: 0.92rem;
+}
+.hint svg {
+  flex: none;
+  margin-top: 3px;
 }
 /* Lueur cyan qui fleurit quand la reponse est juste */
 .card.glow {
@@ -1293,13 +1312,36 @@ details[open] .chev {
   margin-bottom: 14px;
 }
 .danger-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--danger);
   font-weight: 700;
   margin: 0 0 6px;
 }
+.sub-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  vertical-align: -3px;
+}
+.auto-note svg {
+  vertical-align: -2px;
+}
+.tools svg {
+  display: block;
+}
+.lesson .icon-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
 
 /* ---------- Retour ---------- */
 .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: none;
   border: none;
   color: var(--muted);

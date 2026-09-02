@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Mic, SkipForward, Volume2 } from 'lucide-react'
 import { useApp } from '../state/store'
 import { DAILY_PHRASES } from '../lib/lessons'
 import { listen, sttSupported } from '../lib/stt'
@@ -137,7 +138,7 @@ export default function Pronunciation(): JSX.Element {
         )}
         <div className="row" style={{ justifyContent: 'center', marginTop: 14 }}>
           <button className="btn btn-outline btn-sm" onClick={() => speak(target, settings.voiceURI, settings.rate)}>
-            🔊 Écouter
+            <Volume2 size={16} /> Écouter
           </button>
         </div>
       </div>
@@ -153,8 +154,8 @@ export default function Pronunciation(): JSX.Element {
               onChange={(e) => setFree(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && readMine()}
             />
-            <button className="btn btn-outline btn-sm" onClick={readMine} disabled={!free.trim()}>
-              🔊
+            <button className="btn btn-outline btn-sm" onClick={readMine} disabled={!free.trim()} aria-label="Lire">
+              <Volume2 size={16} />
             </button>
           </div>
         </label>
@@ -174,13 +175,13 @@ export default function Pronunciation(): JSX.Element {
 
       <div className="row" style={{ justifyContent: 'center', marginTop: 14 }}>
         <button className={`btn ${listening ? 'btn-danger' : ''}`} onClick={toggleMic}>
-          {listening ? '⏹ Arrêter' : '🎤 Répéter au micro'}
+          <Mic size={17} /> {listening ? 'Arrêter' : 'Répéter au micro'}
         </button>
         <button
           className="btn btn-outline"
           onClick={() => setNewTarget(DAILY_PHRASES[Math.floor(Math.random() * DAILY_PHRASES.length)])}
         >
-          ⏭ Phrase suivante
+          Phrase suivante <SkipForward size={16} />
         </button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { ArrowLeft, Check, Mic, Send, Square, Volume2 } from 'lucide-react'
 import { useApp } from '../state/store'
 import { listen, sttSupported } from '../lib/stt'
 import { speak, stopSpeak } from '../lib/tts'
@@ -26,7 +27,7 @@ export default function Conversation(): JSX.Element {
       <div>
         <p className="subtitle">Aucune conversation active.</p>
         <button className="btn" onClick={() => go('home')}>
-          ← Accueil
+          <ArrowLeft size={17} /> Accueil
         </button>
       </div>
     )
@@ -63,7 +64,7 @@ export default function Conversation(): JSX.Element {
   return (
     <div>
       <button className="back" onClick={() => go('home')}>
-        ← Accueil
+        <ArrowLeft size={16} /> Accueil
       </button>
       <div className="chat" ref={scrollRef} style={{ maxHeight: '62vh', overflowY: 'auto', padding: '8px 2px' }}>
         {session && <div className="date-pill">{dayLabel(session.ts)}</div>}
@@ -73,55 +74,53 @@ export default function Conversation(): JSX.Element {
           const typing = m.role === 'assistant' && isLast && conv.streaming && !m.content
           const diff =
             m.role === 'user' && m.correction ? wordDiffLabel(m.content, m.correction) : null
-          const row =
-            m.role === 'user' ? (
-              <div key={i} className="msg-row user">
-                <div className="bubble user">
+          return m.role === 'user' ? (
+            <div key={i} className="msg-row user">
+              <div className="bubble user">
+                <span>{m.content}</span>
+                {m.correction && (
+                  <div className="correction">
+                    <Check size={13} style={{ display: 'inline', verticalAlign: '-2px', marginRight: 4 }} />
+                    {diff ? (
+                      <>
+                        {diff.before && `${diff.before} `}
+                        <span className="diff-del">{diff.wrong}</span> {diff.right}
+                        {diff.after && ` ${diff.after}`}
+                      </>
+                    ) : (
+                      m.correction
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div key={i} className="msg-row assistant">
+              <span className="orb" aria-hidden="true" />
+              <div className="bubble assistant">
+                {typing ? (
+                  <span className="typing" aria-label="Le tuteur écrit">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                ) : (
                   <span>{m.content}</span>
-                  {m.correction && (
-                    <div className="correction">
-                      ✔️{' '}
-                      {diff ? (
-                        <>
-                          {diff.before && `${diff.before} `}
-                          <span className="diff-del">{diff.wrong}</span> {diff.right}
-                          {diff.after && ` ${diff.after}`}
-                        </>
-                      ) : (
-                        m.correction
-                      )}
-                    </div>
-                  )}
-                </div>
+                )}
+                {m.cat && <span className="tag-chip cat-tag">{CATEGORY_LABELS[m.cat] ?? m.cat}</span>}
+                {m.content && (
+                  <div className="tools">
+                    <button
+                      onClick={() => speak(m.content, settings.voiceURI, settings.rate)}
+                      title="Écouter"
+                    >
+                      <Volume2 size={16} />
+                    </button>
+                  </div>
+                )}
               </div>
-            ) : (
-              <div key={i} className="msg-row assistant">
-                <span className="orb" aria-hidden="true" />
-                <div className="bubble assistant">
-                  {typing ? (
-                    <span className="typing" aria-label="Le tuteur écrit">
-                      <i />
-                      <i />
-                      <i />
-                    </span>
-                  ) : (
-                    <span>{m.content}</span>
-                  )}
-                  {m.cat && <span className="tag-chip cat-tag">{CATEGORY_LABELS[m.cat] ?? m.cat}</span>}
-                  {m.content && (
-                    <div className="tools">
-                      <button
-                        onClick={() => speak(m.content, settings.voiceURI, settings.rate)}
-                        title="Écouter"
-                      >
-                        🔊
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )
-          return row
+            </div>
+          )
         })}
 
         {interim && (
@@ -140,7 +139,7 @@ export default function Conversation(): JSX.Element {
         <div className="pill-bar">
           {sttSupported() && (
             <button className={`mic-btn ${listening ? 'rec' : ''}`} onClick={toggleMic} title="Parler">
-              {listening ? '⏹' : '🎤'}
+              {listening ? <Square size={15} /> : <Mic size={18} />}
             </button>
           )}
           <input
@@ -152,17 +151,22 @@ export default function Conversation(): JSX.Element {
           />
           {conv.streaming ? (
             <button className="send-btn stop" onClick={stopStreaming} title="Interrompre">
-              ■
+              <Square size={14} />
             </button>
           ) : (
             <button className="send-btn" onClick={send} disabled={!text.trim()} title="Envoyer">
-              ➤
+              <Send size={17} />
             </button>
           )}
         </div>
         {(settings.autoSpeak || listening) && (
           <p className="auto-note">
-            {settings.autoSpeak && <>🔊 Lecture automatique — <button onClick={() => go('settings')}>régler</button></>}
+            {settings.autoSpeak && (
+              <>
+                <Volume2 size={13} /> Lecture automatique —{' '}
+                <button onClick={() => go('settings')}>régler</button>
+              </>
+            )}
             {settings.autoSpeak && listening && ' · '}
             {listening && <button onClick={() => stopSpeak()}>couper la voix</button>}
           </p>

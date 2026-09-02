@@ -1,8 +1,10 @@
+import { BookOpen, ChevronDown, MessagesSquare, Plane, Sunrise, Volume2 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import { LESSONS } from '../lib/lessons'
 import { useApp } from '../state/store'
 import { speak } from '../lib/tts'
 
-const LESSON_EMOJI: Record<string, string> = { daily: '🌅', travel: '✈️', smalltalk: '🗣️' }
+const LESSON_ICONS: Record<string, LucideIcon> = { daily: Sunrise, travel: Plane, smalltalk: MessagesSquare }
 const LESSON_LEVEL: Record<string, string> = { daily: 'Bases', travel: 'Intermédiaire', smalltalk: 'Avancé' }
 
 export default function Lessons(): JSX.Element {
@@ -19,7 +21,12 @@ export default function Lessons(): JSX.Element {
       {LESSONS.map((lesson, idx) => (
         <details key={lesson.id} className="lesson" open={idx === 0}>
           <summary>
-            <span className="lesson-emoji">{LESSON_EMOJI[lesson.id] ?? '📘'}</span>
+            <span className="lesson-icon">
+              {(() => {
+                const Icon = LESSON_ICONS[lesson.id] ?? BookOpen
+                return <Icon size={21} />
+              })()}
+            </span>
             <span className="lesson-titles">
               <strong>{lesson.title}</strong>
               <span className="lesson-tags">
@@ -27,7 +34,7 @@ export default function Lessons(): JSX.Element {
                 <span className="tag-chip">{lesson.phrases.length} phrases</span>
               </span>
             </span>
-            <span className="chev">⌄</span>
+            <ChevronDown size={18} className="chev" />
           </summary>
           {lesson.phrases.map((p, i) => (
             <div key={i} className="phrase">
@@ -41,7 +48,7 @@ export default function Lessons(): JSX.Element {
                 onClick={() => speak(p.en, settings.voiceURI, settings.rate)}
                 title="Écouter"
               >
-                🔊
+                <Volume2 size={16} />
               </button>
               <button className="btn btn-sm" onClick={() => setPracticePhrase(p.en)}>
                 Pratiquer

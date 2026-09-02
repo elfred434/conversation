@@ -1,4 +1,5 @@
 import { AppProvider, useApp } from './state/store'
+import { Settings as SettingsIcon } from 'lucide-react'
 import Onboarding from './views/Onboarding'
 import Home from './views/Home'
 import Conversation from './views/Conversation'
@@ -18,7 +19,7 @@ function Header(): JSX.Element {
       </button>
       {view !== 'onboarding' && (
         <button className="icon-btn" onClick={() => go('settings')} aria-label="Paramètres" title="Paramètres">
-          ⚙️
+          <SettingsIcon size={19} />
         </button>
       )}
     </header>

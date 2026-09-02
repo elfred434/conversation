@@ -12,7 +12,7 @@ export default function Onboarding(): JSX.Element {
       <div className="welcome-badge">
         <img src="icon.png" alt="FluentFlow" />
       </div>
-      <h1 className="title center">Bienvenue sur FluentFlow 👋</h1>
+      <h1 className="title center">Bienvenue sur FluentFlow</h1>
       <p className="subtitle center">Sélectionne ton niveau pour calibrer ton immersion.</p>
 
       <div className="level-grid">

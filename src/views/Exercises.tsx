@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react'
+import { ArrowRight, Check, Lightbulb, RotateCcw, X } from 'lucide-react'
 import { CATEGORY_LABELS, EXERCISES, pickTargetedExercises } from '../lib/exercises'
 import { isAnswerCloseEnough } from '../lib/similarity'
 import { useApp } from '../state/store'
@@ -58,10 +59,10 @@ export default function Exercises(): JSX.Element {
         <div className="card center ex-result">
           <ScoreBig score={score} total={list.length} />
           <p className="muted">
-            {ratio >= 0.8 ? 'Excellent, continue comme ça ! 🎉' : ratio >= 0.5 ? 'Bien ! Encore un petit effort. 💪' : 'Chaque erreur corrigée te fait progresser. 🌱'}
+            {ratio >= 0.8 ? 'Excellent, continue comme ça !' : ratio >= 0.5 ? 'Bien ! Encore un petit effort.' : 'Chaque erreur corrigée te fait progresser.'}
           </p>
           <button className="btn" onClick={restart}>
-            🔄 Recommencer
+            <RotateCcw size={17} /> Recommencer
           </button>
         </div>
       </div>
@@ -118,19 +119,24 @@ export default function Exercises(): JSX.Element {
         {checked ? (
           <div className="answer-feedback">
             <span className={`verdict ${wasCorrect ? 'ok' : 'ko'}`}>
-              {wasCorrect ? '✔ Bravo, c\'est correct !' : '✗ Pas tout à fait.'}
+              {wasCorrect ? <Check size={17} /> : <X size={17} />}
+              {wasCorrect ? 'Bravo, c\'est correct !' : 'Pas tout à fait.'}
             </span>
             {!wasCorrect && (
               <>
                 <div>
                   Bonne réponse : <strong>{ex.answer}</strong>
                 </div>
-                {ex.hint && <div className="hint">💡 {ex.hint}</div>}
+                {ex.hint && <div className="hint"><Lightbulb size={15} /> {ex.hint}</div>}
               </>
             )}
-            {wasCorrect && ex.hint && <div className="hint">💡 {ex.hint}</div>}
+            {wasCorrect && ex.hint && <div className="hint"><Lightbulb size={15} /> {ex.hint}</div>}
             <button className="btn btn-block" style={{ marginTop: 14 }} onClick={next}>
-              {index + 1 >= list.length ? 'Voir le résultat' : 'Suivant →'}
+              {index + 1 >= list.length ? 'Voir le résultat' : (
+                <>
+                  Suivant <ArrowRight size={16} />
+                </>
+              )}
             </button>
           </div>
         ) : (
@@ -140,7 +146,7 @@ export default function Exercises(): JSX.Element {
             onClick={check}
             disabled={!answer.trim()}
           >
-            Vérifier →
+            Vérifier <ArrowRight size={15} />
           </button>
         )}
       </div>

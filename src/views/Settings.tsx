@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Eye, EyeOff, MessageCircle, Play, ShieldCheck, Trash2, TriangleAlert, Volume2 } from 'lucide-react'
 import { PROVIDERS } from '../lib/llm'
 import { onVoicesChanged, getVoices, speak, ttsSupported } from '../lib/tts'
 import { useApp } from '../state/store'
@@ -26,11 +27,15 @@ export default function Settings(): JSX.Element {
         ← Accueil
       </button>
       <h1 className="title">Paramètres</h1>
-      <p className="subtitle">🛡 Tout est stocké localement dans ton navigateur.</p>
+      <p className="subtitle">
+        <span className="sub-inline">
+          <ShieldCheck size={15} /> Tout est stocké localement dans ton navigateur
+        </span>
+      </p>
 
       <div className="card">
         <div className="card-head">
-          <span className="card-emoji">🤖</span>
+          <span className="card-icon"><MessageCircle size={20} /></span>
           <span>
             <div className="card-title">Tuteur IA</div>
             <div className="card-sub">Configuration du modèle</div>
@@ -66,7 +71,7 @@ export default function Settings(): JSX.Element {
                 onClick={() => setShowKey((v) => !v)}
                 aria-label={showKey ? 'Masquer la clé' : 'Afficher la clé'}
               >
-                {showKey ? '🙈' : '👁'}
+                {showKey ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
             </div>
             <p className="note">Clé stockée uniquement dans ce navigateur (LocalStorage).</p>
@@ -99,7 +104,7 @@ export default function Settings(): JSX.Element {
 
       <div className="card">
         <div className="card-head">
-          <span className="card-emoji">🔊</span>
+          <span className="card-icon"><Volume2 size={20} /></span>
           <span>
             <div className="card-title">Voix {ttsSupported() ? '' : '(non supportée ici)'}</div>
             <div className="card-sub">Les voix « Natural » d'Edge sont les plus naturelles</div>
@@ -134,7 +139,7 @@ export default function Settings(): JSX.Element {
           className="btn btn-outline btn-sm"
           onClick={() => speak("Hello! I'm your FluentFlow tutor. Let's practice English together!", settings.voiceURI, settings.rate)}
         >
-          ▶ Tester la voix
+          <Play size={15} /> Tester la voix
         </button>
 
         <div className="switch-row">
@@ -153,7 +158,9 @@ export default function Settings(): JSX.Element {
       </div>
 
       <div className="danger-card">
-        <p className="danger-title">⚠️ Données locales</p>
+        <p className="danger-title">
+          <TriangleAlert size={18} /> Données locales
+        </p>
         <p className="muted" style={{ marginTop: 0 }}>
           Supprime tout l'historique de tes conversations et ta progression. Cette action est irréversible.
         </p>
@@ -164,7 +171,7 @@ export default function Settings(): JSX.Element {
             alert('Historique effacé.')
           }}
         >
-          🗑 Effacer les données
+          <Trash2 size={16} /> Effacer les données
         </button>
       </div>
 
