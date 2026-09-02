@@ -2,6 +2,11 @@
 cmake_minimum_required(VERSION 3.14)
 project(english_conversation_app LANGUAGES CXX)
 
+# Compat MSVC 14.5x (VS 18) : certains plugins (ex: permission_handler_windows)
+# utilisent encore <experimental/coroutine> + /await, devenus erreur STL1011.
+# Ce define supprime l'erreur, comme recommande par Microsoft.
+add_compile_definitions(_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)
+
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "english_conversation_app")
