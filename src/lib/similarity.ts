@@ -70,3 +70,29 @@ export function pronunciationScore(target: string, transcript: string): number {
   if (words.length === 0) return 0
   return words.filter((w) => w.matched).length / words.length
 }
+
+export interface WordDiff {
+  before: string
+  wrong: string
+  right: string
+  after: string
+}
+
+/** Diff minimal entre la phrase brute et sa correction : si un seul mot change,
+ * renvoie le contexte pour la pilule "mot barre -> correction", sinon null. */
+export function wordDiffLabel(raw: string, corrected: string): WordDiff | null {
+  const norm = (w: string): string => w.toLowerCase().replace(/[^a-zà-öø-ÿ'’-]/gi, '')
+  const a = raw.trim().split(/\s+/)
+  const b = corrected.trim().split(/\s+/)
+  if (a.length !== b.length || a.length < 2) return null
+  const diffs: number[] = []
+  for (let i = 0; i < a.length; i++) if (norm(a[i]) !== norm(b[i])) diffs.push(i)
+  if (diffs.length !== 1) return null
+  const i = diffs[0]
+  return {
+    before: a.slice(0, i).join(' '),
+    wrong: a[i],
+    right: b[i],
+    after: a.slice(i + 1).join(' '),
+  }
+}

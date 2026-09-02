@@ -49,15 +49,26 @@ function Body(): JSX.Element | null {
   }
 }
 
+function Shell(): JSX.Element {
+  const { view } = useApp()
+  return (
+    <div className="app">
+      <Header />
+      <main className="main">
+        {/* key=view : remonte la vue a chaque navigation -> transition lente + cascade */}
+        <div className="view" key={view}>
+          <Body />
+        </div>
+      </main>
+      <footer className="footer">FluentFlow • Apprendre en toute sérénité</footer>
+    </div>
+  )
+}
+
 export default function App(): JSX.Element {
   return (
     <AppProvider>
-      <div className="app">
-        <Header />
-        <main className="main">
-          <Body />
-        </main>
-      </div>
+      <Shell />
     </AppProvider>
   )
 }

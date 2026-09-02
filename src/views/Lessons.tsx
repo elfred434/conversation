@@ -2,6 +2,9 @@ import { LESSONS } from '../lib/lessons'
 import { useApp } from '../state/store'
 import { speak } from '../lib/tts'
 
+const LESSON_EMOJI: Record<string, string> = { daily: '🌅', travel: '✈️', smalltalk: '🗣️' }
+const LESSON_LEVEL: Record<string, string> = { daily: 'Bases', travel: 'Intermédiaire', smalltalk: 'Avancé' }
+
 export default function Lessons(): JSX.Element {
   const { settings, setPracticePhrase, go } = useApp()
 
@@ -10,22 +13,31 @@ export default function Lessons(): JSX.Element {
       <button className="back" onClick={() => go('home')}>
         ← Accueil
       </button>
-      <h1 className="title">Leçons</h1>
-      <p className="subtitle">Embarquées dans l'app — aucun réseau requis.</p>
+      <h1 className="title center">Leçons</h1>
+      <p className="subtitle center">Embarquées dans l'app — aucun réseau requis.</p>
 
-      {LESSONS.map((lesson) => (
-        <details key={lesson.id} className="lesson">
+      {LESSONS.map((lesson, idx) => (
+        <details key={lesson.id} className="lesson" open={idx === 0}>
           <summary>
-            {lesson.title} <span className="muted">· {lesson.description}</span>
+            <span className="lesson-emoji">{LESSON_EMOJI[lesson.id] ?? '📘'}</span>
+            <span className="lesson-titles">
+              <strong>{lesson.title}</strong>
+              <span className="lesson-tags">
+                <span className="tag-chip">{LESSON_LEVEL[lesson.id] ?? 'Libre'}</span>
+                <span className="tag-chip">{lesson.phrases.length} phrases</span>
+              </span>
+            </span>
+            <span className="chev">⌄</span>
           </summary>
           {lesson.phrases.map((p, i) => (
             <div key={i} className="phrase">
-              <div className="grow">
+              <span className="grow">
                 <div className="en">{p.en}</div>
                 <div className="fr">{p.fr}</div>
-              </div>
+              </span>
               <button
-                className="btn btn-outline btn-sm"
+                className="icon-btn"
+                style={{ flex: 'none' }}
                 onClick={() => speak(p.en, settings.voiceURI, settings.rate)}
                 title="Écouter"
               >

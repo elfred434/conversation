@@ -9,20 +9,30 @@ export default function Onboarding(): JSX.Element {
 
   return (
     <div>
-      <h1 className="title">Bienvenue sur FluentFlow 👋</h1>
-      <p className="subtitle">Quel est ton niveau d'anglais ? (tu pourras le changer plus tard)</p>
-      <div className="chips">
-        {(Object.keys(LEVELS) as CefrLevel[]).map((l) => (
-          <button
-            key={l}
-            className={`chip ${selected === l ? 'active' : ''}`}
-            onClick={() => setSelected(l)}
-          >
-            {LEVELS[l].label}
-          </button>
-        ))}
+      <div className="welcome-badge">
+        <img src="icon.png" alt="FluentFlow" />
       </div>
-      <button className="btn btn-block" disabled={!selected} onClick={() => selected && chooseLevel(selected)}>
+      <h1 className="title center">Bienvenue sur FluentFlow 👋</h1>
+      <p className="subtitle center">Sélectionne ton niveau pour calibrer ton immersion.</p>
+
+      <div className="level-grid">
+        {(Object.keys(LEVELS) as CefrLevel[]).map((l) => {
+          const code = l.toUpperCase()
+          const name = LEVELS[l].label.replace(code, '').replace(/^[·—–-]\s*/, '')
+          return (
+            <button
+              key={l}
+              className={`level-card ${selected === l ? 'active' : ''}`}
+              onClick={() => setSelected(l)}
+            >
+              <div className="level-code">{code}</div>
+              <div className="level-name">{name}</div>
+            </button>
+          )
+        })}
+      </div>
+
+      <button className="btn btn-block btn-breathe" disabled={!selected} onClick={() => selected && chooseLevel(selected)}>
         Continuer →
       </button>
     </div>

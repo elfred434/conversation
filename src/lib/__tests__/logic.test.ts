@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 import { extractCorrectionTrailer } from '../correctionTrailer'
 import {
   isAnswerCloseEnough,
+  wordDiffLabel,
   levenshteinDistance,
   normalizeText,
   pronunciationScore,
@@ -93,5 +94,21 @@ describe('buildSystemPrompt', () => {
   test('le niveau est injecté', () => {
     expect(buildSystemPrompt('a1')).toContain('complete beginner (A1)')
     expect(buildSystemPrompt('c2')).toContain('near-native (C2)')
+  })
+})
+
+describe('wordDiffLabel', () => {
+  test('un seul mot remplace', () => {
+    expect(wordDiffLabel('I am do good', 'I am doing good')).toEqual({
+      before: 'I am',
+      wrong: 'do',
+      right: 'doing',
+      after: 'good',
+    })
+  })
+  test('diff multiple, longueur differente ou egal => null', () => {
+    expect(wordDiffLabel('I go school', 'I go to school')).toBeNull()
+    expect(wordDiffLabel('same words', 'same words')).toBeNull()
+    expect(wordDiffLabel('he go', 'he goes')).toEqual({ before: 'he', wrong: 'go', right: 'goes', after: '' })
   })
 })

@@ -195,7 +195,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const finalConv = applyConv((c) => {
       if (c.sessionId !== sid) return c
       const msgs = [...c.messages]
-      msgs[msgs.length - 1] = { ...msgs[msgs.length - 1], content: display || '…' }
+      msgs[msgs.length - 1] = {
+        ...msgs[msgs.length - 1],
+        content: display || '…',
+        ...(parsed.correction ? { cat: parsed.correction.category } : {}),
+      }
       if (parsed.correction && userIdx !== null && msgs[userIdx]) {
         msgs[userIdx] = { ...msgs[userIdx], correction: parsed.correction.corrected }
       }

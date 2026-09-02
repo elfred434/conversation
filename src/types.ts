@@ -18,6 +18,8 @@ export interface Msg {
   content: string
   /** Correction grammaticale (messages utilisateur uniquement). */
   correction?: string
+  /** Categorie de la faute corrigee (message assistant, parse du trailer). */
+  cat?: string
 }
 
 export interface Session {

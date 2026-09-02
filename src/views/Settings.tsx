@@ -7,7 +7,7 @@ import type { ProviderId } from '../types'
 export default function Settings(): JSX.Element {
   const { settings, updateSettings, clearSessions, go } = useApp()
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
-  const [saved, setSaved] = useState(false)
+  const [showKey, setShowKey] = useState(false)
 
   useEffect(() => {
     const refresh = () => {
@@ -26,10 +26,17 @@ export default function Settings(): JSX.Element {
         ← Accueil
       </button>
       <h1 className="title">Paramètres</h1>
-      <p className="subtitle">Tout est stocké localement dans ton navigateur.</p>
+      <p className="subtitle">🛡 Tout est stocké localement dans ton navigateur.</p>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Tuteur IA</h3>
+        <div className="card-head">
+          <span className="card-emoji">🤖</span>
+          <span>
+            <div className="card-title">Tuteur IA</div>
+            <div className="card-sub">Configuration du modèle</div>
+          </span>
+        </div>
+
         <label className="field">
           <span>Fournisseur</span>
           <select
@@ -46,13 +53,23 @@ export default function Settings(): JSX.Element {
 
         {meta.needsKey && (
           <label className="field">
-            <span>Clé API</span>
-            <input
-              type="password"
-              placeholder="sk-… / AIza…"
-              value={settings.apiKey}
-              onChange={(e) => updateSettings({ apiKey: e.target.value })}
-            />
+            <span>Clé d'API</span>
+            <div className="key-row">
+              <input
+                type={showKey ? 'text' : 'password'}
+                placeholder="sk-… / AIza…"
+                value={settings.apiKey}
+                onChange={(e) => updateSettings({ apiKey: e.target.value })}
+              />
+              <button
+                className="eye-btn"
+                onClick={() => setShowKey((v) => !v)}
+                aria-label={showKey ? 'Masquer la clé' : 'Afficher la clé'}
+              >
+                {showKey ? '🙈' : '👁'}
+              </button>
+            </div>
+            <p className="note">Clé stockée uniquement dans ce navigateur (LocalStorage).</p>
           </label>
         )}
 
@@ -77,13 +94,20 @@ export default function Settings(): JSX.Element {
             />
           </label>
         )}
-        <p className="muted">{meta.hint}</p>
+        <p className="note">{meta.hint}</p>
       </div>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Voix du tuteur {ttsSupported() ? '' : '(non supportée ici)'}</h3>
+        <div className="card-head">
+          <span className="card-emoji">🔊</span>
+          <span>
+            <div className="card-title">Voix {ttsSupported() ? '' : '(non supportée ici)'}</div>
+            <div className="card-sub">Les voix « Natural » d'Edge sont les plus naturelles</div>
+          </span>
+        </div>
+
         <label className="field">
-          <span>Voix (les voix « Natural » d'Edge sont les plus naturelles)</span>
+          <span>Type de voix</span>
           <select value={settings.voiceURI} onChange={(e) => updateSettings({ voiceURI: e.target.value })}>
             <option value="">Voix par défaut du système</option>
             {voices.map((v) => (
@@ -93,8 +117,9 @@ export default function Settings(): JSX.Element {
             ))}
           </select>
         </label>
+
         <label className="field">
-          <span>Vitesse : x{settings.rate.toFixed(1)}</span>
+          <span>Vitesse : ×{settings.rate.toFixed(1)}</span>
           <input
             type="range"
             min={0.6}
@@ -104,42 +129,47 @@ export default function Settings(): JSX.Element {
             onChange={(e) => updateSettings({ rate: Number(e.target.value) })}
           />
         </label>
+
         <button
           className="btn btn-outline btn-sm"
           onClick={() => speak("Hello! I'm your FluentFlow tutor. Let's practice English together!", settings.voiceURI, settings.rate)}
         >
-          🔊 Tester la voix
+          ▶ Tester la voix
         </button>
 
-        <label className="field" style={{ marginTop: 16 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="switch-row">
+          <span>Lecture automatique des réponses du tuteur</span>
+          <label className="switch">
             <input
               type="checkbox"
               checked={settings.autoSpeak}
               onChange={(e) => updateSettings({ autoSpeak: e.target.checked })}
             />
-            Lecture automatique des réponses du tuteur
-          </span>
-        </label>
+            <span className="track">
+              <span className="knob" />
+            </span>
+          </label>
+        </div>
       </div>
 
-      <div className="card">
-        <h3 style={{ marginTop: 0 }}>Données</h3>
+      <div className="danger-card">
+        <p className="danger-title">⚠️ Données locales</p>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Supprime tout l'historique de tes conversations et ta progression. Cette action est irréversible.
+        </p>
         <button
-          className="btn btn-danger btn-block"
+          className="btn btn-danger"
           onClick={() => {
             clearSessions()
-            setSaved(false)
             alert('Historique effacé.')
           }}
         >
-          🗑 Effacer toutes les conversations
+          🗑 Effacer les données
         </button>
       </div>
 
-      <p className="muted center">
+      <p className="note center" style={{ marginTop: 18 }}>
         Les réglages sont enregistrés automatiquement à chaque modification.
-        {saved ? ' ✅' : ''}
       </p>
     </div>
   )

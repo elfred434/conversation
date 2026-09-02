@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../state/store'
 import { listen, sttSupported } from '../lib/stt'
 import { speak, stopSpeak } from '../lib/tts'
+import { wordDiffLabel } from '../lib/similarity'
+import { CATEGORY_LABELS } from '../lib/exercises'
+import { dayLabel } from '../lib/dayLabel'
 
 export default function Conversation(): JSX.Element {
-  const { conv, sendMessage, stopStreaming, go, settings } = useApp()
+  const { conv, sessions, sendMessage, stopStreaming, go, settings } = useApp()
   const [text, setText] = useState('')
   const [listening, setListening] = useState(false)
   const [interim, setInterim] = useState('')
@@ -28,6 +31,8 @@ export default function Conversation(): JSX.Element {
       </div>
     )
   }
+
+  const session = sessions.find((s) => s.id === conv.sessionId)
 
   const send = (): void => {
     if (!text.trim() || conv.streaming) return
@@ -60,63 +65,109 @@ export default function Conversation(): JSX.Element {
       <button className="back" onClick={() => go('home')}>
         ← Accueil
       </button>
-      <div className="chat" ref={scrollRef} style={{ maxHeight: '60vh', overflowY: 'auto', padding: '4px 2px' }}>
+      <div className="chat" ref={scrollRef} style={{ maxHeight: '62vh', overflowY: 'auto', padding: '8px 2px' }}>
+        {session && <div className="date-pill">{dayLabel(session.ts)}</div>}
+
         {conv.messages.map((m, i) => {
           const isLast = i === conv.messages.length - 1
           const typing = m.role === 'assistant' && isLast && conv.streaming && !m.content
-          return (
-            <div key={i} className={`bubble ${m.role}`}>
-              <span className={typing ? 'typing' : ''}>{m.content || ' '}</span>
-              {m.correction && <div className="correction">✔️ {m.correction}</div>}
-              {m.role === 'assistant' && m.content && (
-                <div className="tools">
-                  <button onClick={() => speak(m.content, settings.voiceURI, settings.rate)} title="Écouter">
-                    🔊
-                  </button>
+          const diff =
+            m.role === 'user' && m.correction ? wordDiffLabel(m.content, m.correction) : null
+          const row =
+            m.role === 'user' ? (
+              <div key={i} className="msg-row user">
+                <div className="bubble user">
+                  <span>{m.content}</span>
+                  {m.correction && (
+                    <div className="correction">
+                      ✔️{' '}
+                      {diff ? (
+                        <>
+                          {diff.before && `${diff.before} `}
+                          <span className="diff-del">{diff.wrong}</span> {diff.right}
+                          {diff.after && ` ${diff.after}`}
+                        </>
+                      ) : (
+                        m.correction
+                      )}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          )
+              </div>
+            ) : (
+              <div key={i} className="msg-row assistant">
+                <span className="orb" aria-hidden="true" />
+                <div className="bubble assistant">
+                  {typing ? (
+                    <span className="typing" aria-label="Le tuteur écrit">
+                      <i />
+                      <i />
+                      <i />
+                    </span>
+                  ) : (
+                    <span>{m.content}</span>
+                  )}
+                  {m.cat && <span className="tag-chip cat-tag">{CATEGORY_LABELS[m.cat] ?? m.cat}</span>}
+                  {m.content && (
+                    <div className="tools">
+                      <button
+                        onClick={() => speak(m.content, settings.voiceURI, settings.rate)}
+                        title="Écouter"
+                      >
+                        🔊
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          return row
         })}
-        {interim && <div className="bubble user" style={{ opacity: 0.7 }}>{interim}…</div>}
+
+        {interim && (
+          <div className="msg-row user">
+            <div className="bubble user" style={{ opacity: 0.7 }}>
+              {interim}…
+            </div>
+          </div>
+        )}
       </div>
 
       {conv.error && <div className="error">{conv.error}</div>}
       {micError && <div className="error">{micError}</div>}
 
       <div className="inputbar">
-        <input
-          type="text"
-          placeholder="Écris en anglais…"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && send()}
-        />
-        {sttSupported() && (
-          <button className={`mic-btn ${listening ? 'rec' : ''}`} onClick={toggleMic} title="Parler">
-            {listening ? '⏹' : '🎤'}
-          </button>
-        )}
-        {conv.streaming ? (
-          <button className="btn" onClick={stopStreaming}>
-            Stop
-          </button>
-        ) : (
-          <button className="btn" onClick={send} disabled={!text.trim()}>
-            Envoyer
-          </button>
+        <div className="pill-bar">
+          {sttSupported() && (
+            <button className={`mic-btn ${listening ? 'rec' : ''}`} onClick={toggleMic} title="Parler">
+              {listening ? '⏹' : '🎤'}
+            </button>
+          )}
+          <input
+            type="text"
+            placeholder="Écris en anglais…"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && send()}
+          />
+          {conv.streaming ? (
+            <button className="send-btn stop" onClick={stopStreaming} title="Interrompre">
+              ■
+            </button>
+          ) : (
+            <button className="send-btn" onClick={send} disabled={!text.trim()} title="Envoyer">
+              ➤
+            </button>
+          )}
+        </div>
+        {(settings.autoSpeak || listening) && (
+          <p className="auto-note">
+            {settings.autoSpeak && <>🔊 Lecture automatique — <button onClick={() => go('settings')}>régler</button></>}
+            {settings.autoSpeak && listening && ' · '}
+            {listening && <button onClick={() => stopSpeak()}>couper la voix</button>}
+          </p>
         )}
       </div>
-      {settings.autoSpeak && (
-        <p className="muted center" style={{ margin: '4px 0' }}>
-          🔊 Lecture automatique active — <button className="back" onClick={() => go('settings')}>régler</button>
-        </p>
-      )}
-      {listening && (
-        <button className="back center" style={{ display: 'block', margin: '0 auto' }} onClick={() => stopSpeak()}>
-          couper la voix
-        </button>
-      )}
     </div>
   )
 }
