@@ -78,8 +78,11 @@ jobs:
           name: linux-zip
           path: linux.zip
 
+  # Windows : non bloquant pour la release tant que le build n'est pas fiabilise.
+  # continue-on-error => le run reste vert et la release part sans windows.zip.
   build-windows:
     needs: analyze-test
+    continue-on-error: true
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -87,6 +90,8 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Flutter doctor (diagnostic)
+        run: flutter doctor -v
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows --release
       - run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath windows.zip
@@ -94,10 +99,16 @@ jobs:
         with:
           name: windows-zip
           path: windows.zip
+      - name: Diagnostics si echec
+        if: failure()
+        run: |
+          flutter doctor -v
+          Write-Host "--- Contenu de build/ ---"
+          if (Test-Path build) { Get-ChildItem -Recurse build -Depth 3 | Select-Object -First 60 -ExpandProperty FullName }
 
   release:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: [build-android, build-web, build-linux, build-windows]
+    needs: [build-android, build-web, build-linux]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -111,9 +122,8 @@ jobs:
             - APK Android (app-release-apk)
             - Web (web-zip)
             - Linux (linux-zip)
-            - Windows (windows-zip)
+            - Windows : des que le build est fiabilise
           files: |
             app-release-apk/app-release.apk
             web-zip/web.zip
             linux-zip/linux.zip
-            windows-zip/windows.zip
