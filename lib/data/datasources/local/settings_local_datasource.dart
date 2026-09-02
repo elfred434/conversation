@@ -16,6 +16,8 @@ class SettingsLocalDataSource {
       model: prefs.getString('llm_model') ?? '',
       autoSpeak: prefs.getBool('auto_speak') ?? false,
       baseUrl: prefs.getString('llm_base_url') ?? '',
+      ttsEngine: prefs.getString('tts_engine') ?? 'system',
+      ttsSpeed: prefs.getDouble('tts_speed') ?? 1.0,
     );
   }
 
@@ -26,5 +28,7 @@ class SettingsLocalDataSource {
     await prefs.setString('llm_model', s.model);
     await prefs.setBool('auto_speak', s.autoSpeak);
     await prefs.setString('llm_base_url', s.baseUrl);
+    await prefs.setString('tts_engine', s.ttsEngine);
+    await prefs.setDouble('tts_speed', s.ttsSpeed);
   }
 }

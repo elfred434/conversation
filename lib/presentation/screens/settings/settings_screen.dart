@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:english_conversation_app/config/llm_providers.dart';
+import 'package:english_conversation_app/data/tts/sherpa_tts_factory.dart';
 import 'package:english_conversation_app/presentation/providers/providers.dart';
+import 'package:english_conversation_app/presentation/providers/tts_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -13,6 +15,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late LlmProvider _provider;
   bool _autoSpeak = false;
+  String _ttsEngine = 'system';
+  double _ttsSpeed = 1.0;
   final _keyCtrl = TextEditingController();
   final _modelCtrl = TextEditingController();
   final _baseCtrl = TextEditingController();
@@ -23,6 +27,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final s = ref.read(settingsNotifierProvider);
     _provider = s.provider;
     _autoSpeak = s.autoSpeak;
+    _ttsEngine = s.ttsEngine;
+    _ttsSpeed = s.ttsSpeed;
     _keyCtrl.text = s.apiKey;
     _modelCtrl.text =
         s.model.isNotEmpty ? s.model : kLlmProviders[_provider]!.defaultModel;
@@ -52,6 +58,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           model: _modelCtrl.text.trim(),
           autoSpeak: _autoSpeak,
           baseUrl: _baseCtrl.text.trim(),
+          ttsEngine: _ttsEngine,
+          ttsSpeed: _ttsSpeed,
         );
     await ref.read(settingsNotifierProvider.notifier).save();
     if (mounted) {
@@ -125,6 +133,34 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onChanged: (v) => setState(() => _autoSpeak = v),
             ),
             const Divider(height: 24),
+            const Text('Voix du tuteur',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            DropdownButton<String>(
+              value: _ttsEngine,
+              items: [
+                const DropdownMenuItem(
+                    value: 'system',
+                    child: Text('Système (repli universel)')),
+                if (SherpaTtsService.platformSupported)
+                  const DropdownMenuItem(
+                      value: 'neural',
+                      child: Text('Voix naturelle offline (recommandé)')),
+              ],
+              onChanged: (v) => setState(() => _ttsEngine = v ?? 'system'),
+            ),
+            if (_ttsEngine == 'neural') _buildNeuralSection(),
+            Slider(
+              value: _ttsSpeed,
+              min: 0.7,
+              max: 1.3,
+              divisions: 6,
+              label: 'x${_ttsSpeed.toStringAsFixed(1)}',
+              onChanged: (v) => setState(() => _ttsSpeed = v),
+            ),
+            const Text('Vitesse de lecture',
+                style: TextStyle(fontSize: 12)),
+            const Divider(height: 24),
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save),
@@ -152,6 +188,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  /// Section du moteur neuronal : telechargement du modele + statut.
+  Widget _buildNeuralSection() {
+    final setup = ref.watch(sherpaSetupProvider);
+    if (setup.downloading) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LinearProgressIndicator(value: setup.progress),
+          const SizedBox(height: 4),
+          Text('Telechargement du modele : ${(setup.progress * 100).round()} %',
+              style: const TextStyle(fontSize: 12)),
+        ],
+      );
+    }
+    return FutureBuilder<bool>(
+      future: ref.watch(sherpaTtsProvider).isReady(),
+      builder: (context, snapshot) {
+        final installed = snapshot.data ?? false;
+        if (installed) {
+          return const Text(
+            '✅ Voix naturelle prete (Amy · en-US, ~63 Mo, 100% offline)',
+            style: TextStyle(fontSize: 12, color: Colors.green),
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Modele de voix a telecharger une seule fois (~63 Mo). '
+              'Ensuite, tout fonctionne hors-ligne.',
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(height: 8),
+            FilledButton.icon(
+              onPressed: () =>
+                  ref.read(sherpaSetupProvider.notifier).download(),
+              icon: const Icon(Icons.download),
+              label: const Text('Telecharger la voix naturelle'),
+            ),
+            if (setup.error != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(setup.error!,
+                    style: const TextStyle(fontSize: 12, color: Colors.red)),
+              ),
+          ],
+        );
+      },
     );
   }
 }

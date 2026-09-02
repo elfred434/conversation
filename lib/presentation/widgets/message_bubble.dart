@@ -63,9 +63,7 @@ class MessageBubble extends ConsumerWidget {
                 icon: const Icon(Icons.volume_up, size: 20),
                 tooltip: 'Lire a voix haute',
                 onPressed: () async {
-                  final tts = ref.read(flutterTtsProvider);
-                  await tts.setLanguage('en-US');
-                  await tts.speak(content);
+                  await ref.read(speakerProvider).speak(content);
                 },
               ),
           ],

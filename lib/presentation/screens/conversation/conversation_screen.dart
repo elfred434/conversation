@@ -150,9 +150,7 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
         if (last != null &&
             last.content.isNotEmpty &&
             ref.read(settingsNotifierProvider).autoSpeak) {
-          final tts = ref.read(flutterTtsProvider);
-          tts.setLanguage('en-US');
-          tts.speak(last.content);
+          ref.read(speakerProvider).speak(last.content);
         }
       }
     });

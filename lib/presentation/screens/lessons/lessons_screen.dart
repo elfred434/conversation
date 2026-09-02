@@ -55,9 +55,9 @@ class _LessonCard extends ConsumerWidget {
                         icon: const Icon(Icons.volume_up),
                         tooltip: 'Ecouter',
                         onPressed: () async {
-                          final tts = ref.read(flutterTtsProvider);
-                          await tts.setLanguage('en-US');
-                          await tts.speak(p.en);
+                          await ref
+                              .read(speakerProvider)
+                              .speak(p.en);
                         },
                       ),
                       OutlinedButton(

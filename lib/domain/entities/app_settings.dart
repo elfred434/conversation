@@ -8,12 +8,20 @@ class AppSettings {
   final bool autoSpeak;
   final String baseUrl;
 
+  /// Moteur de voix : 'system' (flutter_tts) ou 'neural' (sherpa-onnx offline).
+  final String ttsEngine;
+
+  /// Vitesse de lecture (0.7 -> 1.3).
+  final double ttsSpeed;
+
   const AppSettings({
     this.provider = LlmProvider.openai,
     this.apiKey = '',
     this.model = '',
     this.autoSpeak = false,
     this.baseUrl = '',
+    this.ttsEngine = 'system',
+    this.ttsSpeed = 1.0,
   });
 
   AppSettings copyWith({
@@ -22,6 +30,8 @@ class AppSettings {
     String? model,
     bool? autoSpeak,
     String? baseUrl,
+    String? ttsEngine,
+    double? ttsSpeed,
   }) =>
       AppSettings(
         provider: provider ?? this.provider,
@@ -29,5 +39,7 @@ class AppSettings {
         model: model ?? this.model,
         autoSpeak: autoSpeak ?? this.autoSpeak,
         baseUrl: baseUrl ?? this.baseUrl,
+        ttsEngine: ttsEngine ?? this.ttsEngine,
+        ttsSpeed: ttsSpeed ?? this.ttsSpeed,
       );
 }

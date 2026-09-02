@@ -21,6 +21,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     String? model,
     bool? autoSpeak,
     String? baseUrl,
+    String? ttsEngine,
+    double? ttsSpeed,
   }) {
     state = state.copyWith(
       provider: provider,
@@ -28,6 +30,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       model: model,
       autoSpeak: autoSpeak,
       baseUrl: baseUrl,
+      ttsEngine: ttsEngine,
+      ttsSpeed: ttsSpeed,
     );
   }
 

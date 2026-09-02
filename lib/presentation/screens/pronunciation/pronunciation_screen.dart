@@ -51,9 +51,7 @@ class _PronunciationScreenState extends ConsumerState<PronunciationScreen> {
   }
 
   Future<void> _listenTarget() async {
-    final tts = ref.read(flutterTtsProvider);
-    await tts.setLanguage('en-US');
-    await tts.speak(_target);
+    await ref.read(speakerProvider).speak(_target);
   }
 
   /// Lit a voix haute la phrase saisie par l'utilisateur (et la prend comme cible).
@@ -61,9 +59,7 @@ class _PronunciationScreenState extends ConsumerState<PronunciationScreen> {
     final text = _freeCtrl.text.trim();
     if (text.isEmpty) return;
     _setTarget(text);
-    final tts = ref.read(flutterTtsProvider);
-    await tts.setLanguage('en-US');
-    await tts.speak(text);
+    await ref.read(speakerProvider).speak(text);
   }
 
   Future<void> _toggleListen() async {
