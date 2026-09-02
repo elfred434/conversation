@@ -5,6 +5,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: './',
+  preview: {
+    // autorise le host de previsualisation (sandbox)
+    allowedHosts: true,
+  },
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts'],

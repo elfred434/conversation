@@ -26,5 +26,4 @@ npm run build    # build statique -> dist/
 
 ## Déploiement
 
-Le site est déployé automatiquement sur **GitHub Pages** à chaque push sur `main`
-(Settings → Pages → Source : *GitHub Actions*).
+Le site est en ligne sur **https://conversation-nine-beta.vercel.app/** — déployé automatiquement par Vercel à chaque push sur `main` (le workflow CI valide tests + build avant).
