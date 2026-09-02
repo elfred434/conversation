@@ -12,6 +12,8 @@ export const DEFAULT_SETTINGS: Settings = {
   apiKey: '',
   model: '',
   baseUrl: '',
+  keys: {},
+  useBrowserFallback: false,
   autoSpeak: false,
   voiceURI: '',
   rate: 1,

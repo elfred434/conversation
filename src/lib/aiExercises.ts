@@ -1,6 +1,6 @@
 import type { Progress, Settings } from '../types'
 import type { Exercise } from './exercises'
-import { streamChat, PROVIDERS } from './llm'
+import { streamChat } from './llm'
 import { LEVELS } from './prompts'
 import type { CefrLevel } from '../types'
 
@@ -95,9 +95,6 @@ export async function generateExercises(
   previous: string[],
   signal?: AbortSignal,
 ): Promise<Exercise[]> {
-  if (PROVIDERS[settings.provider].needsKey && !settings.apiKey.trim()) {
-    throw new Error('NO_KEY')
-  }
   const { system, user } = buildExerciseMessages(level, stats, count, previous)
 
   // Garde-fou : la generation JSON ne devrait jamais depasser 45 s.

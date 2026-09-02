@@ -44,6 +44,13 @@ export const PROVIDERS: Record<ProviderId, ProviderMeta> = {
     needsKey: false,
     hint: 'Sur ta machine : OLLAMA_ORIGINS="*" ollama serve (autorise le navigateur)',
   },
+  cerebras: {
+    label: 'Cerebras (gratuit)',
+    baseUrl: 'https://api.cerebras.ai/v1',
+    defaultModel: 'llama-3.3-70b',
+    needsKey: true,
+    hint: 'Cle gratuite sur cloud.cerebras.ai — 1M de tokens/jour',
+  },
   webllm: {
     label: 'IA intégrée (navigateur)',
     baseUrl: '',
@@ -169,6 +176,10 @@ async function* streamGemini(
 /** Duree maximale d'attente du premier jet du modele. */
 const FIRST_TOKEN_TIMEOUT = 30000
 
+/** Message quand aucun fournisseur utilisable n'est configure. */
+export const NO_KEY_MSG =
+  'Aucune clé API configurée. Ouvre Paramètres (engrenage) pour en ajouter une, ou choisis le fournisseur « IA intégrée (navigateur) » qui fonctionne sans clé.'
+
 /** Fait echouer le flux si aucun premier jet n'arrive dans les 30 s (modele qui pend). */
 async function* guardFirstToken(gen: AsyncGenerator<string>): AsyncGenerator<string> {
   const it = gen[Symbol.asyncIterator]()
@@ -184,7 +195,7 @@ async function* guardFirstToken(gen: AsyncGenerator<string>): AsyncGenerator<str
               () =>
                 rej(
                   new Error(
-                    "Le modèle ne répond pas depuis 30 s. Vérifie ta clé et le modèle, ou choisis « IA intégrée (navigateur) ».",
+                    'Le modèle ne répond pas depuis 30 s. Vérifie ta clé et le modèle, ou choisis « IA intégrée (navigateur) ».',
                   ),
                 ),
               FIRST_TOKEN_TIMEOUT,
@@ -205,21 +216,64 @@ async function* guardFirstToken(gen: AsyncGenerator<string>): AsyncGenerator<str
   }
 }
 
-/** Diffuse la reponse du tuteur morceau par morceau (messages inclut le tour user). */
+/** Ordre de preference de la bascule automatique (hors fournisseur principal). */
+const CASCADE_ORDER: ProviderId[] = ['gemini', 'groq', 'cerebras', 'openrouter', 'openai']
+
+/** Chaine de bascule : fournisseur actif (si utilisable), secours avec cle, puis IA integree en option. */
+export function failoverChain(s: Settings): ProviderId[] {
+  const chain: ProviderId[] = []
+  const usable = (p: ProviderId): boolean =>
+    p === 'webllm' || !PROVIDERS[p].needsKey || !!(s.keys?.[p] ?? s.apiKey).trim()
+  if (usable(s.provider)) chain.push(s.provider)
+  for (const p of CASCADE_ORDER) {
+    if (p !== s.provider && (s.keys?.[p] ?? '').trim()) chain.push(p)
+  }
+  if (s.useBrowserFallback && s.provider !== 'webllm') chain.push('webllm')
+  return chain
+}
+
+/** Reglages reecrits pour appeler un fournisseur donne de la chaine. */
+function settingsFor(s: Settings, p: ProviderId): Settings {
+  if (p === s.provider) return s
+  return { ...s, provider: p, apiKey: (s.keys?.[p] ?? '').trim(), baseUrl: '' }
+}
+
+/** Diffuse la reponse du tuteur morceau par morceau, avec bascule automatique :
+ *  si le fournisseur actif echoue AVANT le premier jet (limite, cle, timeout 30 s...),
+ *  on reessaie avec les secours configures. Une fois le flux commence, on ne change plus. */
 export async function* streamChat(
   s: Settings,
   system: string,
   messages: ChatMsg[],
   signal?: AbortSignal,
 ): AsyncGenerator<string> {
-  if (s.provider === 'webllm') {
-    const m = await import('./webllm')
-    yield* guardFirstToken(m.streamBrowserAI(s, system, messages, signal))
-    return
+  const chain = failoverChain(s)
+  if (chain.length === 0) throw new Error(NO_KEY_MSG)
+
+  let lastErr: unknown
+  for (let i = 0; i < chain.length; i++) {
+    const p = chain[i]
+    const got = { first: false }
+    try {
+      const gen =
+        p === 'webllm'
+          ? (async function* () {
+              const m = await import('./webllm')
+              yield* m.streamBrowserAI(settingsFor(s, p), system, messages, signal)
+            })()
+          : p === 'gemini'
+            ? streamGemini(settingsFor(s, p), system, messages, signal)
+            : streamOpenAi(settingsFor(s, p), system, messages, signal)
+      for await (const chunk of guardFirstToken(gen)) {
+        got.first = true
+        yield chunk
+      }
+      return
+    } catch (e) {
+      lastErr = e
+      // Un jet deja emis : impossible de changer de fournisseur sans dupliquer -> on remonte.
+      if (got.first || i === chain.length - 1) throw e
+    }
   }
-  yield* guardFirstToken(
-    s.provider === 'gemini'
-      ? streamGemini(s, system, messages, signal)
-      : streamOpenAi(s, system, messages, signal),
-  )
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr))
 }

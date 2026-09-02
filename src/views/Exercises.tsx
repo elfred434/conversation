@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Settings2, Sparkles, WifiOff, X } from 'lucide-react'
 import { CATEGORY_LABELS, EXERCISES, pickTargetedExercises } from '../lib/exercises'
 import { generateExercises } from '../lib/aiExercises'
+import { NO_KEY_MSG } from '../lib/llm'
 import { isAnswerCloseEnough } from '../lib/similarity'
 import { useApp } from '../state/store'
 import type { Exercise } from '../lib/exercises'
@@ -66,7 +67,7 @@ export default function Exercises(): JSX.Element {
         const msg = e instanceof Error ? e.message : String(e)
         setList(pickTargetedExercises(EXERCISES, progressRef.current, COUNT))
         setSource('bank')
-        setGenError(msg === 'NO_KEY' ? null : msg)
+        setGenError(msg === NO_KEY_MSG ? null : msg)
         setPhase('active')
       }
     }

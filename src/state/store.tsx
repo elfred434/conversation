@@ -153,19 +153,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const s = settingsRef.current
     const lvl = levelRef.current
     if (!lvl) return
-    if (PROVIDERS[s.provider].needsKey && !s.apiKey.trim()) {
-      applyConv((c) =>
-        c.sessionId !== sid
-          ? c
-          : {
-              ...c,
-              streaming: false,
-              error:
-                "Aucune clé API configurée. Ouvre Paramètres (engrenage) pour en ajouter une, ou choisis le fournisseur « IA intégrée (navigateur) » qui fonctionne sans clé.",
-            },
-      )
-      return
-    }
     const scenario = SCENARIOS.find((x) => x.id === scenarioId)
     const system = buildSystemPrompt(lvl, scenario?.prompt, scenario?.correct ?? true)
 

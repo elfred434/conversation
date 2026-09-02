@@ -1,6 +1,6 @@
 export type CefrLevel = 'a1' | 'a2' | 'b1' | 'b2' | 'c1' | 'c2'
 
-export type ProviderId = 'openai' | 'openrouter' | 'gemini' | 'groq' | 'ollama' | 'webllm'
+export type ProviderId = 'openai' | 'openrouter' | 'gemini' | 'groq' | 'cerebras' | 'ollama' | 'webllm'
 
 export interface Settings {
   provider: ProviderId
@@ -8,6 +8,10 @@ export interface Settings {
   model: string
   /** Sert uniquement pour Ollama (URL locale) ou pour surcharger un fournisseur. */
   baseUrl: string
+  /** Cles de secours par fournisseur (bascule automatique anti-limites). */
+  keys: Partial<Record<ProviderId, string>>
+  /** En dernier recours de la bascule, utiliser l'IA integree (telechargement ~700 Mo). */
+  useBrowserFallback: boolean
   autoSpeak: boolean
   voiceURI: string
   rate: number

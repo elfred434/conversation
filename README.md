@@ -13,7 +13,9 @@ Apprendre l'anglais en discutant — **application web** (site 100 % statique, a
 - 🏅 **Progression** : badges + statistiques par type d'erreur
 - 💾 **Sessions** : tes conversations sont sauvegardées localement et reprenables
 
-Fournisseurs IA supportés : **IA intégrée (dans ton navigateur, sans clé — Gemini Nano ou modèle WebGPU)**, OpenAI, OpenRouter, Gemini, Groq, Ollama (local) — clé éventuelle stockée uniquement dans ton navigateur.
+Fournisseurs IA supportés : **IA intégrée (dans ton navigateur, sans clé — Gemini Nano ou modèle WebGPU)**, OpenAI, OpenRouter, Gemini, Groq, **Cerebras**, Ollama (local) — clé éventuelle stockée uniquement dans ton navigateur.
+
+**Bascule automatique** : ajoute des clés de secours (Paramètres → Bascule automatique) et si ton fournisseur principal atteint sa limite (Gemini free tier, quotas…), FluentFlow réessaie tout seul sur Groq → Cerebras → OpenRouter → … tant qu'aucun mot n'a encore été affiché. Option « IA intégrée » en tout dernier recours.
 
 ## Développement
 

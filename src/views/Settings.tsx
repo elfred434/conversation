@@ -1,6 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react'
-import { Eye, EyeOff, MessageCircle, Play, ShieldCheck, Trash2, TriangleAlert, Volume2 } from 'lucide-react'
-import { PROVIDERS } from '../lib/llm'
+import { Eye, EyeOff, GitBranch, MessageCircle, Play, ShieldCheck, Trash2, TriangleAlert, Volume2 } from 'lucide-react'
+import { failoverChain, PROVIDERS } from '../lib/llm'
 import { onVoicesChanged, getVoices, speak, ttsSupported } from '../lib/tts'
 import { useApp } from '../state/store'
 import type { ProviderId, Settings as SettingsData } from '../types'
@@ -21,6 +21,22 @@ export default function Settings(): JSX.Element {
   }, [])
 
   const meta = PROVIDERS[settings.provider]
+
+  const switchProvider = (next: ProviderId): void => {
+    updateSettings({
+      provider: next,
+      apiKey: settings.keys[next] ?? '',
+      keys: { ...settings.keys, [settings.provider]: settings.apiKey },
+      baseUrl: '',
+    })
+  }
+
+  const backupProviders = (['gemini', 'groq', 'cerebras', 'openrouter', 'openai'] as ProviderId[]).filter(
+    (id) => id !== settings.provider,
+  )
+  const chainPreview = failoverChain(settings)
+    .map((id) => PROVIDERS[id].label.split(' (')[0])
+    .join(' → ')
 
   return (
     <div>
@@ -47,7 +63,7 @@ export default function Settings(): JSX.Element {
           <span>Fournisseur</span>
           <select
             value={settings.provider}
-            onChange={(e) => updateSettings({ provider: e.target.value as ProviderId })}
+            onChange={(e) => switchProvider(e.target.value as ProviderId)}
           >
             {(Object.keys(PROVIDERS) as ProviderId[]).map((id) => (
               <option key={id} value={id}>
@@ -65,7 +81,12 @@ export default function Settings(): JSX.Element {
                 type={showKey ? 'text' : 'password'}
                 placeholder="sk-… / AIza…"
                 value={settings.apiKey}
-                onChange={(e) => updateSettings({ apiKey: e.target.value })}
+                onChange={(e) =>
+                updateSettings({
+                  apiKey: e.target.value,
+                  keys: { ...settings.keys, [settings.provider]: e.target.value },
+                })
+              }
               />
               <button
                 className="eye-btn"
@@ -102,6 +123,56 @@ export default function Settings(): JSX.Element {
         )}
         <p className="note">{meta.hint}</p>
         {settings.provider === 'webllm' && <BrowserAIStatus settings={settings} />}
+      </div>
+
+      <div className="card">
+        <div className="card-head">
+          <span className="card-icon">
+            <GitBranch size={20} />
+          </span>
+          <span>
+            <div className="card-title">Bascule automatique</div>
+            <div className="card-sub">Anti-limites : des quotas différents chez chaque fournisseur</div>
+          </span>
+        </div>
+        <p className="note" style={{ marginTop: 0 }}>
+          Si le fournisseur actif tombe sur sa limite (ou une erreur), FluentFlow réessaie tout seul sur les
+          secours ci-dessous, dans l'ordre — tant qu'aucun mot n'a encore été écrit. Chaque fournisseur a des
+          quotas différents : Groq et Cerebras sont gratuits et généreux.
+        </p>
+        {backupProviders.length > 0 ? (
+          <>
+            <p className="field-label" style={{ marginTop: 10 }}>
+              Ordre de secours : {chainPreview || 'aucun'}
+            </p>
+            {backupProviders.map((id) => (
+              <label className="field" key={id}>
+                <span>Clé de secours — {PROVIDERS[id].label}</span>
+                <input
+                  type="password"
+                  placeholder="Laisser vide pour ignorer ce secours"
+                  value={settings.keys[id] ?? ''}
+                  onChange={(e) => updateSettings({ keys: { ...settings.keys, [id]: e.target.value } })}
+                />
+              </label>
+            ))}
+          </>
+        ) : (
+          <p className="note">Ajoute une clé de secours pour activer la bascule.</p>
+        )}
+        <div className="switch-row">
+          <span>En tout dernier recours, utiliser l'IA intégrée (télécharge un modèle, ~700 Mo une seule fois)</span>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={settings.useBrowserFallback}
+              onChange={(e) => updateSettings({ useBrowserFallback: e.target.checked })}
+            />
+            <span className="track">
+              <span className="knob" />
+            </span>
+          </label>
+        </div>
       </div>
 
       <div className="card">
