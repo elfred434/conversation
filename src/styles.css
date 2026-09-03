@@ -1442,3 +1442,58 @@ details[open] .chev {
   gap: 8px;
   flex-wrap: wrap;
 }
+
+/* ---------- Accueil structure : scenarios | ateliers ---------- */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 14px;
+  align-items: start;
+  margin: 20px 0 4px;
+}
+.home-grid > section {
+  animation: fadeUp var(--dur-state) var(--ease-soft) both;
+}
+.home-grid > section:nth-child(2) {
+  animation-delay: var(--stagger);
+}
+.panel-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 10px 2px;
+}
+.tool-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.tool-tile:last-child {
+  margin-bottom: 0;
+}
+.tool-tile strong {
+  font-size: 0.98rem;
+}
+.tool-tile .muted {
+  font-size: 0.82rem;
+}
+.tool-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(147, 160, 196, 0.12);
+  border: 1px solid var(--glass-border);
+  display: grid;
+  place-items: center;
+  color: var(--cyan);
+  flex: none;
+}
+@media (max-width: 720px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+}
