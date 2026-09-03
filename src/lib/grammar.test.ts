@@ -62,34 +62,46 @@ describe('validation de maitrise', () => {
   })
 })
 
-import { buildGrammarMessages, parseGrammarQuestions } from './grammarAI'
-import { NO_KEY_MSG } from './llm'
+
 
 describe('grammarAI', () => {
   const rule = flattenRules()[2] // pluriels
 
-  test('buildGrammarMessages : regle, consigne du trou et anti-repetition', () => {
+  test('buildGrammarMessages : regle, phrase complete exigee et anti-repetition', () => {
     const { user } = buildGrammarMessages(rule, 8, ['One box, two ___.'])
     expect(user).toContain(rule.title)
     expect(user).toContain('One box, two ___.')
-    expect(user).toContain('exactly one ___')
+    expect(user).toContain('EXACTLY ONCE')
     expect(user).toContain('8')
   })
-  test('parseGrammarQuestions : fences, un seul trou obligatoire, doublons', () => {
+  test('maskAnswer : masque le mot, refuse phrase sans le mot ou ambigue', () => {
+    expect(maskAnswer('The children are playing in the park.', 'children')).toBe(
+      'The ___ are playing in the park.',
+    )
+    expect(maskAnswer('One box, two boxes.', 'boxes')).toBe('One box, two ___.')
+    expect(maskAnswer('She has three child.', 'children')).toBeNull() // mot absent
+    expect(maskAnswer('This song is nice. I like this song.', 'song')).toBeNull() // 2 fois
+    expect(maskAnswer('Too short.', 'short')).toBeNull() // moins de 4 mots
+  })
+  test('parseGrammarQuestions : phrase complete masquee, doublons et invalides jetes', () => {
     const text =
       '```json\n' +
       JSON.stringify([
-        { q: 'One key, two ___.', a: 'keys', hint: 'pluriel' },
-        { q: 'Two ___, one key.', a: 'keys' },
-        { q: 'Sans trou ici.', a: 'x' },
-        { q: 'One key, two ___.', a: 'keys' },
+        { full: 'The children are playing in the park.', a: 'children', hint: 'pluriel' },
+        { full: 'One box, two boxes.', a: 'boxes' },
+        { full: 'The children are playing in the park.', a: 'children' },
+        { full: 'She has three child.', a: 'children' },
       ]) +
       '\n```'
     const out = parseGrammarQuestions(text, 2)
     expect(out).toEqual([
-      { q: 'One key, two ___.', a: 'keys', hint: 'pluriel' },
-      { q: 'Two ___, one key.', a: 'keys', hint: undefined },
+      { q: 'The ___ are playing in the park.', a: 'children', hint: 'pluriel' },
+      { q: 'One box, two ___.', a: 'boxes', hint: undefined },
     ])
+  })
+  test('parseGrammarQuestions : ancien format q avec ___ tolere', () => {
+    const out = parseGrammarQuestions('[{"q":"One key, two ___.","a":"keys"}]', 1)
+    expect(out).toEqual([{ q: 'One key, two ___.', a: 'keys', hint: undefined }])
   })
   test('parseGrammarQuestions : echec si trop peu de questions', () => {
     expect(() => parseGrammarQuestions('[{"q":"a ___ b","a":"x"}]')).toThrow('Pas assez')
@@ -98,3 +110,6 @@ describe('grammarAI', () => {
     expect(NO_KEY_MSG).toContain('Aucune clé API')
   })
 })
+
+import { buildGrammarMessages, maskAnswer, parseGrammarQuestions } from './grammarAI'
+import { NO_KEY_MSG } from './llm'
