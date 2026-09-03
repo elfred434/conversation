@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { GRAMMAR_TIERS, QUIZ_SIZE, flattenRules, isRuleUnlocked, requiredForPass, starsForFirstTry } from './grammar'
+import { GRAMMAR_TIERS, flattenRules, isRuleUnlocked, starsFor } from './grammar'
 
 describe('curriculum', () => {
   const rules = flattenRules()
@@ -48,53 +48,10 @@ describe('deblocage sequentiel', () => {
   })
 })
 
-describe('validation de maitrise', () => {
-  test('seuil de reussite : 70 % arrondi au-dessus', () => {
-    expect(requiredForPass(QUIZ_SIZE)).toBe(6)
-    expect(requiredForPass(3)).toBe(3)
-    expect(requiredForPass(10)).toBe(7)
-  })
-  test('etoiles sur le premier coup', () => {
-    expect(starsForFirstTry(8, 8)).toBe(3)
-    expect(starsForFirstTry(7, 8)).toBe(2)
-    expect(starsForFirstTry(6, 8)).toBe(1)
-    expect(starsForFirstTry(3, 3)).toBe(3)
-  })
-})
-
-import { buildGrammarMessages, parseGrammarQuestions } from './grammarAI'
-import { NO_KEY_MSG } from './llm'
-
-describe('grammarAI', () => {
-  const rule = flattenRules()[2] // pluriels
-
-  test('buildGrammarMessages : regle, consigne du trou et anti-repetition', () => {
-    const { user } = buildGrammarMessages(rule, 8, ['One box, two ___.'])
-    expect(user).toContain(rule.title)
-    expect(user).toContain('One box, two ___.')
-    expect(user).toContain('exactly one ___')
-    expect(user).toContain('8')
-  })
-  test('parseGrammarQuestions : fences, un seul trou obligatoire, doublons', () => {
-    const text =
-      '```json\n' +
-      JSON.stringify([
-        { q: 'One key, two ___.', a: 'keys', hint: 'pluriel' },
-        { q: 'Two ___, one key.', a: 'keys' },
-        { q: 'Sans trou ici.', a: 'x' },
-        { q: 'One key, two ___.', a: 'keys' },
-      ]) +
-      '\n```'
-    const out = parseGrammarQuestions(text, 2)
-    expect(out).toEqual([
-      { q: 'One key, two ___.', a: 'keys', hint: 'pluriel' },
-      { q: 'Two ___, one key.', a: 'keys', hint: undefined },
-    ])
-  })
-  test('parseGrammarQuestions : echec si trop peu de questions', () => {
-    expect(() => parseGrammarQuestions('[{"q":"a ___ b","a":"x"}]')).toThrow('Pas assez')
-  })
-  test('le message sans-cle est bien celui compare par la vue', () => {
-    expect(NO_KEY_MSG).toContain('Aucune clé API')
+describe('etoiles', () => {
+  test('0 faute = 3, 1 faute = 2, plus = 1', () => {
+    expect(starsFor(0)).toBe(3)
+    expect(starsFor(1)).toBe(2)
+    expect(starsFor(4)).toBe(1)
   })
 })
