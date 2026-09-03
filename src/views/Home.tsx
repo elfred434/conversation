@@ -1,4 +1,5 @@
-import { BookOpen, MessageCircle, MessagesSquare, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
+import { BookOpen, MessageCircle, MessagesSquare, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight, LayoutGrid, Dumbbell, History } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LEVELS, SCENARIOS } from '../lib/prompts'
 import { dayLabel } from '../lib/dayLabel'
@@ -22,14 +23,6 @@ const TOOLS: Tool[] = [
   { view: 'phrases', icon: MessagesSquare, label: 'Phrases courantes', desc: 'Les plus utilisées + dictionnaire' },
   { view: 'progress', icon: Award, label: 'Ma progression', desc: 'Badges et statistiques' },
 ]
-
-function WaveDivider(): JSX.Element {
-  return (
-    <svg className="wave-divider" viewBox="0 0 400 16" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0 8 Q 25 0 50 8 T 100 8 T 150 8 T 200 8 T 250 8 T 300 8 T 350 8 T 400 8" />
-    </svg>
-  )
-}
 
 function ScenarioCard({ s, onOpen }: { s: Scenario; onOpen: () => void }): JSX.Element {
   const Icon = SC_ICONS[s.id] ?? MessageCircle
@@ -62,16 +55,25 @@ function ToolTile({ tool, onOpen }: { tool: Tool; onOpen: () => void }): JSX.Ele
   )
 }
 
+type Tab = 'scenarios' | 'train' | 'history'
+
+const TABS: { id: Tab; icon: LucideIcon; label: string }[] = [
+  { id: 'scenarios', icon: LayoutGrid, label: 'Scénarios' },
+  { id: 'train', icon: Dumbbell, label: "S'entraîner" },
+  { id: 'history', icon: History, label: 'Mes conversations' },
+]
+
 export default function Home(): JSX.Element {
   const { level, startConversation, resumeSession, sessions, deleteSession, go } = useApp()
+  const [tab, setTab] = useState<Tab>('scenarios')
 
   return (
     <div>
-      <div className="center" style={{ marginBottom: 6 }}>
+      <div style={{ marginBottom: 6 }}>
         {level && <span className="level-pill">Niveau : {LEVELS[level].label}</span>}
       </div>
-      <h1 className="title center">Prêt à parler anglais ?</h1>
-      <p className="subtitle center">
+      <h1 className="title">Prêt à parler anglais ?</h1>
+      <p className="subtitle">
         Choisis un scénario ou lance-toi dans une conversation libre, à ton rythme.
         {!level && (
           <>
@@ -83,10 +85,27 @@ export default function Home(): JSX.Element {
         )}
       </p>
 
-      <div className="home-grid">
-        {/* ——— Panneau scénarios ——— */}
+      <div className="filter-bar" role="tablist" aria-label="Sections de l'accueil">
+        {TABS.map((t) => {
+          const Icon = t.icon
+          const count = t.id === 'history' ? sessions.length : null
+          return (
+            <button
+              key={t.id}
+              role="tab"
+              aria-selected={tab === t.id}
+              className={`filter-tab ${tab === t.id ? 'active' : ''}`}
+              onClick={() => setTab(t.id)}
+            >
+              <Icon size={16} /> {t.label}
+              {count ? <span className="tab-count">{count}</span> : null}
+            </button>
+          )
+        })}
+      </div>
+
+      {tab === 'scenarios' && (
         <section>
-          <h2 className="panel-label">Scénarios de conversation</h2>
           {SCENARIOS.map((s) => (
             <ScenarioCard key={s.id} s={s} onOpen={() => startConversation(s.id)} />
           ))}
@@ -94,22 +113,30 @@ export default function Home(): JSX.Element {
             <MessageCircle size={19} /> Conversation libre
           </button>
         </section>
+      )}
 
-        {/* ——— Panneau ateliers ——— */}
-        <section>
-          <h2 className="panel-label">S'entraîner</h2>
+      {tab === 'train' && (
+        <section className="tools-grid">
           {TOOLS.map((t) => (
             <ToolTile key={t.view} tool={t} onOpen={() => go(t.view)} />
           ))}
         </section>
-      </div>
+      )}
 
-      <WaveDivider />
-
-      {sessions.length > 0 && (
-        <>
-          <h3 style={{ margin: '0 0 12px' }}>Mes conversations</h3>
-          {sessions.map((s) => {
+      {tab === 'history' && (
+        <section>
+          {sessions.length === 0 ? (
+            <div className="card center" style={{ padding: '40px 20px' }}>
+              <History size={26} style={{ color: 'var(--muted)' }} />
+              <p className="muted" style={{ margin: '10px 0 14px' }}>
+                Aucune conversation pour l'instant — lance un scénario, elle apparaîtra ici.
+              </p>
+              <button className="btn" onClick={() => setTab('scenarios')}>
+                Voir les scénarios
+              </button>
+            </div>
+          ) : (
+            sessions.map((s) => {
             const Icon = SC_ICONS[s.scenarioId] ?? MessageCircle
             return (
               <div key={s.id} className="card clickable hist-card" onClick={() => resumeSession(s.id)} title="Reprendre">
@@ -134,8 +161,9 @@ export default function Home(): JSX.Element {
                 </button>
               </div>
             )
-          })}
-        </>
+          })
+          )}
+        </section>
       )}
     </div>
   )

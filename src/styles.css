@@ -1497,3 +1497,59 @@ details[open] .chev {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Barre de filtre accueil ---------- */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin: 18px 0 16px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0;
+}
+.filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 10px 6px 12px;
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+.filter-tab:hover {
+  color: var(--text);
+}
+.filter-tab.active {
+  color: var(--text);
+  border-bottom-color: var(--cyan);
+}
+.tab-count {
+  background: var(--grad);
+  color: white;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 6px;
+}
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+}
+.tools-grid .tool-tile {
+  margin-bottom: 0;
+}
+/* pleine largeur : le conteneur s'elargit, le contenu se cale a gauche */
+.app.wide {
+  max-width: 1080px;
+}
