@@ -105,7 +105,7 @@ body::after {
 .app {
   width: 100%;
   max-width: none;
-  padding: 0 clamp(16px, 3vw, 56px) 24px;
+  padding: 0 10% 24px; /* 10 % de chaque cote, demande explicite */
   display: flex;
   flex-direction: column;
   min-height: 100vh;
