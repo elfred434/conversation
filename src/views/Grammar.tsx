@@ -6,6 +6,7 @@ import type { GrammarRule } from '../lib/grammar'
 import { isAnswerCloseEnough } from '../lib/similarity'
 import { loadGrammar, saveGrammar } from '../lib/storage'
 import { useApp } from '../state/store'
+import RuleText from './RuleText'
 
 type Phase = 'path' | 'lesson' | 'quiz' | 'result'
 
@@ -121,9 +122,9 @@ export default function Grammar(): JSX.Element {
         <h1 className="title">{rule.title}</h1>
         <p className="subtitle">Règle {ruleIndex + 1} / {rules.length} · Monde en cours</p>
         <div className="card">
-          <p className="ex-sentence" style={{ margin: '4px 0 12px', fontSize: '1.12rem' }}>
-            {rule.rule}
-          </p>
+          <div style={{ margin: '4px 0 12px', fontSize: '1.1rem' }}>
+            <RuleText rule={rule.rule} />
+          </div>
           {rule.examples?.map((e, i) => (
             <div key={i} className="phrase">
               <span className="grow">

@@ -5,6 +5,7 @@ import { familyMatches, loadWordRules, pickQuizQuestions, splitExample, buildQui
 import type { WordRuleFamily, WordRuleItem, WordQuizQuestion } from '../lib/wordRules'
 import { lookupWord } from '../lib/dictionary'
 import { speak } from '../lib/tts'
+import RuleText from './RuleText'
 import { useApp } from '../state/store'
 
 type Mode = 'guide' | 'quiz' | 'cards'
@@ -62,7 +63,7 @@ function ItemBlock({ item }: { item: WordRuleItem }): JSX.Element {
         <span className="field-label" style={{ marginBottom: 2 }}>
           Quand l'utiliser
         </span>
-        {item.rule}
+        <RuleText rule={item.rule} />
       </div>
       {item.examples.map((ex, i) => {
         const { en, fr } = splitExample(ex)
@@ -226,7 +227,7 @@ function QuizTab({ families }: { families: WordRuleFamily[] }): JSX.Element {
               <span className="field-label" style={{ marginBottom: 2 }}>
                 Règle — {q.answer} (= {q.meaning})
               </span>
-              {q.rule}
+              <RuleText rule={q.rule} />
             </div>
             <p style={{ margin: '6px 0 0', fontSize: '0.95rem' }}>
               {q.fullExample.en} <span className="muted">— {q.fullExample.fr}</span>
@@ -306,7 +307,7 @@ function CardsTab({ families }: { families: WordRuleFamily[] }): JSX.Element {
                   <span className="field-label" style={{ marginBottom: 2 }}>
                     Quand l'utiliser
                   </span>
-                  {item.rule}
+                  <RuleText rule={item.rule} />
                 </div>
                 {item.examples[0] && (
                   <p style={{ margin: '8px 0 0', fontSize: '0.92rem' }}>

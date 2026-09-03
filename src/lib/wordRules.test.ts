@@ -90,3 +90,28 @@ describe('pickQuizQuestions', () => {
     }
   })
 })
+
+import { ruleLines } from './ruleLines'
+
+describe('ruleLines (mise en forme lisible)', () => {
+  test("l'exemple de l'utilisateur", () => {
+    expect(ruleLines('Général : -s. Après s, x, ch, sh : -es. Consonne + y → -ies. Irréguliers : man→men.')).toEqual([
+      'Général : -s.',
+      'Après s, x, ch, sh : -es.',
+      'Consonne + y → -ies.',
+      'Irréguliers : man→men.',
+    ])
+  })
+  test('découpe aussi sur les points-virgules, referme le point final', () => {
+    expect(ruleLines('some = affirmatif ; any = négatif')).toEqual(['some = affirmatif ;', 'any = négatif.'])
+  })
+  test('sur toutes les regles du depot : aucune ligne Vide ou orpheline', () => {
+    for (const f of data.families) {
+      for (const it of f.items) {
+        const lines = ruleLines(it.rule)
+        expect(lines.length).toBeGreaterThanOrEqual(1)
+        for (const l of lines) expect(l.length).toBeGreaterThan(3)
+      }
+    }
+  })
+})
