@@ -108,9 +108,11 @@ export default function Home(): JSX.Element {
 
       {tab === 'scenarios' && (
         <section>
-          {SCENARIOS.map((s) => (
-            <ScenarioCard key={s.id} s={s} onOpen={() => startConversation(s.id)} />
-          ))}
+          <div className="sc-grid">
+            {SCENARIOS.map((s) => (
+              <ScenarioCard key={s.id} s={s} onOpen={() => startConversation(s.id)} />
+            ))}
+          </div>
           <button className="btn btn-block btn-breathe" onClick={() => startConversation(null)}>
             <MessageCircle size={19} /> Conversation libre
           </button>
