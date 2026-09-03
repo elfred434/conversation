@@ -1553,3 +1553,117 @@ details[open] .chev {
 .app.wide {
   max-width: 1080px;
 }
+
+/* ---------- Jeu de grammaire : parcours par mondes ---------- */
+.gram-path {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.gram-node {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 14px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text);
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  transition: border-color 400ms var(--ease-soft), transform 400ms var(--ease-soft),
+    box-shadow 400ms var(--ease-soft);
+}
+.gram-node:not(:disabled):hover {
+  transform: translateY(-2px);
+  border-color: rgba(34, 211, 238, 0.55);
+}
+.gram-dot {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+}
+.gram-node-title {
+  font-size: 0.82rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.gram-node.mastered {
+  border-color: rgba(52, 211, 153, 0.4);
+}
+.gram-node.mastered .gram-dot {
+  background: var(--grad);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.3);
+}
+.gram-node.current .gram-dot {
+  color: var(--cyan);
+  animation: breathe 6s var(--ease-breathe) infinite;
+  border-color: rgba(34, 211, 238, 0.6);
+}
+.gram-node.locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.gram-node.locked .gram-dot {
+  color: var(--muted);
+}
+.gram-stars-badge {
+  position: absolute;
+  bottom: -6px;
+  right: -8px;
+  background: #F5C86B;
+  color: #201500;
+  font-size: 0.68rem;
+  font-weight: 800;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+}
+/* etoiles de resultat */
+.stars {
+  display: inline-flex;
+  gap: 6px;
+}
+.stars .on {
+  color: #F5C86B;
+  fill: #F5C86B;
+  animation: starPop 500ms var(--ease-soft) both;
+}
+.stars svg {
+  color: var(--muted);
+  opacity: 0.4;
+}
+@keyframes starPop {
+  from {
+    transform: scale(0) rotate(-30deg);
+  }
+}
+/* pastilles de progression du quiz */
+.dots {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+.dots i.ok {
+  background: var(--grad);
+}
+.dots i.cur {
+  border: 1px solid var(--cyan);
+}

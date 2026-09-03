@@ -2,6 +2,7 @@ import type { CefrLevel, Progress, Session, Settings } from '../types'
 
 const KEYS = {
   settings: 'ff_settings',
+  grammar: 'ff_grammar',
   level: 'ff_level',
   sessions: 'ff_sessions',
   progress: 'ff_progress',
@@ -65,6 +66,22 @@ export function loadProgress(): Progress {
 
 export function saveProgress(p: Progress): void {
   localStorage.setItem(KEYS.progress, JSON.stringify(p))
+}
+
+export function loadGrammar(): { mastered: string[]; stars: Record<string, number> } {
+  try {
+    const raw = JSON.parse(localStorage.getItem(KEYS.grammar) ?? '{}') as {
+      mastered?: string[]
+      stars?: Record<string, number>
+    }
+    return { mastered: raw.mastered ?? [], stars: raw.stars ?? {} }
+  } catch {
+    return { mastered: [], stars: {} }
+  }
+}
+
+export function saveGrammar(g: { mastered: string[]; stars: Record<string, number> }): void {
+  localStorage.setItem(KEYS.grammar, JSON.stringify(g))
 }
 
 export function clearAllData(): void {

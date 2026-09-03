@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BookOpen, MessageCircle, MessagesSquare, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight, LayoutGrid, Dumbbell, History } from 'lucide-react'
+import { BookOpen, MessageCircle, MessagesSquare, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight, LayoutGrid, Dumbbell, History, Puzzle } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LEVELS, SCENARIOS } from '../lib/prompts'
 import { dayLabel } from '../lib/dayLabel'
@@ -19,6 +19,7 @@ interface Tool {
 const TOOLS: Tool[] = [
   { view: 'pronunciation', icon: Mic, label: 'Prononciation', desc: 'Écoute, répète, compare' },
   { view: 'lessons', icon: BookOpen, label: 'Leçons', desc: 'Mini-leçons hors-ligne' },
+  { view: 'grammar', icon: Puzzle, label: 'Grammaire', desc: 'Le jeu des règles : 25 règles à maîtriser' },
   { view: 'exercises', icon: Target, label: 'Exercices ciblés', desc: "Générés par l'IA selon tes erreurs" },
   { view: 'phrases', icon: MessagesSquare, label: 'Phrases courantes', desc: 'Les plus utilisées + dictionnaire' },
   { view: 'progress', icon: Award, label: 'Ma progression', desc: 'Badges et statistiques' },

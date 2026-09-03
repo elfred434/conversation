@@ -8,6 +8,7 @@ import Pronunciation from './views/Pronunciation'
 import Lessons from './views/Lessons'
 import Exercises from './views/Exercises'
 import Phrases from './views/Phrases'
+import Grammar from './views/Grammar'
 import Settings from './views/Settings'
 
 function Header(): JSX.Element {
@@ -46,6 +47,8 @@ function Body(): JSX.Element | null {
       return <Exercises />
     case 'phrases':
       return <Phrases />
+    case 'grammar':
+      return <Grammar />
     case 'settings':
       return <Settings />
     default:

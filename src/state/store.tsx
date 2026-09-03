@@ -30,6 +30,7 @@ export type View =
   | 'lessons'
   | 'exercises'
   | 'phrases'
+  | 'grammar'
   | 'settings'
   | 'onboarding'
 
