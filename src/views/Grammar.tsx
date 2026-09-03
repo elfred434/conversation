@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ArrowLeft, Check, CheckCircle2, ChevronRight, Lightbulb, Lock, Play, RotateCcw, Star, X } from 'lucide-react'
 import type { CSSProperties } from 'react'
-import { GRAMMAR_TIERS, flattenRules, isRuleUnlocked, starsFor } from '../lib/grammar'
+import { GRAMMAR_TIERS, type GrammarQuestion, flattenRules, isRuleUnlocked, shuffleQuestions, starsFor } from '../lib/grammar'
 import type { GrammarRule } from '../lib/grammar'
 import { isAnswerCloseEnough } from '../lib/similarity'
 import { loadGrammar, saveGrammar } from '../lib/storage'
@@ -42,6 +42,7 @@ export default function Grammar(): JSX.Element {
   const [phase, setPhase] = useState<Phase>('path')
   const [rule, setRule] = useState<GrammarRule | null>(null)
   const [ruleIndex, setRuleIndex] = useState(-1)
+  const [quiz, setQuiz] = useState<GrammarQuestion[]>([])
   const [qIndex, setQIndex] = useState(0)
   const [mistakes, setMistakes] = useState(0)
   const [retries, setRetries] = useState(0)
@@ -60,6 +61,7 @@ export default function Grammar(): JSX.Element {
   }
 
   const play = (): void => {
+    if (rule) setQuiz(shuffleQuestions(rule.questions))
     setQIndex(0)
     setMistakes(0)
     setRetries(0)
@@ -70,7 +72,9 @@ export default function Grammar(): JSX.Element {
 
   const check = (): void => {
     if (!rule || checked !== null || !answer.trim()) return
-    const ok = isAnswerCloseEnough(answer, rule.questions[qIndex].a)
+    const current = quiz[qIndex]
+    if (!current) return
+    const ok = isAnswerCloseEnough(answer, current.a)
     setChecked(ok)
     if (!ok) {
       setMistakes((m) => m + 1)
@@ -86,7 +90,7 @@ export default function Grammar(): JSX.Element {
       setChecked(null)
       return
     }
-    if (qIndex + 1 >= rule.questions.length) {
+    if (qIndex + 1 >= quiz.length) {
       const stars = starsFor(mistakes)
       setStarGain(stars)
       setProgress((prev) => {
@@ -146,7 +150,7 @@ export default function Grammar(): JSX.Element {
 
   // ---------------- Quiz ----------------
   if (phase === 'quiz' && rule) {
-    const q = rule.questions[qIndex]
+    const q = quiz[qIndex]
     const parts = q.q.split('___')
     const isBlank = parts.length === 2
     return (
@@ -157,7 +161,7 @@ export default function Grammar(): JSX.Element {
         <div className="card">
           <div className="ex-top">
             <span className="cat-chip">{rule.title}</span>
-            <Dots total={rule.questions.length} done={qIndex} active />
+            <Dots total={quiz.length} done={qIndex} active />
           </div>
           {isBlank ? (
             <p className="ex-sentence">
@@ -209,7 +213,7 @@ export default function Grammar(): JSX.Element {
               )}
               {checked && (
                 <button className="btn btn-block" onClick={next}>
-                  {qIndex + 1 >= rule.questions.length ? 'Terminer ✓' : 'Suivant →'}
+                  {qIndex + 1 >= quiz.length ? 'Terminer ✓' : 'Suivant →'}
                 </button>
               )}
             </div>

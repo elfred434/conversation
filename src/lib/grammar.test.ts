@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { GRAMMAR_TIERS, flattenRules, isRuleUnlocked, starsFor } from './grammar'
+import { GRAMMAR_TIERS, flattenRules, isRuleUnlocked, shuffleQuestions, starsFor } from './grammar'
 
 describe('curriculum', () => {
   const rules = flattenRules()
@@ -10,11 +10,11 @@ describe('curriculum', () => {
     GRAMMAR_TIERS.forEach((t) => expect(t.rules.length).toBe(5))
   })
 
-  test('ids uniques, >= 3 questions par regle, reponses non vides', () => {
+  test('ids uniques, 8 questions par regle, reponses non vides', () => {
     const ids = new Set(rules.map((r) => r.id))
     expect(ids.size).toBe(rules.length)
     for (const r of rules) {
-      expect(r.questions.length).toBeGreaterThanOrEqual(3)
+      expect(r.questions.length).toBe(8)
       expect(r.rule.length).toBeGreaterThan(10)
       for (const q of r.questions) {
         expect(q.q).toContain('___')
@@ -53,5 +53,16 @@ describe('etoiles', () => {
     expect(starsFor(0)).toBe(3)
     expect(starsFor(1)).toBe(2)
     expect(starsFor(4)).toBe(1)
+  })
+})
+
+describe('melange du quiz', () => {
+  test('shuffleQuestions : meme contenu, deterministe, ordre different', () => {
+    const base = [1, 2, 3, 4, 5, 6, 7, 8]
+    const a = shuffleQuestions(base, () => 0.99)
+    expect(a).toHaveLength(base.length)
+    expect([...a].sort((x, y) => x - y)).toEqual(base) // meme contenu
+    expect(shuffleQuestions(base, () => 0.99)).toEqual(a) // rng fixe -> deterministe
+    expect(shuffleQuestions([7, 7, 7], () => 0.5)).toEqual([7, 7, 7])
   })
 })
