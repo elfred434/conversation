@@ -9,6 +9,7 @@ import Lessons from './views/Lessons'
 import Exercises from './views/Exercises'
 import Phrases from './views/Phrases'
 import Grammar from './views/Grammar'
+import WordRules from './views/WordRules'
 import Settings from './views/Settings'
 
 function Header(): JSX.Element {
@@ -49,6 +50,8 @@ function Body(): JSX.Element | null {
       return <Phrases />
     case 'grammar':
       return <Grammar />
+    case 'wordrules':
+      return <WordRules />
     case 'settings':
       return <Settings />
     default:

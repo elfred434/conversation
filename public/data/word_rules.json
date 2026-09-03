@@ -1,0 +1,1261 @@
+{
+  "meta": {
+    "version": 1,
+    "updated": "2026-09-03",
+    "note": "Mots/verbes de sens proche mais usage different. Charge a la demande (import dynamique) pour ne pas alourdir le bundle. Structure : chaque entree = une famille de confusions classiques, avec regle d'usage par membre.",
+    "fields": {
+      "id": "identifiant stable",
+      "title": "titre de la famille",
+      "items": [
+        {
+          "word": "le mot",
+          "pos": "nature (verb, noun...)",
+          "meaning": "sens en francais",
+          "rule": "quand l'utiliser",
+          "examples": ["phrases d'exemple EN (avec traduction FR apres |)"]
+        }
+      ]
+    }
+  },
+  "families": [
+    {
+      "id": "borrow-lend",
+      "title": "Borrow / Lend — prêter ou emprunter ?",
+      "hint": "Tout dépend du point de vue : borrow = prendre, lend = donner.",
+      "items": [
+        {
+          "word": "borrow",
+          "pos": "verb",
+          "meaning": "emprunter (prendre quelque chose à quelqu'un)",
+          "rule": "Sujet = celui qui REÇOIT. Structure : borrow something FROM someone.",
+          "examples": ["Can I borrow your pen? | Puis-je emprunter ton stylo ?", "I borrowed a book from the library. | J'ai emprunté un livre à la bibliothèque."]
+        },
+        {
+          "word": "lend",
+          "pos": "verb",
+          "meaning": "prêter (donner quelque chose à quelqu'un temporairement)",
+          "rule": "Sujet = celui qui DONNE. Structure : lend something TO someone, ou lend someone something.",
+          "examples": ["Can you lend me your pen? | Peux-tu me prêter ton stylo ?", "She lent her car to her brother. | Elle a prêté sa voiture à son frère."]
+        }
+      ]
+    },
+    {
+      "id": "say-tell",
+      "title": "Say / Tell — dire",
+      "hint": "On dit quelque chose (say), on dit quelque chose à quelqu'un (tell).",
+      "items": [
+        {
+          "word": "say",
+          "pos": "verb",
+          "meaning": "dire (le contenu des paroles)",
+          "rule": "say + paroles, ou say something TO someone. Jamais de destinataire direct : on ne dit pas « say me ».",
+          "examples": ["He said hello. | Il a dit bonjour.", "She said to me that she was tired. | Elle m'a dit qu'elle était fatiguée."]
+        },
+        {
+          "word": "tell",
+          "pos": "verb",
+          "meaning": "dire, raconter (à quelqu'un)",
+          "rule": "tell + PERSONNE (directement) : tell me, tell him. Et les expressions : tell a story, tell the truth, tell a joke.",
+          "examples": ["Tell me the truth. | Dis-moi la vérité.", "She told me a story. | Elle m'a raconté une histoire."]
+        }
+      ]
+    },
+    {
+      "id": "watch-look-see",
+      "title": "Watch / Look / See — les trois « voir »",
+      "hint": "watch = regarder bouger, look = diriger les yeux, see = percevoir.",
+      "items": [
+        {
+          "word": "watch",
+          "pos": "verb",
+          "meaning": "regarder (quelque chose qui bouge : film, match, télé)",
+          "rule": "Usage continu fréquent. watch TV, watch a game, watch the kids.",
+          "examples": ["I watch a film every week. | Je regarde un film chaque semaine.", "Watch out! | Attention !"]
+        },
+        {
+          "word": "look",
+          "pos": "verb",
+          "meaning": "regarder (diriger volontairement le regard)",
+          "rule": "look AT something. Look! = attire l'attention.",
+          "examples": ["Look at this photo. | Regarde cette photo.", "It looks nice. | Ça a l'air joli."]
+        },
+        {
+          "word": "see",
+          "pos": "verb",
+          "meaning": "voir (percevoir, souvent sans intention)",
+          "rule": "Résultat involontaire. I saw him = je l'ai aperçu. see a movie = sortir voir un film.",
+          "examples": ["I saw him yesterday. | Je l'ai vu hier.", "Did you see that? | Tu as vu ça ?"]
+        }
+      ]
+    },
+    {
+      "id": "hear-listen",
+      "title": "Hear / Listen — entendre ou écouter",
+      "hint": "hear = passif, listen = actif.",
+      "items": [
+        {
+          "word": "hear",
+          "pos": "verb",
+          "meaning": "entendre (percevoir un son)",
+          "rule": "Sans effort : I heard a noise. Can't hear = ça n'arrive pas à l'oreille.",
+          "examples": ["I can't hear you! | Je ne t'entends pas !", "Did you hear that sound? | Tu as entendu ce bruit ?"]
+        },
+        {
+          "word": "listen",
+          "pos": "verb",
+          "meaning": "écouter (faire attention volontairement)",
+          "rule": "listen TO something/someone. Impératif = fais attention : Listen!",
+          "examples": ["I listen to music on the bus. | J'écoute de la musique dans le bus.", "Listen to me carefully. | Écoute-moi attentivement."]
+        }
+      ]
+    },
+    {
+      "id": "make-do",
+      "title": "Make / Do — faire",
+      "hint": "make = créer/produire ; do = une activité, une tâche.",
+      "items": [
+        {
+          "word": "make",
+          "pos": "verb",
+          "meaning": "fabriquer, créer, produire (un résultat)",
+          "rule": "make a cake / a mistake / money / a decision / noise / friends.",
+          "examples": ["She made a cake. | Elle a fait un gâteau.", "You made a mistake. | Tu as fait une erreur."]
+        },
+        {
+          "word": "do",
+          "pos": "verb",
+          "meaning": "faire (une action, une tâche)",
+          "rule": "do homework / the dishes / sport / business / your best.",
+          "examples": ["I do my homework every day. | Je fais mes devoirs chaque jour.", "Do your best. | Fais de ton mieux."]
+        }
+      ]
+    },
+    {
+      "id": "remember-remind",
+      "title": "Remember / Remind — se souvenir ou rappeler",
+      "hint": "remember = dans ta tête ; remind = faire penser à quelqu'un.",
+      "items": [
+        {
+          "word": "remember",
+          "pos": "verb",
+          "meaning": "se souvenir de, se rappeler",
+          "rule": "remember + something / to do (penser à faire) / doing (souvenir d'avoir fait).",
+          "examples": ["I remember your face. | Je me souviens de ton visage.", "Remember to lock the door. | Pense à verrouiller la porte."]
+        },
+        {
+          "word": "remind",
+          "pos": "verb",
+          "meaning": "rappeler (quelque chose) à quelqu'un",
+          "rule": "remind someone TO do / OF something. Le rappel vient de l'extérieur.",
+          "examples": ["Can you remind me to call her? | Peux-tu me rappeler de l'appeler ?", "This song reminds me of you. | Cette chanson me fait penser à toi."]
+        }
+      ]
+    },
+    {
+      "id": "speak-talk",
+      "title": "Speak / Talk — parler",
+      "hint": "speak = plus formel / une langue ; talk = conversation banale.",
+      "items": [
+        {
+          "word": "speak",
+          "pos": "verb",
+          "meaning": "parler (formel, langue, s'adresser)",
+          "rule": "speak English / speak TO (ou WITH) someone. « May I speak to…? » au téléphone.",
+          "examples": ["She speaks three languages. | Elle parle trois langues.", "May I speak to Mr. Smith? | Puis-je parler à M. Smith ?"]
+        },
+        {
+          "word": "talk",
+          "pos": "verb",
+          "meaning": "parler, discuter (informel, échange)",
+          "rule": "talk TO (ou WITH) someone ABOUT something.",
+          "examples": ["We talked for hours. | Nous avons parlé pendant des heures.", "Can we talk about it? | On peut en parler ?"]
+        }
+      ]
+    },
+    {
+      "id": "journey-trip-travel",
+      "title": "Trip / Travel / Journey — voyage",
+      "hint": "trip = le déplacement (comptable), travel = le fait de voyager, journey = le trajet long.",
+      "items": [
+        {
+          "word": "trip",
+          "pos": "noun",
+          "meaning": "un voyage (avec retour, on peut compter : a trip, two trips)",
+          "rule": "a business trip, a weekend trip, a road trip.",
+          "examples": ["We had a great trip to Rome. | On a fait un super voyage à Rome.", "A business trip. | Un déplacement pro."]
+        },
+        {
+          "word": "travel",
+          "pos": "verb (surtout)",
+          "meaning": "voyager (l'activité, l'idée générale)",
+          "rule": "Verbe le plus courant : I love travelling. Comme nom (uncountable) : air travel.",
+          "examples": ["I love to travel. | J'adore voyager.", "Air travel is cheaper now. | L'avion est moins cher maintenant."]
+        },
+        {
+          "word": "journey",
+          "pos": "noun",
+          "meaning": "trajet, périple (long, souvent symbolique)",
+          "rule": "Un aller simple long : a train journey, a spiritual journey.",
+          "examples": ["It was a long journey. | C'était un long trajet.", "A journey of self-discovery. | Un voyage intérieur."]
+        }
+      ]
+    },
+    {
+      "id": "fun-funny",
+      "title": "Fun / Funny — amusant ou drôle ?",
+      "hint": "fun = on s'amuse ; funny = ça fait rire (parfois bizarre).",
+      "items": [
+        {
+          "word": "fun",
+          "pos": "adjective / noun",
+          "meaning": "amusant, agréable (le divertissement)",
+          "rule": "We had fun = on s'est amusés. a fun evening = une soirée sympa.",
+          "examples": ["That was so much fun! | C'était trop bien !", "She's fun to be with. | C'est agréable d'être avec elle."]
+        },
+        {
+          "word": "funny",
+          "pos": "adjective",
+          "meaning": "drôle, marrant (fait rire) ; parfois = bizarre",
+          "rule": "a funny joke. Attention : « funny smell » = odeur bizarre.",
+          "examples": ["He's really funny. | Il est vraiment drôle.", "It smells funny. | Ça sent bizarre."]
+        }
+      ]
+    },
+    {
+      "id": "excited-exciting",
+      "title": "-ED / -ING — excité ou excitant ?",
+      "hint": "-ED = ce qu'on ressent ; -ING = ce qui provoque.",
+      "items": [
+        {
+          "word": "excited",
+          "pos": "adjective (-ED)",
+          "meaning": "impatient, enthousiaste (la personne ressent)",
+          "rule": "excited ABOUT something.",
+          "examples": ["I'm so excited about the trip! | Je suis trop impatient pour le voyage !"]
+        },
+        {
+          "word": "exciting",
+          "pos": "adjective (-ING)",
+          "meaning": "palpitant, excitant (la chose provoque)",
+          "rule": "Décrit l'objet/l'expérience : an exciting game, exciting news.",
+          "examples": ["What an exciting match! | Quel match palpitant !"]
+        }
+      ]
+    },
+    {
+      "id": "miss-lose",
+      "title": "Miss / Lose — perdre",
+      "hint": "miss = rater une occasion/absence ; lose = égarer/perdre quelque chose.",
+      "items": [
+        {
+          "word": "miss",
+          "pos": "verb",
+          "meaning": "rater (un bus, un rendez-vous) ; s'ennuyer de quelqu'un",
+          "rule": "miss the bus / miss you / I miss you = tu me manques.",
+          "examples": ["I missed the train! | J'ai raté le train !", "I miss you. | Tu me manques."]
+        },
+        {
+          "word": "lose",
+          "pos": "verb",
+          "meaning": "perdre (un objet, un match)",
+          "rule": "lose keys / a game / money. lose track of time = perdre la notion du temps.",
+          "examples": ["I lost my keys. | J'ai perdu mes clés.", "They lost the match. | Ils ont perdu le match."]
+        }
+      ]
+    },
+    {
+      "id": "win-beat",
+      "title": "Win / Beat — gagner",
+      "hint": "On gagne quelque chose (win), on bat quelqu'un (beat).",
+      "items": [
+        {
+          "word": "win",
+          "pos": "verb",
+          "meaning": "gagner (une compétition, un prix)",
+          "rule": "win a game / a prize / the lottery.",
+          "examples": ["We won the final! | On a gagné la finale !", "She won a prize. | Elle a gagné un prix."]
+        },
+        {
+          "word": "beat",
+          "pos": "verb",
+          "meaning": "battre (un adversaire)",
+          "rule": "beat someone / a team. Pas d'objet = win.",
+          "examples": ["We beat them 3-0. | On les a battus 3-0.", "He beat me at chess. | Il m'a battu aux échecs."]
+        }
+      ]
+    },
+    {
+      "id": "house-home",
+      "title": "House / Home — la maison",
+      "hint": "house = le bâtiment ; home = le lieu d'attachement.",
+      "items": [
+        {
+          "word": "house",
+          "pos": "noun",
+          "meaning": "maison (le bâtiment physique)",
+          "rule": "Comptable : a big house. Pas d'attachement.",
+          "examples": ["They live in a big house. | Ils vivent dans une grande maison."]
+        },
+        {
+          "word": "home",
+          "pos": "noun / adverb",
+          "meaning": "foyer, chez soi",
+          "rule": "Pas d'article : go home, at home, stay home.",
+          "examples": ["I'm going home. | Je rentre à la maison.", "Make yourself at home. | Fais comme chez toi."]
+        }
+      ]
+    },
+    {
+      "id": "job-work",
+      "title": "Job / Work — travail",
+      "hint": "job = le poste (comptable) ; work = l'activité/le lieu (indénombrable).",
+      "items": [
+        {
+          "word": "job",
+          "pos": "noun",
+          "meaning": "emploi, poste",
+          "rule": "Comptable : a good job, apply for a job.",
+          "examples": ["She found a new job. | Elle a trouvé un nouveau poste."]
+        },
+        {
+          "word": "work",
+          "pos": "noun / verb",
+          "meaning": "travail, activité professionnelle",
+          "rule": "Indénombrable : go to work, at work, a lot of work. Verbe : travailler / fonctionner.",
+          "examples": ["I have a lot of work. | J'ai beaucoup de travail.", "The lift doesn't work. | L'ascenseur ne marche pas."]
+        }
+      ]
+    },
+    {
+      "id": "all-every",
+      "title": "All / Every — tout, chaque",
+      "hint": "all = tout… ensemble ; every = chaque (un par un).",
+      "items": [
+        {
+          "word": "all",
+          "pos": "determiner",
+          "meaning": "tout, tous (l'ensemble)",
+          "rule": "all + the / my… : all the students, all my friends.",
+          "examples": ["All the students passed. | Tous les étudiants ont réussi.", "All I want is peace. | Tout ce que je veux, c'est la paix."]
+        },
+        {
+          "word": "every",
+          "pos": "determiner",
+          "meaning": "chaque (chacun individuellement)",
+          "rule": "every + singulier : every day, every student (chacun des étudiants).",
+          "examples": ["I read every day. | Je lis chaque jour.", "Every student has a laptop. | Chaque étudiant a un ordinateur."]
+        }
+      ]
+    },
+    {
+      "id": "other-another",
+      "title": "Other / Another — autre",
+      "hint": "another = un de plus ; other = les autres / différent.",
+      "items": [
+        {
+          "word": "another",
+          "pos": "determiner",
+          "meaning": "un autre, un de plus",
+          "rule": "another + singulier : another day, another coffee.",
+          "examples": ["Another beer, please. | Encore une bière.", "Maybe another time. | Une autre fois peut-être."]
+        },
+        {
+          "word": "other",
+          "pos": "adjective / pronoun",
+          "meaning": "autre, autres",
+          "rule": "the other (le reste), other + pluriel (d'autres).",
+          "examples": ["The other one is better. | L'autre est mieux.", "Ask other people. | Demande à d'autres gens."]
+        }
+      ]
+    },
+    {
+      "id": "bring-take",
+      "title": "Bring / Take — porter, emmener",
+      "hint": "bring = vers le locuteur ; take = loin du locuteur.",
+      "items": [
+        {
+          "word": "bring",
+          "pos": "verb",
+          "meaning": "apporter, amener (vers ici)",
+          "rule": "bring something TO someone/here.",
+          "examples": ["Bring your friend to the party. | Amène ton ami à la fête.", "Can you bring me some water? | Tu peux m'apporter de l'eau ?"]
+        },
+        {
+          "word": "take",
+          "pos": "verb",
+          "meaning": "emporter, prendre (vers là-bas)",
+          "rule": "take something TO another place.",
+          "examples": ["Take an umbrella. | Prends un parapluie.", "I'll take you home. | Je te ramène chez toi."]
+        }
+      ]
+    },
+    {
+      "id": "fast-quick",
+      "title": "Fast / Quick — rapide",
+      "hint": "fast = vitesse (adjectif et adverbe) ; quick = brève durée.",
+      "items": [
+        {
+          "word": "fast",
+          "pos": "adjective / adverb",
+          "meaning": "rapide, vite (vitesse réelle)",
+          "rule": "a fast car, drive fast (pas « fastly »).",
+          "examples": ["That's a fast car. | C'est une voiture rapide.", "He runs fast. | Il court vite."]
+        },
+        {
+          "word": "quick",
+          "pos": "adjective",
+          "meaning": "rapide (court, bref)",
+          "rule": "a quick shower, a quick answer. Adverbe : quickly.",
+          "examples": ["I'll take a quick shower. | Je prends une douche rapide.", "She gave a quick reply. | Elle a répondu vite."]
+        }
+      ]
+    },
+    {
+      "id": "small-little",
+      "title": "Small / Little — petit",
+      "hint": "small = taille objective ; little = affectif ou quantité.",
+      "items": [
+        {
+          "word": "small",
+          "pos": "adjective",
+          "meaning": "petit (taille, neutre)",
+          "rule": "a small house, small hands.",
+          "examples": ["What a small kitchen! | Quelle petite cuisine !"]
+        },
+        {
+          "word": "little",
+          "pos": "adjective / determiner",
+          "meaning": "petit (tendresse) ; peu de (quantité)",
+          "rule": "a little dog (mignon) ; a little time (un peu) ; little time (presque pas).",
+          "examples": ["Their little girl is five. | Leur petite fille a cinq ans.", "I have a little money. | J'ai un peu d'argent."]
+        }
+      ]
+    },
+    {
+      "id": "tall-high",
+      "title": "Tall / High — haut",
+      "hint": "tall = debout (personnes, bâtiments fins) ; high = altitude, chiffres, sons.",
+      "items": [
+        {
+          "word": "tall",
+          "pos": "adjective",
+          "meaning": "grand (de taille, vertical)",
+          "rule": "a tall man, a tall building.",
+          "examples": ["How tall are you? | Tu mesures combien ?", "A tall tree. | Un grand arbre."]
+        },
+        {
+          "word": "high",
+          "pos": "adjective",
+          "meaning": "haut (altitude, degré, niveau)",
+          "rule": "high mountains, high prices, high volume, high up.",
+          "examples": ["The prices are too high. | Les prix sont trop hauts.", "A high mountain. | Une haute montagne."]
+        }
+      ]
+    },
+    {
+      "id": "cloth-clothes",
+      "title": "Clothes / Cloth / Clothing — vêtement, tissu",
+      "hint": "clothes = les vêtements ; cloth = le tissu ; clothing = l'ensemble formel.",
+      "items": [
+        {
+          "word": "clothes",
+          "pos": "noun (pluriel)",
+          "meaning": "vêtements (toujours pluriel, jamais a clothes)",
+          "rule": "Pas de pluriel -s : my clothes, not a clothes. a piece of clothing.",
+          "examples": ["I bought new clothes. | J'ai acheté de nouveaux vêtements."]
+        },
+        {
+          "word": "cloth",
+          "pos": "noun",
+          "meaning": "tissu, chiffon",
+          "rule": "a piece of cloth. wash with a damp cloth.",
+          "examples": ["Cut the cloth in half. | Coupez le tissu en deux."]
+        }
+      ]
+    },
+    {
+      "id": "annoyed-boring",
+      "title": "Bored / Boring — ennuyé ou ennuyeux ?",
+      "hint": "-ED = la personne qui ressent ; -ING = la chose qui provoque.",
+      "items": [
+        {
+          "word": "bored",
+          "pos": "adjective (-ED)",
+          "meaning": "ennuyé (je m'ennuie)",
+          "rule": "bored WITH something.",
+          "examples": ["I'm bored. | Je m'ennuie.", "She was bored at work. | Elle s'ennuyait au travail."]
+        },
+        {
+          "word": "boring",
+          "pos": "adjective (-ING)",
+          "meaning": "ennuyeux (ça fait s'ennuyer)",
+          "rule": "a boring lesson, a boring film.",
+          "examples": ["The class was boring. | Le cours était ennuyeux."]
+        }
+      ]
+    },
+    {
+      "id": "accept-except",
+      "title": "Accept / Except — accepter ou sauf",
+      "hint": "accept = verbe ; except = préposition.",
+      "items": [
+        {
+          "word": "accept",
+          "pos": "verb",
+          "meaning": "accepter",
+          "rule": "accept an offer / an invitation.",
+          "examples": ["I accept your apology. | J'accepte tes excuses.", "They accepted the offer. | Ils ont accepté l'offre."]
+        },
+        {
+          "word": "except",
+          "pos": "preposition",
+          "meaning": "sauf, excepté",
+          "rule": "everyone except me, open every day except Sunday.",
+          "examples": ["Everyone came except John. | Tout le monde est venu sauf John."]
+        }
+      ]
+    },
+    {
+      "id": "advice-advise",
+      "title": "Advice / Advise — conseil (nom) ou conseiller (verbe)",
+      "hint": "advice = le nom (conseil) ; advise = le verbe (conseiller).",
+      "items": [
+        {
+          "word": "advice",
+          "pos": "noun",
+          "meaning": "conseil (indénombrable : a piece of advice)",
+          "rule": "give / take advice. Pas de -s : pas « advices ».",
+          "examples": ["Let me give you some advice. | Laisse-moi te donner un conseil."]
+        },
+        {
+          "word": "advise",
+          "pos": "verb",
+          "meaning": "conseiller",
+          "rule": "advise someone TO do something.",
+          "examples": ["I advised him to rest. | Je lui ai conseillé de se reposer."]
+        }
+      ]
+    },
+    {
+      "id": "practice-practise",
+      "title": "Practice / Practise — GB vs US",
+      "hint": "GB : practice = nom, practise = verbe. US : practice partout.",
+      "items": [
+        {
+          "word": "practice",
+          "pos": "noun (GB/US) / verb (US)",
+          "meaning": "pratique (nom) ; pratiquer (verbe US)",
+          "rule": "GB : basketball practice. US : I practice every day.",
+          "examples": ["Practice makes perfect. | C'est en forgeant qu'on devient forgeron.", "I practice (US) every day. | Je pratique tous les jours (US)."]
+        },
+        {
+          "word": "practise",
+          "pos": "verb (GB)",
+          "meaning": "pratiquer, s'entraîner (verbe GB)",
+          "rule": "GB only : I practise the piano.",
+          "examples": ["She practises law in London. | Elle exerce le droit à Londres."]
+        }
+      ]
+    },
+    {
+      "id": "each-other",
+      "title": "Each other / One another / Themselves",
+      "hint": "each other = réciproque (2 ou +) ; themselves = eux-mêmes (réflexif).",
+      "items": [
+        {
+          "word": "each other",
+          "pos": "pronoun",
+          "meaning": "l'un l'autre",
+          "rule": "They love each other = ils s'aiment.",
+          "examples": ["We help each other. | On s'entraide."]
+        },
+        {
+          "word": "themselves",
+          "pos": "pronoun",
+          "meaning": "eux-mêmes",
+          "rule": "Ils le font eux-mêmes : they did it themselves.",
+          "examples": ["They built it themselves. | Ils l'ont construit eux-mêmes."]
+        }
+      ]
+    },
+    {
+      "id": "ago-for-since",
+      "title": "Ago / For / Since — le temps",
+      "hint": "ago = il y a (prétérit) ; for = pendant ; since = depuis (début).",
+      "items": [
+        {
+          "word": "ago",
+          "pos": "adverb",
+          "meaning": "il y a (durée écoulée)",
+          "rule": "APRÈS la durée : two years ago, with the past simple.",
+          "examples": ["I moved here two years ago. | J'ai emménagé il y a deux ans."]
+        },
+        {
+          "word": "for",
+          "pos": "preposition",
+          "meaning": "pendant, depuis (durée)",
+          "rule": "for + durée : for ten years, for a long time.",
+          "examples": ["I've lived here for ten years. | J'habite ici depuis dix ans."]
+        },
+        {
+          "word": "since",
+          "pos": "preposition",
+          "meaning": "depuis (le début)",
+          "rule": "since + point de départ : since 2015, since Monday.",
+          "examples": ["I've known her since 2015. | Je la connais depuis 2015."]
+        }
+      ]
+    },
+    {
+      "id": "already-yet-still",
+      "title": "Already / Yet / Still — déjà, encore",
+      "hint": "already = déjà ; yet = encore (fin de phrase négative/question) ; still = toujours.",
+      "items": [
+        {
+          "word": "already",
+          "pos": "adverb",
+          "meaning": "déjà",
+          "rule": "Affirmatif : I've already eaten.",
+          "examples": ["I've already seen it. | Je l'ai déjà vu."]
+        },
+        {
+          "word": "yet",
+          "pos": "adverb",
+          "meaning": "encore, pas encore",
+          "rule": "Fin de phrase : haven't … yet / Have you … yet?",
+          "examples": ["I haven't finished yet. | Je n'ai pas encore fini.", "Are we there yet? | On est bientôt arrivés ?"]
+        },
+        {
+          "word": "still",
+          "pos": "adverb",
+          "meaning": "toujours, encore (continuation)",
+          "rule": "Avant le verbe : I still live here.",
+          "examples": ["It's still raining. | Il pleut toujours."]
+        }
+      ]
+    },
+    {
+      "id": "so-such",
+      "title": "So / Such — tellement",
+      "hint": "so + adjectif ; such + nom.",
+      "items": [
+        {
+          "word": "so",
+          "pos": "adverb",
+          "meaning": "tellement, si",
+          "rule": "so + adj/adverbe : so beautiful, so fast.",
+          "examples": ["The view is so beautiful! | La vue est si belle !"]
+        },
+        {
+          "word": "such",
+          "pos": "determiner",
+          "meaning": "un tel, tellement de",
+          "rule": "such + (a/an) + nom : such a mess, such nice people.",
+          "examples": ["It was such a mess! | C'était un tel bazar !", "They're such kind people. | C'est des gens si gentils."]
+        }
+      ]
+    },
+    {
+      "id": "few-little",
+      "title": "A few / A little / Few / Little",
+      "hint": "a few/a little = un peu (positif) ; few/little = presque pas (négatif).",
+      "items": [
+        {
+          "word": "a few",
+          "pos": "determiner",
+          "meaning": "quelques, un peu (dénombrable)",
+          "rule": "a few friends = quelques amis (positif).",
+          "examples": ["I have a few questions. | J'ai quelques questions."]
+        },
+        {
+          "word": "few",
+          "pos": "determiner",
+          "meaning": "peu (négatif, dénombrable)",
+          "rule": "few people = presque personne.",
+          "examples": ["Few people know that. | Peu de gens le savent."]
+        },
+        {
+          "word": "a little",
+          "pos": "determiner",
+          "meaning": "un peu (indénombrable)",
+          "rule": "a little sugar, a little help.",
+          "examples": ["Add a little sugar. | Ajoute un peu de sucre."]
+        },
+        {
+          "word": "little",
+          "pos": "determiner",
+          "meaning": "peu (négatif, indénombrable)",
+          "rule": "little hope = presque pas d'espoir.",
+          "examples": ["There's little hope. | Il y a peu d'espoir."]
+        }
+      ]
+    },
+    {
+      "id": "used-to-be-used-to",
+      "title": "Used to / Be used to / Get used to",
+      "hint": "used to = avant ; be used to = avoir l'habitude ; get used to = s'habituer.",
+      "items": [
+        {
+          "word": "used to",
+          "pos": "modal-like",
+          "meaning": "avant, autrefois (habitude passée finie)",
+          "rule": "used to + verbe nu : I used to smoke (plus maintenant).",
+          "examples": ["I used to live in Paris. | Je vivais à Paris avant."]
+        },
+        {
+          "word": "be used to",
+          "pos": "adjective phrase",
+          "meaning": "avoir l'habitude de",
+          "rule": "be used to + -ING : She's used to working late.",
+          "examples": ["I'm used to the noise. | J'ai l'habitude du bruit."]
+        },
+        {
+          "word": "get used to",
+          "pos": "phrase",
+          "meaning": "s'habituer à",
+          "rule": "get used to + -ING/nom : You'll get used to it.",
+          "examples": ["He's getting used to waking up early. | Il s'habitue à se lever tôt."]
+        }
+      ]
+    },
+    {
+      "id": "during-while",
+      "title": "During / While — pendant",
+      "hint": "during + nom ; while + sujet + verbe.",
+      "items": [
+        {
+          "word": "during",
+          "pos": "preposition",
+          "meaning": "pendant (durée, événement)",
+          "rule": "during the night, during the meeting.",
+          "examples": ["It rained during the night. | Il a plu pendant la nuit."]
+        },
+        {
+          "word": "while",
+          "pos": "conjunction",
+          "meaning": "pendant que (deux actions)",
+          "rule": "while + sujet + verbe : while I was out.",
+          "examples": ["Call me while you're there. | Appelle-moi pendant que tu y es."]
+        }
+      ]
+    },
+    {
+      "id": "raise-rise",
+      "title": "Raise / Rise — monter",
+      "hint": "raise = transitive (on monte qqch) ; rise = intransitive (ça monte seul).",
+      "items": [
+        {
+          "word": "raise",
+          "pos": "verb",
+          "meaning": "élever, augmenter (quelque chose)",
+          "rule": "raise your hand / prices / children.",
+          "examples": ["Raise your hand. | Levez la main.", "They raised the prices. | Ils ont augmenté les prix."]
+        },
+        {
+          "word": "rise",
+          "pos": "verb",
+          "meaning": "monter, se lever (par soi-même)",
+          "rule": "The sun rises. Prices are rising. Pas d'objet direct.",
+          "examples": ["The sun rises in the east. | Le soleil se lève à l'est.", "Prices are rising. | Les prix montent."]
+        }
+      ]
+    },
+    {
+      "id": "wear-put-on",
+      "title": "Wear / Put on — porter, mettre",
+      "hint": "put on = l'action d'enfiler ; wear = l'état de porter.",
+      "items": [
+        {
+          "word": "wear",
+          "pos": "verb",
+          "meaning": "porter (vêtement, accessoire)",
+          "rule": "État : She's wearing a red dress.",
+          "examples": ["He always wears a hat. | Il porte toujours un chapeau."]
+        },
+        {
+          "word": "put on",
+          "pos": "phrasal verb",
+          "meaning": "mettre, enfiler (l'action)",
+          "rule": "put on + vêtement.",
+          "examples": ["Put on your coat. | Mets ton manteau."]
+        }
+      ]
+    },
+    {
+      "id": "see-watch-look-at",
+      "title": "Look / See / Watch — la même vision",
+      "hint": "look at = volontaire et ponctuel ; watch = prolongé et en mouvement ; see = involontaire.",
+      "items": [
+        {
+          "word": "look at",
+          "pos": "phrasal verb",
+          "meaning": "regarder (diriger le regard)",
+          "rule": "look at the board / at me.",
+          "examples": ["Look at me. | Regarde-moi."]
+        },
+        {
+          "word": "see",
+          "pos": "verb",
+          "meaning": "voir (percevoir, sans intention)",
+          "rule": "I can see the sea.",
+          "examples": ["I can see clearly now. | Je vois clairement maintenant."]
+        },
+        {
+          "word": "watch",
+          "pos": "verb",
+          "meaning": "regarder (longtemps, en mouvement)",
+          "rule": "watch a show / the waves.",
+          "examples": ["We watched the sunset. | On a regardé le coucher de soleil."]
+        }
+      ]
+    },
+    {
+      "id": "affect-effect",
+      "title": "Affect / Effect — influencer ou résultat ?",
+      "hint": "affect = le verbe ; effect = le nom (résultat).",
+      "items": [
+        {
+          "word": "affect",
+          "pos": "verb",
+          "meaning": "affecter, influencer",
+          "rule": "The weather affects my mood.",
+          "examples": ["How does it affect you? | Comment ça t'affecte ?"]
+        },
+        {
+          "word": "effect",
+          "pos": "noun",
+          "meaning": "effet, résultat",
+          "rule": "have an effect ON something.",
+          "examples": ["It has a positive effect. | Ça a un effet positif."]
+        }
+      ]
+    },
+    {
+      "id": "as-like",
+      "title": "As / Like — comme",
+      "hint": "like + nom (comparaison) ; as + phrase (rôle, comme ça que).",
+      "items": [
+        {
+          "word": "like",
+          "pos": "preposition",
+          "meaning": "comme (ressemblance)",
+          "rule": "like + nom/pron : swim like a fish.",
+          "examples": ["She sings like an angel. | Elle chante comme un ange."]
+        },
+        {
+          "word": "as",
+          "pos": "conjunction / preposition",
+          "meaning": "en tant que ; comme (de cette façon)",
+          "rule": "as a teacher (rôle) ; as I said ; as + sujet + verbe.",
+          "examples": ["He works as a nurse. | Il travaille comme infirmier.", "As I said, it's fine. | Comme je l'ai dit, c'est bon."]
+        }
+      ]
+    },
+    {
+      "id": "besides-except",
+      "title": "Besides / Except — en plus ou sauf",
+      "hint": "besides = en plus de ; except = sauf.",
+      "items": [
+        {
+          "word": "besides",
+          "pos": "preposition",
+          "meaning": "en plus de, outre",
+          "rule": "Besides English, she speaks German.",
+          "examples": ["Besides me, who's coming? | À part moi, qui vient ?"]
+        },
+        {
+          "word": "except",
+          "pos": "preposition",
+          "meaning": "sauf",
+          "rule": "everyone except us.",
+          "examples": ["I like everything except onions. | J'aime tout sauf les oignons."]
+        }
+      ]
+    },
+    {
+      "id": "check-control",
+      "title": "Check / Control — vérifier ou contrôler",
+      "hint": "check = vérifier (s'assurer) ; control = maîtriser/diriger.",
+      "items": [
+        {
+          "word": "check",
+          "pos": "verb",
+          "meaning": "vérifier",
+          "rule": "check your answers / the time.",
+          "examples": ["Check the schedule. | Vérifie l'horaire."]
+        },
+        {
+          "word": "control",
+          "pos": "verb / noun",
+          "meaning": "contrôler, maîtriser",
+          "rule": "control a situation, lose control.",
+          "examples": ["Keep control of the car. | Garde le contrôle de la voiture."]
+        }
+      ]
+    },
+    {
+      "id": "actually-currently",
+      "title": "Actually / Currently — actuellement ?",
+      "hint": "actually = en fait ; currently = actuellement. (Faux ami !)",
+      "items": [
+        {
+          "word": "actually",
+          "pos": "adverb",
+          "meaning": "en fait, en réalité",
+          "rule": "Correcte une idée : Actually, it's free.",
+          "examples": ["Actually, I disagree. | En fait, je ne suis pas d'accord."]
+        },
+        {
+          "word": "currently",
+          "pos": "adverb",
+          "meaning": "actuellement, en ce moment",
+          "rule": "I'm currently working on it.",
+          "examples": ["She's currently in London. | Elle est actuellement à Londres."]
+        }
+      ]
+    },
+    {
+      "id": "eventually-finally",
+      "title": "Eventually / Finally — éventuellement ?",
+      "hint": "eventually = finalement (au bout du compte) ; finally = enfin (dernier point). Faux ami !",
+      "items": [
+        {
+          "word": "eventually",
+          "pos": "adverb",
+          "meaning": "finalement, tôt ou tard",
+          "rule": "Il arrivera tôt ou tard : eventually.",
+          "examples": ["He eventually agreed. | Il a fini par accepter."]
+        },
+        {
+          "word": "finally",
+          "pos": "adverb",
+          "meaning": "enfin, pour finir",
+          "rule": "Dernier point d'une liste ; enfin !",
+          "examples": ["We finally arrived! | On est enfin arrivés !"]
+        }
+      ]
+    },
+    {
+      "id": "assist-attend",
+      "title": "Attend / Assist — assister à ?",
+      "hint": "attend = assister à (être présent) ; assist = aider. Faux ami !",
+      "items": [
+        {
+          "word": "attend",
+          "pos": "verb",
+          "meaning": "assister à, être présent",
+          "rule": "attend a meeting / school.",
+          "examples": ["I attended the conference. | J'ai assisté à la conférence."]
+        },
+        {
+          "word": "assist",
+          "pos": "verb",
+          "meaning": "aider, épauler",
+          "rule": "assist someone WITH something.",
+          "examples": ["Can I assist you? | Puis-je vous aider ?"]
+        }
+      ]
+    },
+    {
+      "id": "opportunity-possibility",
+      "title": "Opportunity / Possibility — opportunité ?",
+      "hint": "opportunity = occasion favorable ; possibility = éventualité. Faux ami !",
+      "items": [
+        {
+          "word": "opportunity",
+          "pos": "noun",
+          "meaning": "occasion, opportunité favorable",
+          "rule": "a great opportunity TO do.",
+          "examples": ["It's a great opportunity. | C'est une belle occasion."]
+        },
+        {
+          "word": "possibility",
+          "pos": "noun",
+          "meaning": "possibilité, éventualité",
+          "rule": "the possibility OF doing.",
+          "examples": ["There's a possibility of rain. | Il y a une possibilité de pluie."]
+        }
+      ]
+    },
+    {
+      "id": "sensible-sensitive",
+      "title": "Sensible / Sensitive — sensible ?",
+      "hint": "sensible = raisonnable ; sensitive = sensible. Faux ami !",
+      "items": [
+        {
+          "word": "sensible",
+          "pos": "adjective",
+          "meaning": "raisonnable, sensé",
+          "rule": "a sensible decision, sensible shoes.",
+          "examples": ["That's a sensible choice. | C'est un choix raisonnable."]
+        },
+        {
+          "word": "sensitive",
+          "pos": "adjective",
+          "meaning": "sensible (émotions, peau)",
+          "rule": "sensitive skin, sensitive to criticism.",
+          "examples": ["Don't worry, he's very sensitive. | T'inquiète, il est très sensible."]
+        }
+      ]
+    },
+    {
+      "id": "library-bookshop",
+      "title": "Library / Bookshop — librairie ?",
+      "hint": "library = bibliothèque (emprunter) ; bookshop = librairie (acheter). Faux ami !",
+      "items": [
+        {
+          "word": "library",
+          "pos": "noun",
+          "meaning": "bibliothèque",
+          "rule": "borrow books FROM the library.",
+          "examples": ["I study at the library. | J'étudie à la bibliothèque."]
+        },
+        {
+          "word": "bookshop",
+          "pos": "noun",
+          "meaning": "librairie (magasin de livres)",
+          "rule": "buy books AT the bookshop (US : bookstore).",
+          "examples": ["The bookshop is open late. | La librairie est ouverte tard."]
+        }
+      ]
+    },
+    {
+      "id": "success-successful",
+      "title": "Success / Successful — le succès",
+      "hint": "success = le nom ; successful = l'adjectif.",
+      "items": [
+        {
+          "word": "success",
+          "pos": "noun",
+          "meaning": "succès, réussite",
+          "rule": "a success, a big success.",
+          "examples": ["The party was a success. | La fête a été un succès."]
+        },
+        {
+          "word": "successful",
+          "pos": "adjective",
+          "meaning": "à succès, qui réussit",
+          "rule": "a successful career.",
+          "examples": ["She's a successful lawyer. | C'est une avocate qui réussit."]
+        }
+      ]
+    },
+    {
+      "id": "why-because",
+      "title": "Because / Because of — à cause de",
+      "hint": "because + phrase ; because of + nom.",
+      "items": [
+        {
+          "word": "because",
+          "pos": "conjunction",
+          "meaning": "parce que",
+          "rule": "because + sujet + verbe : because I was tired.",
+          "examples": ["I stayed because I was tired. | Je suis resté parce que j'étais fatigué."]
+        },
+        {
+          "word": "because of",
+          "pos": "preposition",
+          "meaning": "à cause de",
+          "rule": "because of + nom : because of the rain.",
+          "examples": ["The flight was delayed because of the storm. | Le vol a été retardé à cause de l'orage."]
+        }
+      ]
+    },
+    {
+      "id": "despite-although",
+      "title": "Despite / Although — malgré",
+      "hint": "despite + nom ; although + phrase.",
+      "items": [
+        {
+          "word": "despite",
+          "pos": "preposition",
+          "meaning": "malgré, en dépit de",
+          "rule": "despite + nom/verbe-ing : despite the rain, despite feeling ill.",
+          "examples": ["We went out despite the rain. | On est sortis malgré la pluie."]
+        },
+        {
+          "word": "although",
+          "pos": "conjunction",
+          "meaning": "bien que, quoique",
+          "rule": "although + sujet + verbe.",
+          "examples": ["Although it was late, we went out. | Bien qu'il soit tard, on est sortis."]
+        }
+      ]
+    },
+    {
+      "id": "past-after",
+      "title": "Past / After — après",
+      "hint": "after = après (chronologie) ; past = au-delà d'une heure, plus loin.",
+      "items": [
+        {
+          "word": "after",
+          "pos": "preposition / conjunction",
+          "meaning": "après",
+          "rule": "after lunch, after I finish.",
+          "examples": ["After dinner, we watched a film. | Après le dîner, on a regardé un film."]
+        },
+        {
+          "word": "past",
+          "pos": "preposition / noun",
+          "meaning": "passé ; au-delà de (une heure, un lieu)",
+          "rule": "half past six, walk past the bank.",
+          "examples": ["It's half past six. | Il est six heures et demie.", "Walk past the church. | Passe devant l'église."]
+        }
+      ]
+    },
+    {
+      "id": "die-dead-death",
+      "title": "Die / Dead / Death — mourir",
+      "hint": "die = verbe ; dead = adjectif ; death = nom.",
+      "items": [
+        {
+          "word": "die",
+          "pos": "verb",
+          "meaning": "mourir",
+          "rule": "die OF / FROM something.",
+          "examples": ["He died last year. | Il est mort l'année dernière."]
+        },
+        {
+          "word": "dead",
+          "pos": "adjective",
+          "meaning": "mort",
+          "rule": "a dead battery, be dead.",
+          "examples": ["The battery is dead. | La batterie est morte."]
+        },
+        {
+          "word": "death",
+          "pos": "noun",
+          "meaning": "la mort",
+          "rule": "the death OF someone.",
+          "examples": ["His death surprised everyone. | Sa mort a surpris tout le monde."]
+        }
+      ]
+    },
+    {
+      "id": "weather-climate",
+      "title": "Weather / Climate — le temps, le climat",
+      "hint": "weather = le temps du jour ; climate = le climat de long terme.",
+      "items": [
+        {
+          "word": "weather",
+          "pos": "noun",
+          "meaning": "temps (météo du jour)",
+          "rule": "the weather is nice. Indénombrable.",
+          "examples": ["What's the weather like? | Quel temps fait-il ?"]
+        },
+        {
+          "word": "climate",
+          "pos": "noun",
+          "meaning": "climat (sur de longues périodes)",
+          "rule": "climate change, tropical climate.",
+          "examples": ["Climate change is real. | Le changement climatique est réel."]
+        }
+      ]
+    },
+    {
+      "id": "at-in-on-place",
+      "title": "At / In / On — les lieux",
+      "hint": "at = point précis ; in = dedans (enfermé) ; on = sur (surface).",
+      "items": [
+        {
+          "word": "at",
+          "pos": "preposition",
+          "meaning": "à (point précis)",
+          "rule": "at the door, at the bus stop, at school (lieu générique).",
+          "examples": ["I'm at the entrance. | Je suis à l'entrée."]
+        },
+        {
+          "word": "in",
+          "pos": "preposition",
+          "meaning": "dans, en (intérieur)",
+          "rule": "in a room, in a car, in London, in a book.",
+          "examples": ["The keys are in my bag. | Les clés sont dans mon sac."]
+        },
+        {
+          "word": "on",
+          "pos": "preposition",
+          "meaning": "sur (surface, support)",
+          "rule": "on the table, on the wall, on a bus (plateforme).",
+          "examples": ["The book is on the table. | Le livre est sur la table."]
+        }
+      ]
+    },
+    {
+      "id": "at-in-on-time",
+      "title": "At / In / On — le temps",
+      "hint": "at = heure précise ; on = jour/date ; in = mois, année, période.",
+      "items": [
+        {
+          "word": "at",
+          "pos": "preposition",
+          "meaning": "à (heure)",
+          "rule": "at 5 pm, at midnight, at the weekend (GB).",
+          "examples": ["See you at 6! | À 6 h !"]
+        },
+        {
+          "word": "on",
+          "pos": "preposition",
+          "meaning": "le (jour)",
+          "rule": "on Monday, on 5 March, on my birthday.",
+          "examples": ["The meeting is on Friday. | La réunion est vendredi."]
+        },
+        {
+          "word": "in",
+          "pos": "preposition",
+          "meaning": "en (mois, année, saison, durée)",
+          "rule": "in July, in 2026, in winter, in an hour.",
+          "examples": ["We met in 2020. | On s'est rencontrés en 2020."]
+        }
+      ]
+    },
+    {
+      "id": "made-of-from",
+      "title": "Made of / Made from — matière",
+      "hint": "made of = matériau visible ; made from = transformation.",
+      "items": [
+        {
+          "word": "made of",
+          "pos": "phrase",
+          "meaning": "fait de (matière reconnaissable)",
+          "rule": "made of wood, made of steel.",
+          "examples": ["The table is made of wood. | La table est en bois."]
+        },
+        {
+          "word": "made from",
+          "pos": "phrase",
+          "meaning": "fait à partir de (transformé)",
+          "rule": "made from grapes, paper is made from trees.",
+          "examples": ["Wine is made from grapes. | Le vin est fait à partir de raisins."]
+        }
+      ]
+    },
+    {
+      "id": "meet-meet-up",
+      "title": "Meet / Meet up / Know — rencontrer",
+      "hint": "meet = rencontrer pour la 1re fois ou rejoindre ; meet up = se voir (rendez-vous amical) ; know = connaître.",
+      "items": [
+        {
+          "word": "meet",
+          "pos": "verb",
+          "meaning": "rencontrer, faire la connaissance de",
+          "rule": "meet someone (1re fois) ; meet at the station (se rejoindre).",
+          "examples": ["Nice to meet you. | Enchanté.", "Let's meet at the café. | Retrouvons-nous au café."]
+        },
+        {
+          "word": "meet up",
+          "pos": "phrasal verb",
+          "meaning": "se retrouver, se voir",
+          "rule": "meet up WITH someone : pour passer du temps.",
+          "examples": ["Let's meet up this weekend. | Retrouvons-nous ce week-end."]
+        },
+        {
+          "word": "know",
+          "pos": "verb",
+          "meaning": "connaître",
+          "rule": "know someone/something : déjà rencontré, familier.",
+          "examples": ["I know her well. | Je la connais bien."]
+        }
+      ]
+    }
+  ]
+}

@@ -31,6 +31,7 @@ export type View =
   | 'exercises'
   | 'phrases'
   | 'grammar'
+  | 'wordrules'
   | 'settings'
   | 'onboarding'
 
