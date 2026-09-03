@@ -343,14 +343,29 @@ export function isRuleUnlocked(i: number, mastered: string[]): boolean {
   return mastered.includes(rules[i - 1].id)
 }
 
-/** Etoiles obtenues selon le nombre de fautes : 3 = parfait, 2 = 1 faute, 1 = le reste. */
-export function starsFor(mistakes: number): 1 | 2 | 3 {
-  if (mistakes <= 0) return 3
-  if (mistakes === 1) return 2
-  return 1
-}
 
 export interface GrammarProgress {
   mastered: string[]
   stars: Record<string, number>
+}
+
+// ==================== Validation de maitrise ====================
+
+/** Taille d'un quiz genere par l'IA. */
+export const QUIZ_SIZE = 8
+
+/** Part de bonnes reponses AU PREMIER COUP exigee pour valider une regle. */
+export const PASS_RATIO = 0.7
+
+/** Nombre de bonnes reponses (premier coup) necessaires pour valider. */
+export function requiredForPass(total: number): number {
+  return Math.ceil(total * PASS_RATIO)
+}
+
+/** Etoiles selon la part de reponses justes AU PREMIER COUP : 100 % = 3, >= 85 % = 2, sinon 1. */
+export function starsForFirstTry(first: number, total: number): 1 | 2 | 3 {
+  const r = first / Math.max(1, total)
+  if (r >= 1) return 3
+  if (r >= 0.85) return 2
+  return 1
 }

@@ -1,21 +1,27 @@
 import { useMemo, useState } from 'react'
-import { ArrowLeft, Check, CheckCircle2, ChevronRight, Lightbulb, Lock, Play, RotateCcw, Star, X } from 'lucide-react'
+import { ArrowLeft, BookOpen, Check, CheckCircle2, ChevronRight, Lightbulb, Lock, Play, RotateCcw, Sparkles, Star, X } from 'lucide-react'
 import type { CSSProperties } from 'react'
-import { GRAMMAR_TIERS, flattenRules, isRuleUnlocked, starsFor } from '../lib/grammar'
-import type { GrammarRule } from '../lib/grammar'
+import { GRAMMAR_TIERS, flattenRules, isRuleUnlocked, requiredForPass, starsForFirstTry, QUIZ_SIZE } from '../lib/grammar'
+import type { GrammarQuestion, GrammarRule } from '../lib/grammar'
+import { generateGrammarQuestions } from '../lib/grammarAI'
+import { NO_KEY_MSG } from '../lib/llm'
 import { isAnswerCloseEnough } from '../lib/similarity'
 import { loadGrammar, saveGrammar } from '../lib/storage'
 import { useApp } from '../state/store'
 import RuleText from './RuleText'
 
-type Phase = 'path' | 'lesson' | 'quiz' | 'result'
+type Phase = 'path' | 'lesson' | 'loading' | 'quiz' | 'result'
 
 /** Nuage de points de progression (une pastille par question). */
-function Dots({ total, done, active }: { total: number; done: number; active: boolean }): JSX.Element {
+function Dots({ total, done, firsts }: { total: number; done: number; firsts: boolean[] }): JSX.Element {
   return (
     <span className="dots" aria-label={`${done} sur ${total} questions`}>
       {Array.from({ length: total }, (_, i) => (
-        <i key={i} className={i < done ? 'ok' : i === done && active ? 'cur' : ''} />
+        <i
+          key={i}
+          className={i < firsts.length ? (firsts[i] ? 'ok' : 'mid') : i === done ? 'cur' : ''}
+          style={i < firsts.length ? (firsts[i] ? undefined : ({ background: '#F5C86B' } as CSSProperties)) : undefined}
+        />
       ))}
     </span>
   )
@@ -25,26 +31,24 @@ function StarRow({ n, size = 22 }: { n: number; size?: number }): JSX.Element {
   return (
     <span className="stars">
       {[1, 2, 3].map((i) => (
-        <Star
-          key={i}
-          size={size}
-          className={i <= n ? 'on' : ''}
-          style={{ animationDelay: `${i * 160}ms` }}
-        />
+        <Star key={i} size={size} className={i <= n ? 'on' : ''} style={{ animationDelay: `${i * 160}ms` }} />
       ))}
     </span>
   )
 }
 
 export default function Grammar(): JSX.Element {
-  const { go } = useApp()
+  const { go, settings } = useApp()
   const [progress, setProgress] = useState(loadGrammar)
   const [phase, setPhase] = useState<Phase>('path')
   const [rule, setRule] = useState<GrammarRule | null>(null)
   const [ruleIndex, setRuleIndex] = useState(-1)
+  const [questions, setQuestions] = useState<GrammarQuestion[]>([])
+  const [source, setSource] = useState<'ai' | 'bank'>('ai')
+  const [genError, setGenError] = useState<string | null>(null)
   const [qIndex, setQIndex] = useState(0)
-  const [mistakes, setMistakes] = useState(0)
-  const [retries, setRetries] = useState(0)
+  const [firsts, setFirsts] = useState<boolean[]>([]) // une entree par question passee : juste au 1er coup ?
+  const [usedRetry, setUsedRetry] = useState(false)
   const [answer, setAnswer] = useState('')
   const [checked, setChecked] = useState<null | boolean>(null)
   const [starGain, setStarGain] = useState(0)
@@ -59,10 +63,25 @@ export default function Grammar(): JSX.Element {
     setPhase('lesson')
   }
 
-  const play = (): void => {
+  /** Prepare un quiz : IA si possible, banque statique sinon. */
+  const play = async (): Promise<void> => {
+    if (!rule) return
+    setGenError(null)
+    setPhase('loading')
+    try {
+      const previous = [...rule.questions.map((q) => q.q)]
+      const generated = await generateGrammarQuestions(settings, rule, QUIZ_SIZE, previous)
+      setQuestions(generated)
+      setSource('ai')
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      setQuestions(rule.questions)
+      setSource('bank')
+      setGenError(msg === NO_KEY_MSG ? null : msg)
+    }
     setQIndex(0)
-    setMistakes(0)
-    setRetries(0)
+    setFirsts([])
+    setUsedRetry(false)
     setAnswer('')
     setChecked(null)
     setPhase('quiz')
@@ -70,38 +89,47 @@ export default function Grammar(): JSX.Element {
 
   const check = (): void => {
     if (!rule || checked !== null || !answer.trim()) return
-    const ok = isAnswerCloseEnough(answer, rule.questions[qIndex].a)
+    const q = questions[qIndex]
+    if (!q) return
+    const ok = isAnswerCloseEnough(answer, q.a)
     setChecked(ok)
+    if (ok && !usedRetry) setFirsts((f) => [...f, true])
     if (!ok) {
-      setMistakes((m) => m + 1)
-      setRetries((r) => r + 1)
+      if (!usedRetry) setFirsts((f) => [...f, false])
+      setUsedRetry(true)
     }
   }
 
   const next = (): void => {
-    if (!rule) return
     if (checked === false) {
-      // nouvelle tentative sur la meme question
+      // nouvelle tentative sur la meme question (ne compte plus au premier coup)
       setAnswer('')
       setChecked(null)
       return
     }
-    if (qIndex + 1 >= rule.questions.length) {
-      const stars = starsFor(mistakes)
-      setStarGain(stars)
-      setProgress((prev) => {
-        const nextG = {
-          mastered: prev.mastered.includes(rule.id) ? prev.mastered : [...prev.mastered, rule.id],
-          stars: { ...prev.stars, [rule.id]: Math.max(prev.stars[rule.id] ?? 0, stars) },
-        }
-        saveGrammar(nextG)
-        return nextG
-      })
+    if (qIndex + 1 >= questions.length) {
+      const first = firsts.filter(Boolean).length
+      const required = requiredForPass(questions.length)
+      if (first >= required) {
+        const stars = starsForFirstTry(first, questions.length)
+        setStarGain(stars)
+        setProgress((prev) => {
+          if (!rule) return prev
+          const nextG = {
+            mastered: prev.mastered.includes(rule.id) ? prev.mastered : [...prev.mastered, rule.id],
+            stars: { ...prev.stars, [rule.id]: Math.max(prev.stars[rule.id] ?? 0, stars) },
+          }
+          saveGrammar(nextG)
+          return nextG
+        })
+      } else {
+        setStarGain(0)
+      }
       setPhase('result')
       return
     }
     setQIndex((i) => i + 1)
-    setRetries(0)
+    setUsedRetry(false)
     setAnswer('')
     setChecked(null)
   }
@@ -112,7 +140,7 @@ export default function Grammar(): JSX.Element {
     setPhase('path')
   }
 
-  // ---------------- Leçon ----------------
+  // ---------------- Lecon ----------------
   if (phase === 'lesson' && rule) {
     return (
       <div>
@@ -120,7 +148,9 @@ export default function Grammar(): JSX.Element {
           <ArrowLeft size={16} /> Le parcours
         </button>
         <h1 className="title">{rule.title}</h1>
-        <p className="subtitle">Règle {ruleIndex + 1} / {rules.length} · Monde en cours</p>
+        <p className="subtitle">
+          Règle {ruleIndex + 1} / {rules.length}
+        </p>
         <div className="card">
           <div style={{ margin: '4px 0 12px', fontSize: '1.1rem' }}>
             <RuleText rule={rule.rule} />
@@ -134,21 +164,60 @@ export default function Grammar(): JSX.Element {
             </div>
           ))}
         </div>
-        <p className="muted" style={{ margin: '0 0 12px' }}>
-          À toi de jouer : {rule.questions.length} questions, les fautes ne coûtent que des étoiles.
-        </p>
-        <button className="btn btn-block btn-breathe" onClick={play}>
-          <Play size={18} /> Jouer
+        <div className="card" style={{ borderStyle: 'dashed' }}>
+          <p style={{ margin: 0, fontWeight: 700 }}>
+            <Sparkles size={15} style={{ verticalAlign: '-2px', color: 'var(--cyan)' }} /> Validation : {QUIZ_SIZE}{' '}
+            questions générées par l'IA (différentes à chaque fois)
+          </p>
+          <p className="muted" style={{ margin: '4px 0 0' }}>
+            Pour maîtriser la règle et débloquer la suite : au moins{' '}
+            <strong style={{ color: 'var(--text)' }}>
+              {requiredForPass(QUIZ_SIZE)} bonnes réponses sur {QUIZ_SIZE}, au premier coup
+            </strong>
+            . Tu peux réessayer chaque question sans limite — seules les réponses du premier coup comptent.
+          </p>
+        </div>
+        <button className="btn btn-block btn-breathe" onClick={() => void play()}>
+          <Play size={18} /> Commencer le quiz
         </button>
+      </div>
+    )
+  }
+
+  // ---------------- Chargement du quiz IA ----------------
+  if (phase === 'loading' && rule) {
+    return (
+      <div>
+        <button className="back" onClick={backToPath}>
+          <ArrowLeft size={16} /> Le parcours
+        </button>
+        <h1 className="title">{rule.title}</h1>
+        <div className="card center ex-loading">
+          <span className="typing" aria-label="Génération en cours">
+            <i />
+            <i />
+            <i />
+          </span>
+          <p style={{ margin: '8px 0 0' }}>
+            <Sparkles size={15} style={{ verticalAlign: '-2px', color: 'var(--cyan)' }} /> L'IA prépare des
+            questions sur mesure…
+          </p>
+        </div>
       </div>
     )
   }
 
   // ---------------- Quiz ----------------
   if (phase === 'quiz' && rule) {
-    const q = rule.questions[qIndex]
+    const q = questions[qIndex]
+    if (!q) {
+      setPhase('path')
+      return <div />
+    }
     const parts = q.q.split('___')
     const isBlank = parts.length === 2
+    const required = requiredForPass(questions.length)
+    const firstSoFar = firsts.filter(Boolean).length
     return (
       <div>
         <button className="back" onClick={backToPath}>
@@ -157,8 +226,19 @@ export default function Grammar(): JSX.Element {
         <div className="card">
           <div className="ex-top">
             <span className="cat-chip">{rule.title}</span>
-            <Dots total={rule.questions.length} done={qIndex} active />
+            <Dots total={questions.length} done={qIndex} firsts={firsts} />
           </div>
+          <p className="q-count" style={{ margin: '0 0 8px' }}>
+            {source === 'ai' ? (
+              <>
+                <Sparkles size={12} style={{ verticalAlign: '-1px' }} /> Quiz généré par l'IA ·{' '}
+              </>
+            ) : (
+              'Série embarquée · '
+            )}
+            Validation : {Math.max(required, firstSoFar) === required ? required : firstSoFar}/{questions.length}{' '}
+            au premier coup requis
+          </p>
           {isBlank ? (
             <p className="ex-sentence">
               {parts[0]}
@@ -193,71 +273,114 @@ export default function Grammar(): JSX.Element {
             <div className="answer-feedback">
               <span className={`verdict ${checked ? 'ok' : 'ko'}`}>
                 {checked ? <CheckCircle2 size={17} /> : <X size={17} />}
-                {checked ? 'Exact !' : 'Presque — réessaie.'}
+                {checked
+                  ? usedRetry
+                    ? 'Exact — mais après un essai (ça ne compte pas au premier coup).'
+                    : 'Exact, du premier coup !'
+                  : 'Presque — réessaie.'}
               </span>
+              {!checked && q.hint && (
+                <div className="hint">
+                  <Lightbulb size={15} /> {q.hint}
+                </div>
+              )}
               {!checked && (
-                <>
-                  {q.hint && (
-                    <div className="hint">
-                      <Lightbulb size={15} /> {q.hint}
-                    </div>
-                  )}
-                  <button className="btn btn-block" onClick={next}>
-                    Réessayer
-                  </button>
-                </>
+                <button className="btn btn-block" onClick={next}>
+                  Réessayer
+                </button>
               )}
               {checked && (
                 <button className="btn btn-block" onClick={next}>
-                  {qIndex + 1 >= rule.questions.length ? 'Terminer ✓' : 'Suivant →'}
+                  {qIndex + 1 >= questions.length ? 'Voir le bilan →' : 'Suivant →'}
                 </button>
               )}
             </div>
           )}
         </div>
+        {genError && source === 'bank' && (
+          <p className="note">IA indisponible ({genError}) — série embarquée de secours.</p>
+        )}
       </div>
     )
   }
 
-  // ---------------- Resultat ----------------
+  // ---------------- Bilan ----------------
   if (phase === 'result' && rule) {
     const idx = rules.findIndex((r) => r.id === rule.id)
     const nextRule = rules[idx + 1]
+    const total = questions.length
+    const first = firsts.filter(Boolean).length
+    const required = requiredForPass(total)
+    const passed = first >= required
+
     return (
       <div>
         <button className="back" onClick={backToPath}>
           <ArrowLeft size={16} /> Le parcours
         </button>
-        <h1 className="title center">Règle maîtrisée !</h1>
-        <div className="card center glow" style={{ padding: '34px 20px' }}>
-          <div className="card-title" style={{ fontSize: '1.3rem', marginBottom: 8 }}>
-            {rule.title}
-          </div>
-          <StarRow n={starGain} size={30} />
-          <p className="muted" style={{ margin: '10px 0 4px' }}>
-            {starGain === 3 ? 'Sans faute — parfait !' : starGain === 2 ? 'Presque parfait, rejoue pour 3 étoiles.' : 'Acquis ! Rejoue quand tu veux pour étoffer.'}
-          </p>
-          <p className="note" style={{ marginBottom: 16 }}>
-            {masteredCount}/{rules.length} règles maîtrisées
-          </p>
-          {nextRule ? (
-            <p className="note" style={{ marginBottom: 16 }}>
-              🔓 <strong>{nextRule.title}</strong> est débloquée.
-            </p>
-          ) : (
-            <p className="note" style={{ marginBottom: 16 }}>
-              🏆 Dernière règle du parcours — tu as tout maîtrisé !
-            </p>
-          )}
-          <div className="row" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn btn-outline" onClick={() => startRule(rule, idx)}>
-              <RotateCcw size={16} /> Rejouer
-            </button>
-            <button className="btn" onClick={backToPath}>
-              Continuer le parcours →
-            </button>
-          </div>
-        </div>
+        {passed ? (
+          <>
+            <h1 className="title center">Règle maîtrisée !</h1>
+            <div className="card center glow" style={{ padding: '34px 20px' }}>
+              <div className="card-title" style={{ fontSize: '1.3rem', marginBottom: 8 }}>
+                {rule.title}
+              </div>
+              <StarRow n={starGain} size={30} />
+              <p className="muted" style={{ margin: '10px 0 4px' }}>
+                {first}/{total} du premier coup —{' '}
+                {starGain === 3 ? 'sans faute, parfait !' : starGain === 2 ? 'très solide.' : 'validé.'}
+              </p>
+              <p className="note" style={{ marginBottom: 16 }}>
+                {masteredCount}/{rules.length} règles maîtrisées
+                {nextRule ? ` · 🔓 ${nextRule.title} débloquée` : ' · 🏆 parcours complet !'}
+              </p>
+              <div className="row" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => {
+                    setRule(rule)
+                    setRuleIndex(idx)
+                    setPhase('lesson')
+                  }}
+                >
+                  <RotateCcw size={16} /> Rejouer (nouveau quiz IA)
+                </button>
+                <button className="btn" onClick={backToPath}>
+                  Continuer le parcours →
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="title center">Pas encore — et c'est normal</h1>
+            <div className="card center" style={{ padding: '34px 20px' }}>
+              <div className="score-num">
+                {first}
+                <span> / {total}</span>
+              </div>
+              <p style={{ margin: '10px 0 4px', fontWeight: 700 }}>
+                Il faut {required}/{total} bonnes réponses au premier coup pour valider « {rule.title} ».
+              </p>
+              <p className="muted" style={{ margin: '0 0 18px' }}>
+                Relis la règle, puis retente : l'IA générera des questions différentes.
+              </p>
+              <div className="row" style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => {
+                    setPhase('lesson')
+                  }}
+                >
+                  <BookOpen size={16} /> Revoir la leçon
+                </button>
+                <button className="btn" onClick={() => void play()}>
+                  <Sparkles size={16} /> Nouveau quiz
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     )
   }
@@ -271,7 +394,8 @@ export default function Grammar(): JSX.Element {
       </button>
       <h1 className="title">Grammaire — le jeu des règles</h1>
       <p className="subtitle">
-        Maîtrise une règle, débloque la suivante.{' '}
+        Une règle se valide avec {requiredForPass(QUIZ_SIZE)}/{QUIZ_SIZE} bonnes réponses au premier coup —
+        ensuite, la suivante se débloque.{' '}
         <strong style={{ color: 'var(--text)' }}>
           {masteredCount}/{rules.length}
         </strong>{' '}
