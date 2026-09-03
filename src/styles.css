@@ -1692,3 +1692,69 @@ details[open] .chev {
     transform: rotate(360deg);
   }
 }
+
+/* ---------- Quiz + cartes de mots ---------- */
+.blank-chip {
+  display: inline-block;
+  min-width: 64px;
+  text-align: center;
+  border-bottom: 2px solid rgba(34, 211, 238, 0.55);
+  padding: 0 8px;
+  color: var(--cyan);
+  font-weight: 700;
+}
+.blank-chip.ok {
+  color: var(--ok);
+  border-bottom-color: var(--ok);
+}
+.blank-chip.ko {
+  color: var(--danger);
+  border-bottom-color: var(--danger);
+}
+.quiz-opt.ok {
+  background: rgba(52, 211, 153, 0.18);
+  border-color: var(--ok);
+  color: var(--ok);
+  font-weight: 700;
+}
+.quiz-opt.ko {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+/* carte a retourner */
+.flip-card {
+  perspective: 1200px;
+  min-height: 250px;
+  margin: 10px 0 16px;
+  cursor: pointer;
+}
+.flip-inner {
+  position: relative;
+  width: 100%;
+  min-height: 250px;
+  transform-style: preserve-3d;
+  transition: transform 600ms var(--ease-soft);
+}
+.flip-card.flipped .flip-inner {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+}
+.flip-back {
+  transform: rotateY(180deg);
+}

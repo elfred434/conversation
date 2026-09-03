@@ -53,3 +53,90 @@ export async function loadWordRules(basePath = 'data/word_rules.json'): Promise<
 
 /** Re-check le dictionnaire natif pour l'audio sur le mot d'une famille. */
 export type { DictEntry }
+
+// ==================== Quiz de discrimination ====================
+
+export interface WordQuizQuestion {
+  familyId: string
+  familyTitle: string
+  /** Phrase avec ___ a la place du mot. */
+  sentence: string
+  /** Mot de base attendu (tel qu'affiche dans les options). */
+  answer: string
+  /** Choix possibles = les mots de la famille (2 a 4). */
+  options: string[]
+  /** Regle d'usage du bon mot : montree apres chaque reponse. */
+  rule: string
+  meaning: string
+  fullExample: { en: string; fr: string }
+}
+
+function shuffle<T>(arr: T[], rng: () => number = Math.random): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+/** Remplace la (flexion du) mot par ___ dans l'exemple ; renvoie null si absent. */
+function blankWord(example: string, word: string): { sentence: string; form: string } | null {
+  const m = example.match(new RegExp(`\\b${word}(s|es|ed|d|ing|ing|t)?\\b`, 'i'))
+  if (!m) return null
+  return { sentence: example.replace(m[0], '___'), form: m[0] }
+}
+
+/** Construit le pool de questions depuis les familles (donnees reelles du depot). */
+export function buildQuizPool(families: WordRuleFamily[]): WordQuizQuestion[] {
+  const pool: WordQuizQuestion[] = []
+  const seen = new Set<string>()
+  for (const fam of families) {
+    const options = fam.items.map((it) => it.word.toLowerCase())
+    for (const item of fam.items) {
+      for (const ex of item.examples) {
+        const { en, fr } = splitExample(ex)
+        const blanked = blankWord(en, item.word)
+        if (!blanked) continue
+        const key = blanked.sentence.toLowerCase()
+        if (seen.has(key)) continue
+        seen.add(key)
+        pool.push({
+          familyId: fam.id,
+          familyTitle: fam.title,
+          sentence: blanked.sentence,
+          answer: item.word.toLowerCase(),
+          options,
+          rule: item.rule,
+          meaning: item.meaning,
+          fullExample: { en, fr },
+        })
+      }
+    }
+  }
+  return pool
+}
+
+/** Prend `count` questions reparties (pas deux fois la meme famille de suite),
+ *  puis melange les options. Deterministe via rng injectable (tests). */
+export function pickQuizQuestions(
+  pool: WordQuizQuestion[],
+  count: number,
+  rng: () => number = Math.random,
+): WordQuizQuestion[] {
+  const shuffled = shuffle(pool, rng)
+  const picked: WordQuizQuestion[] = []
+  for (const q of shuffled) {
+    if (picked.length >= count) break
+    if (picked.length > 0 && picked[picked.length - 1].familyId === q.familyId) continue
+    picked.push(q)
+  }
+  // si le filtre anti-suite a trop retire, complete avec le reste
+  if (picked.length < count) {
+    for (const q of shuffled) {
+      if (picked.length >= count) break
+      if (!picked.includes(q)) picked.push(q)
+    }
+  }
+  return picked.slice(0, count).map((q) => ({ ...q, options: shuffle(q.options, rng) }))
+}
