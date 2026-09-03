@@ -62,7 +62,7 @@ function Body(): JSX.Element | null {
 function Shell(): JSX.Element {
   const { view } = useApp()
   return (
-    <div className={`app ${view === 'home' ? 'wide' : ''}`}>
+    <div className="app">
       <Header />
       <main className="main">
         {/* key=view : remonte la vue a chaque navigation -> transition lente + cascade */}
