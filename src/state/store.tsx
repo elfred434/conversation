@@ -29,6 +29,7 @@ export type View =
   | 'pronunciation'
   | 'lessons'
   | 'exercises'
+  | 'phrases'
   | 'settings'
   | 'onboarding'
 

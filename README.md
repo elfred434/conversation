@@ -10,6 +10,7 @@ Apprendre l'anglais en discutant — **application web** (site 100 % statique, a
 - 🗣 **Prononciation** : écouter → répéter → score de similarité mot à mot
 - 🎯 **Exercices ciblés générés par l'IA** : adaptés à ton niveau et priorisés selon tes erreurs les plus fréquentes (repli automatique sur une banque hors-ligne intégrée)
 - 📚 **Leçons hors-ligne** embarquées
+- 💬 **Phrases courantes** : 6 packs hors-ligne (60 phrases avec sens FR + prononciation en syllabes françaises), **recherche IA** des phrases les plus courantes pour n'importe quelle situation, et dictionnaire gratuit (dictionaryapi.dev) avec phonétique IPA et **audio natif** par mot
 - 🏅 **Progression** : badges + statistiques par type d'erreur
 - 💾 **Sessions** : tes conversations sont sauvegardées localement et reprenables
 

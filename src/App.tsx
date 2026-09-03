@@ -7,6 +7,7 @@ import Progress from './views/Progress'
 import Pronunciation from './views/Pronunciation'
 import Lessons from './views/Lessons'
 import Exercises from './views/Exercises'
+import Phrases from './views/Phrases'
 import Settings from './views/Settings'
 
 function Header(): JSX.Element {
@@ -43,6 +44,8 @@ function Body(): JSX.Element | null {
       return <Lessons />
     case 'exercises':
       return <Exercises />
+    case 'phrases':
+      return <Phrases />
     case 'settings':
       return <Settings />
     default:

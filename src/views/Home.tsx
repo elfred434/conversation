@@ -1,4 +1,4 @@
-import { BookOpen, MessageCircle, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight } from 'lucide-react'
+import { BookOpen, MessageCircle, MessagesSquare, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LEVELS, SCENARIOS } from '../lib/prompts'
 import { dayLabel } from '../lib/dayLabel'
@@ -71,6 +71,9 @@ export default function Home(): JSX.Element {
         </button>
         <button className="chip" onClick={() => go('exercises')}>
           <Target size={15} /> Exercices ciblés
+        </button>
+        <button className="chip" onClick={() => go('phrases')}>
+          <MessagesSquare size={15} /> Phrases courantes
         </button>
         <button className="chip" onClick={() => go('progress')}>
           <Award size={15} /> Ma progression
