@@ -45,6 +45,8 @@ html,
 body {
   margin: 0;
   padding: 0;
+  -webkit-text-size-adjust: 100%; /* pas de texte gonfle en paysage sur iOS */
+  -webkit-tap-highlight-color: transparent; /* halo gris au tap : non merci */
 }
 body {
   background: var(--bg);
@@ -109,6 +111,7 @@ body::after {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh; /* hauteur reelle : la barre d'adresse mobile est prise en compte */
 }
 .main {
   flex: 1;
@@ -780,6 +783,7 @@ input[type='checkbox'] {
   line-height: 1.55;
   white-space: pre-wrap;
   word-break: break-word;
+  overflow-wrap: anywhere; /* URL ou mot interminable : la bulle ne deborde jamais */
   animation: bubbleIn var(--dur-in) var(--ease-soft) both;
 }
 @keyframes bubbleIn {
@@ -881,6 +885,7 @@ input[type='checkbox'] {
   position: sticky;
   bottom: 0;
   padding: 14px 0 6px;
+  padding-bottom: max(6px, env(safe-area-inset-bottom)); /* au-dessus de la barre gestuelle iOS */
   background: linear-gradient(0deg, var(--bg) 72%, transparent);
 }
 .pill-bar {
@@ -1911,5 +1916,40 @@ h1.title {
 @media (max-width: 560px) {
   .chip {
     padding: 10px 16px;
+  }
+}
+
+/* ---------- Responsivite niveau 2 : garde-fous ---------- */
+/* aucun enfant de carte ne peut pousser son parent hors de l'ecran */
+.sc-card .grow,
+.tool-tile,
+.hist-card > div,
+.conj-head,
+.dict-entry,
+.word-rule-item {
+  min-width: 0; /* autorise le retrecissement dans un flex */
+  overflow-wrap: anywhere;
+}
+
+/* tout ce qui se tape au doigt : pas de double-tap zoom parasite */
+.chip,
+.btn,
+.filter-tab,
+.icon-btn,
+.conj-row,
+.tab-btn {
+  touch-action: manipulation;
+}
+
+/* descriptions longues coupent proprement */
+.tool-tile .muted,
+.sc-card .muted {
+  overflow-wrap: anywhere;
+}
+
+/* paysage tres bas : pas de piege de hauteur */
+@media (max-height: 480px) and (orientation: landscape) {
+  .app {
+    min-height: auto;
   }
 }
