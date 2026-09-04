@@ -460,6 +460,8 @@ h1.title {
 input[type='text'],
 input[type='password'],
 input[type='url'],
+input[type='search'],
+input[type='email'],
 textarea,
 select {
   width: 100%;
@@ -2011,4 +2013,45 @@ h1.title {
 }
 .fiche-results .card {
   padding: 12px 16px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+/* ---------- Fiches : barre laterale des fiches + champ de recherche ---------- */
+/* sur mobile comme desktop : une seule rangee qui defile lateralement,
+   epinglee en haut pendant qu'on lit la fiche */
+.fiche-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 4px 0 14px;
+  padding: 6px 2px 12px;
+  scrollbar-width: none;
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: linear-gradient(180deg, var(--bg) 78%, transparent);
+}
+.fiche-tabs::-webkit-scrollbar {
+  display: none;
+}
+.fiche-tabs .chip {
+  flex: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); /* separe des lignes qui defilent dessous */
+}
+
+/* champ de recherche : grand, lisible, avec son etiquette */
+.fiche-search {
+  margin-bottom: 0;
+}
+.fiche-search input {
+  font-size: 1.05rem;
+  padding: 14px 16px;
+  border-radius: 16px;
 }

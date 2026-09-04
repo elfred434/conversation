@@ -62,7 +62,7 @@ export default function Fiches(): JSX.Element {
       {sheets.length > 0 && (
         <>
           <div className="card">
-            <label className="field">
+            <label className="field fiche-search">
               <span>Chercher dans toutes les fiches</span>
               <input
                 type="search"
@@ -87,7 +87,7 @@ export default function Fiches(): JSX.Element {
             </div>
           ) : (
             <>
-              <div className="filter-bar conj-tenses">
+              <div className="fiche-tabs">
                 {sheets.map((s) => (
                   <button
                     key={s.id}
