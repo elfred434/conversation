@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
 import { ArrowLeft, Volume2 } from 'lucide-react'
 import { TENSES, TENSE_RULES, VERBS, conjugate, fromFrench, isIrregular, verbFr, verbParts } from '../lib/conjugation'
 import type { TenseId } from '../lib/conjugation'
+import { translateFrEn } from '../lib/frTranslate'
 import { speak } from '../lib/tts'
 import { useApp } from '../state/store'
 
-const VALID = /^[a-z-]+$/i
+const VALID = /^[a-zà-öø-ÿ'’ -]+$/i
 
 /** Conjugaisons : tableaux hors-ligne pour les temps de base + modaux. */
 export default function Conjugaison(): JSX.Element {
@@ -13,6 +15,8 @@ export default function Conjugaison(): JSX.Element {
   const [verb, setVerb] = useState('work')
   const [input, setInput] = useState('')
   const [tense, setTense] = useState<TenseId>('present-simple')
+  const [looking, setLooking] = useState(false)
+  const [apiNote, setApiNote] = useState<null | { fr: string; en: string; ok: boolean }>(null)
 
   const v = verb.trim().toLowerCase()
   const rows = useMemo(() => (v && VALID.test(v) ? conjugate(v, tense) : []), [v, tense])
@@ -27,6 +31,29 @@ export default function Conjugaison(): JSX.Element {
   const pick = (word: string): void => {
     setVerb(word)
     setInput('')
+  }
+
+  // D'abord le dictionnaire interne, sinon l'API en ligne, sinon : verbe anglais.
+  const submit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    const w = input.trim().toLowerCase()
+    if (!w || !VALID.test(w)) return
+    const local = fromFrench(w)
+    if (local) {
+      setApiNote(null)
+      pick(local)
+      return
+    }
+    setLooking(true)
+    setApiNote(null)
+    const en = await translateFrEn(w, settings)
+    setLooking(false)
+    if (en) {
+      setApiNote({ fr: w, en, ok: true })
+      pick(en)
+    } else {
+      setApiNote({ fr: w, en: '', ok: false })
+      pick(w)
+    }
   }
 
   return (
@@ -55,10 +82,7 @@ export default function Conjugaison(): JSX.Element {
           className="key-row"
           onSubmit={(e) => {
             e.preventDefault()
-            const w = input.trim().toLowerCase()
-            if (!w || !VALID.test(w)) return
-            // francais accepte : 'voyager' -> travel, 'aller' -> go
-            pick(fromFrench(w) ?? w)
+            void submit(e as FormEvent<HTMLFormElement>)
           }}
         >
           <input
@@ -67,10 +91,20 @@ export default function Conjugaison(): JSX.Element {
             placeholder="Verbe en anglais ou en français (ex : travel ou voyager)"
             onChange={(e) => setInput(e.target.value)}
           />
-          <button className="btn" type="submit">
-            Conjuguer
+          <button className="btn" type="submit" disabled={looking}>
+            {looking ? 'Traduction…' : 'Conjuguer'}
           </button>
         </form>
+        {apiNote && apiNote.ok && (
+          <p className="muted" style={{ margin: '10px 0 0', fontSize: '0.9rem' }}>
+            « {apiNote.fr} » traduit en ligne (API) → <strong>to {apiNote.en}</strong>
+          </p>
+        )}
+        {apiNote && !apiNote.ok && (
+          <p className="muted" style={{ margin: '10px 0 0', fontSize: '0.9rem' }}>
+            Traduction en ligne indisponible — « {apiNote.fr} » est traité comme un verbe anglais.
+          </p>
+        )}
         {v && (
           <p className="muted" style={{ margin: '10px 0 0', fontSize: '0.9rem' }}>
             {isIrregular(v) && parts ? (
