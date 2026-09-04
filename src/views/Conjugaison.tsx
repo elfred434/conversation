@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowLeft, Volume2 } from 'lucide-react'
-import { SUGGESTED, TENSES, conjugate, isIrregular, verbFr, verbParts } from '../lib/conjugation'
+import { TENSES, VERBS, conjugate, isIrregular, verbFr, verbParts } from '../lib/conjugation'
 import type { TenseId } from '../lib/conjugation'
 import { speak } from '../lib/tts'
 import { useApp } from '../state/store'
@@ -19,6 +19,10 @@ export default function Conjugaison(): JSX.Element {
   const parts = verbParts(v)
   const fr = verbFr(v)
   const tenseInfo = TENSES.find((t) => t.id === tense)
+  const options = useMemo(
+    () => (VERBS.some((x) => x.v === v) ? VERBS : [{ v, fr: verbFr(v) ?? '' }, ...VERBS]),
+    [v],
+  )
 
   const pick = (word: string): void => {
     setVerb(word)
@@ -36,17 +40,19 @@ export default function Conjugaison(): JSX.Element {
       </p>
 
       <div className="card">
-        <span className="field-label">Choisis un verbe</span>
-        <div className="filter-bar conj-chips">
-          {SUGGESTED.map((s) => (
-            <button key={s.v} className={`chip ${v === s.v ? 'active' : ''}`} onClick={() => pick(s.v)}>
-              {s.v}
-            </button>
-          ))}
-        </div>
+        <label className="field">
+          <span>Choisis un verbe</span>
+          <select value={v} onChange={(e) => pick(e.target.value)}>
+            {options.map((s) => (
+              <option key={s.v} value={s.v}>
+                {s.v}
+                {s.fr ? ` — ${s.fr}` : ''}
+              </option>
+            ))}
+          </select>
+        </label>
         <form
           className="key-row"
-          style={{ marginTop: 12 }}
           onSubmit={(e) => {
             e.preventDefault()
             const w = input.trim().toLowerCase()
@@ -97,9 +103,9 @@ export default function Conjugaison(): JSX.Element {
             </span>
           </div>
           <div className="conj-table">
-            {rows.map((r) => (
+            {rows.map((r, i) => (
               <button
-                key={`${r.p}-${r.form}`}
+                key={i}
                 className="conj-row"
                 onClick={() => speak(r.form, settings.voiceURI, settings.rate)}
                 title="Écouter"

@@ -1793,8 +1793,8 @@ details[open] .chev {
 }
 
 /* ---------- Conjugaisons ---------- */
-.conj-chips {
-  margin: 8px 0 0;
+.conj-select {
+  max-width: 420px;
 }
 .conj-tenses {
   margin: 4px 0 14px;

@@ -117,6 +117,22 @@ export const SUGGESTED: { v: string; fr: string }[] = [
   { v: 'stop', fr: 'arrêter' }, { v: 'travel', fr: 'voyager' }, { v: 'watch', fr: 'regarder' },
 ]
 
+/** Liste complete pour le select : suggere d'abord, puis irreguliers, puis reguliers connus. */
+export const VERBS: { v: string; fr: string }[] = (() => {
+  const out: { v: string; fr: string }[] = []
+  const seen = new Set<string>()
+  const push = (v: string, fr: string): void => {
+    if (!seen.has(v)) {
+      seen.add(v)
+      out.push({ v, fr })
+    }
+  }
+  SUGGESTED.forEach((s) => push(s.v, s.fr))
+  Object.entries(IRREG).forEach(([v, d]) => push(v, d.fr))
+  Object.entries(REG_FR).forEach(([v, fr]) => push(v, fr))
+  return out
+})()
+
 export const MODALS: { m: string; fr: string }[] = [
   { m: 'can', fr: 'pouvoir (capacité)' },
   { m: 'could', fr: 'pouvoir (passé, politesse)' },

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { conjugate, ingForm, isIrregular, IRREG, pastForm, thirdPerson, verbParts } from './conjugation'
+import { conjugate, ingForm, isIrregular, IRREG, pastForm, thirdPerson, VERBS, verbParts } from './conjugation'
 import { MODALS, PERSONS, SUGGESTED, TENSES } from './conjugation'
 
 describe('formes generees', () => {
@@ -92,5 +92,12 @@ describe('donnees', () => {
       expect(ir.past.length, base).toBeGreaterThan(0)
       expect(ir.pp.length, base).toBeGreaterThan(0)
     }
+  })
+  test('VERBS : liste unique et suffisante pour le select', () => {
+    const vs = VERBS.map((x) => x.v)
+    expect(new Set(vs).size).toBe(vs.length)
+    expect(vs.length).toBeGreaterThanOrEqual(60)
+    for (const must of ['be', 'have', 'go', 'work']) expect(vs).toContain(must)
+    expect(VERBS.find((x) => x.v === 'go')?.fr).toBe('aller')
   })
 })
