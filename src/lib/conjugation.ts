@@ -117,6 +117,64 @@ export const SUGGESTED: { v: string; fr: string }[] = [
   { v: 'stop', fr: 'arrêter' }, { v: 'travel', fr: 'voyager' }, { v: 'watch', fr: 'regarder' },
 ]
 
+/** Les regles de chaque temps, une idee par entree (affichee une idee par ligne). */
+export const TENSE_RULES: Record<TenseId, string[]> = {
+  'present-simple': [
+    'Usage : habitudes et routines (I work every day).',
+    'Aussi : vérités générales (The sun rises in the east).',
+    'Formation : base verbale, avec -s à la 3ᵉ personne (he works).',
+    'Après s, ss, sh, ch, x, o : -es (he watches, she goes).',
+    'Consonne + y : -ies (study → studies).',
+    'Négation : don’t / doesn’t + verbe nu (She doesn’t like tea).',
+    'Question : Do / Does + sujet + verbe nu (Does he play?).',
+    'Indices fréquents : every day, usually, often, always, on Mondays.',
+  ],
+  'past-simple': [
+    'Usage : action finie et datée (Yesterday, I watched TV).',
+    'Verbes réguliers : -ed (play → played).',
+    'Se termine par e : -d seulement (live → lived).',
+    'Consonne + y : -ied (study → studied).',
+    'Certains doublent la dernière lettre : stop → stopped, plan → planned.',
+    'Irréguliers : à apprendre par cœur (go → went, see → saw, eat → ate).',
+    'Négation : didn’t + verbe nu (I didn’t go).',
+    'Question : Did + sujet + verbe nu (Did you see him?).',
+    'Indices fréquents : yesterday, last week, in 2010, two days ago.',
+  ],
+  'present-continuous': [
+    'Usage : action en cours maintenant (I am reading).',
+    'Aussi : situation temporaire (I am staying with friends this week).',
+    'Formation : am / is / are + verbe-ing.',
+    'e muet tombe : make → making, write → writing.',
+    'ie → ying : lie → lying, die → dying.',
+    'Doublement : run → running, swim → swimming.',
+    'Négation : am not / isn’t / aren’t + -ing (He isn’t sleeping).',
+    'Question : Am / Is / Are + sujet + -ing ? (Are you coming?).',
+    'Indices fréquents : now, right now, at the moment, Look!',
+    'Attention : like, love, want, know, need ne prennent pas de -ing.',
+  ],
+  'past-continuous': [
+    'Usage : action en cours dans le passé (I was reading at 8 pm).',
+    'Souvent interrompue par une action brève : I was sleeping when you called.',
+    'Formation : was / were + verbe-ing.',
+    'was avec I, he / she / it ; were avec you, we, they.',
+    'Structure fréquente : While + passé continu, prétérit (While she was cooking, he arrived).',
+    'Négation : wasn’t / weren’t + -ing (They weren’t waiting).',
+    'Question : Was / Were + sujet + -ing ? (Were you working?).',
+    'Indices fréquents : while, at 8 pm yesterday, all morning.',
+  ],
+  modals: [
+    'Toujours suivis du verbe nu : pas de -s, pas de to (She can swim).',
+    'Pas de -s à la 3ᵉ personne : He must go (jamais musts).',
+    'can / could : capacité ; could sert aussi de politesse (Could you help?).',
+    'must : obligation forte ; should : conseil.',
+    'may / might : permission et possibilité.',
+    'will : futur (décision, prédiction) ; would : hypothèse et politesse.',
+    'shall : proposition soutenu (GB) : Shall we go?.',
+    'Négation : modal + not (can’t, mustn’t, shouldn’t).',
+    'Question : le modal passe devant le sujet (Can you swim?).',
+  ],
+}
+
 /** Liste complete pour le select : suggere d'abord, puis irreguliers, puis reguliers connus. */
 export const VERBS: { v: string; fr: string }[] = (() => {
   const out: { v: string; fr: string }[] = []

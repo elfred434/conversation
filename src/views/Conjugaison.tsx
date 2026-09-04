@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowLeft, Volume2 } from 'lucide-react'
-import { TENSES, VERBS, conjugate, isIrregular, verbFr, verbParts } from '../lib/conjugation'
+import { TENSES, TENSE_RULES, VERBS, conjugate, isIrregular, verbFr, verbParts } from '../lib/conjugation'
 import type { TenseId } from '../lib/conjugation'
 import { speak } from '../lib/tts'
 import { useApp } from '../state/store'
@@ -118,11 +118,16 @@ export default function Conjugaison(): JSX.Element {
               </button>
             ))}
           </div>
-          {tense === 'modals' && (
-            <p className="muted" style={{ margin: '12px 0 0', fontSize: '0.9rem' }}>
-              Les modaux sont toujours suivis du verbe nu : pas de -s, pas de to.
-            </p>
-          )}
+          <div className="word-rule-box">
+            <span className="field-label" style={{ marginBottom: 2 }}>
+              La règle de ce temps
+            </span>
+            <ul className="rule-lines">
+              {TENSE_RULES[tense].map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { conjugate, ingForm, isIrregular, IRREG, pastForm, thirdPerson, VERBS, verbParts } from './conjugation'
+import { conjugate, ingForm, isIrregular, IRREG, pastForm, TENSE_RULES, thirdPerson, VERBS, verbParts } from './conjugation'
 import { MODALS, PERSONS, SUGGESTED, TENSES } from './conjugation'
 
 describe('formes generees', () => {
@@ -92,6 +92,15 @@ describe('donnees', () => {
       expect(ir.past.length, base).toBeGreaterThan(0)
       expect(ir.pp.length, base).toBeGreaterThan(0)
     }
+  })
+  test('TENSE_RULES : chaque temps a ses regles, une idee par ligne', () => {
+    for (const t of TENSES) {
+      const lines = TENSE_RULES[t.id]
+      expect(lines.length, t.id).toBeGreaterThanOrEqual(5)
+      for (const line of lines) expect(line.trim().length, t.id).toBeGreaterThan(5)
+    }
+    expect(TENSE_RULES['past-simple'].some((l) => l.includes('didn’t'))).toBe(true)
+    expect(TENSE_RULES.modals.some((l) => l.includes('verbe nu'))).toBe(true)
   })
   test('VERBS : liste unique et suffisante pour le select', () => {
     const vs = VERBS.map((x) => x.v)
