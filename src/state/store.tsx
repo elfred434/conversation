@@ -32,6 +32,7 @@ export type View =
   | 'phrases'
   | 'grammar'
   | 'wordrules'
+  | 'conjugaison'
   | 'settings'
   | 'onboarding'
 
