@@ -138,7 +138,7 @@ export default function Phrases(): JSX.Element {
             </button>
           </div>
         </label>
-        <div className="chips" style={{ margin: 0 }}>
+        <div className="sticky-tabs">
           {PHRASE_PACKS.map((p) => (
             <button key={p.id} className={`chip ${packId === p.id && source === 'pack' ? 'active' : ''}`} onClick={() => showPack(p.id)}>
               {p.title}

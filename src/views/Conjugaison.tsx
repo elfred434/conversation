@@ -119,7 +119,7 @@ export default function Conjugaison(): JSX.Element {
         )}
       </div>
 
-      <div className="filter-bar conj-tenses">
+      <div className="sticky-tabs">
         {TENSES.map((t) => (
           <button key={t.id} className={`chip ${tense === t.id ? 'active' : ''}`} onClick={() => setTense(t.id)}>
             {t.label}

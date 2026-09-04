@@ -387,7 +387,7 @@ export default function WordRules(): JSX.Element {
         Même sens, usages différents — le guide pour comprendre, le quiz et les cartes pour retenir.
       </p>
 
-      <div className="filter-bar" role="tablist" aria-label="Modes">
+      <div className="sticky-tabs" role="tablist" aria-label="Modes">
         {MODES.map((m) => {
           const Icon = m.icon
           return (
