@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { conjugate, ingForm, isIrregular, IRREG, pastForm, TENSE_RULES, thirdPerson, VERBS, verbParts } from './conjugation'
+import { conjugate, fromFrench, ingForm, isIrregular, IRREG, normalizeVerb, pastForm, TENSE_RULES, thirdPerson, VERBS, verbParts } from './conjugation'
 import { MODALS, PERSONS, SUGGESTED, TENSES } from './conjugation'
 
 describe('formes generees', () => {
@@ -92,6 +92,20 @@ describe('donnees', () => {
       expect(ir.past.length, base).toBeGreaterThan(0)
       expect(ir.pp.length, base).toBeGreaterThan(0)
     }
+  })
+  test('fromFrench : verbe francais -> anglais, avec accents et apostrophes', () => {
+    expect(fromFrench('aller')).toBe('go')
+    expect(fromFrench('voyager')).toBe('travel')
+    expect(fromFrench('étudier')).toBe('study')
+    expect(fromFrench('Etudier')).toBe('study')
+    expect(fromFrench('s’asseoir')).toBe('sit')
+    expect(fromFrench('travailler')).toBe('work')
+    expect(fromFrench('work')).toBeNull() // anglais : pas une entree francaise
+    expect(fromFrench('motinconnu')).toBeNull()
+  })
+  test('normalizeVerb : accents et apostrophes unifies', () => {
+    expect(normalizeVerb('  Écouter ')).toBe('ecouter')
+    expect(normalizeVerb("s'asseoir")).toBe(normalizeVerb('s’asseoir'))
   })
   test('TENSE_RULES : chaque temps a ses regles, une idee par ligne', () => {
     for (const t of TENSES) {

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ArrowLeft, Volume2 } from 'lucide-react'
-import { TENSES, TENSE_RULES, VERBS, conjugate, isIrregular, verbFr, verbParts } from '../lib/conjugation'
+import { TENSES, TENSE_RULES, VERBS, conjugate, fromFrench, isIrregular, verbFr, verbParts } from '../lib/conjugation'
 import type { TenseId } from '../lib/conjugation'
 import { speak } from '../lib/tts'
 import { useApp } from '../state/store'
@@ -56,13 +56,15 @@ export default function Conjugaison(): JSX.Element {
           onSubmit={(e) => {
             e.preventDefault()
             const w = input.trim().toLowerCase()
-            if (w && VALID.test(w)) pick(w)
+            if (!w || !VALID.test(w)) return
+            // francais accepte : 'voyager' -> travel, 'aller' -> go
+            pick(fromFrench(w) ?? w)
           }}
         >
           <input
             type="text"
             value={input}
-            placeholder="Autre verbe ? Tape-le ici (ex : travel)"
+            placeholder="Verbe en anglais ou en français (ex : travel ou voyager)"
             onChange={(e) => setInput(e.target.value)}
           />
           <button className="btn" type="submit">

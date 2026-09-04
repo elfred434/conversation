@@ -175,6 +175,37 @@ export const TENSE_RULES: Record<TenseId, string[]> = {
   ],
 }
 
+/** Normalise une saisie : minuscules, sans accents, apostrophes unifiees. */
+export function normalizeVerb(s: string): string {
+  return s
+    .trim()
+    .toLowerCase()
+    .replace(/[’‘`]/g, "'")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+}
+
+/** Dictionnaire inverse : francais -> verbe anglais (premiere occurrence = la plus courante). */
+const FR_TO_EN: Map<string, string> = (() => {
+  const map = new Map<string, string>()
+  const put = (fr: string, v: string): void => {
+    const key = normalizeVerb(fr)
+    if (key && !map.has(key)) map.set(key, v)
+  }
+  for (const [v, d] of Object.entries(IRREG)) put(d.fr, v)
+  for (const [v, fr] of Object.entries(REG_FR)) put(fr, v)
+  for (const s of SUGGESTED) put(s.fr, s.v)
+  return map
+})()
+
+/**
+ * Traduit un verbe francais vers l'anglais conna du dictionnaire interne.
+ * Retourne null si la saisie n'est pas un francais connu (ce sera traite comme anglais).
+ */
+export function fromFrench(input: string): string | null {
+  return FR_TO_EN.get(normalizeVerb(input)) ?? null
+}
+
 /** Liste complete pour le select : suggere d'abord, puis irreguliers, puis reguliers connus. */
 export const VERBS: { v: string; fr: string }[] = (() => {
   const out: { v: string; fr: string }[] = []
