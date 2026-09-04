@@ -1953,3 +1953,62 @@ h1.title {
     min-height: auto;
   }
 }
+
+/* ---------- Fiches express ---------- */
+.fiche-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.fiche-group-title {
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--cyan);
+}
+.fiche-note {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+}
+.fiche-rows {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+.fiche-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: rgba(147, 160, 196, 0.07);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 9px 12px;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.93rem;
+  transition: border-color 300ms var(--ease-soft);
+}
+.fiche-row:hover {
+  border-color: rgba(34, 211, 238, 0.5);
+}
+.fiche-term {
+  font-weight: 700;
+}
+.fiche-cell {
+  color: var(--muted);
+}
+.fiche-vol {
+  color: var(--muted);
+  margin-left: auto;
+  flex: none;
+  align-self: center;
+}
+.fiche-hit .fiche-row {
+  margin-top: 10px;
+}
+.fiche-results .card {
+  padding: 12px 16px;
+}

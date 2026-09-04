@@ -1,0 +1,2075 @@
+{
+ "meta": {
+  "version": 1
+ },
+ "sheets": [
+  {
+   "id": "question-words",
+   "title": "Mots interrogatifs",
+   "subtitle": "Question words — poser les bonnes questions",
+   "columns": [
+    "Mot",
+    "Sens",
+    "Exemple"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "note": "",
+     "rows": [
+      [
+       "who",
+       "qui (personne)",
+       "Who is your best friend?"
+      ],
+      [
+       "which",
+       "lequel / laquelle (choix)",
+       "Which color do you like most?"
+      ],
+      [
+       "where",
+       "où (lieu)",
+       "Where do you live?"
+      ],
+      [
+       "whose",
+       "à qui (possession)",
+       "Whose book is this?"
+      ],
+      [
+       "how",
+       "comment (manière)",
+       "How are you today?"
+      ],
+      [
+       "what",
+       "quoi / que (chose, idée)",
+       "What are you doing?"
+      ],
+      [
+       "why",
+       "pourquoi (raison)",
+       "Why are you late?"
+      ],
+      [
+       "when",
+       "quand (temps)",
+       "When is your birthday?"
+      ],
+      [
+       "how old",
+       "quel âge",
+       "How old are you?"
+      ],
+      [
+       "how much",
+       "combien (indénombrable, prix)",
+       "How much sugar do you need?"
+      ],
+      [
+       "how many",
+       "combien (dénombrable)",
+       "How many students are in your class?"
+      ],
+      [
+       "what time",
+       "quelle heure",
+       "What time does the train leave?"
+      ],
+      [
+       "how often",
+       "à quelle fréquence",
+       "How often do you exercise?"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "stop-very",
+   "title": "Arrête de dire « very »",
+   "subtitle": "Stop saying very — des mots plus précis",
+   "columns": [
+    "Au lieu de…",
+    "Dis…",
+    "Sens"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "note": "",
+     "rows": [
+      [
+       "very noisy",
+       "deafening",
+       "assourdissant"
+      ],
+      [
+       "very old",
+       "ancient",
+       "vénérable"
+      ],
+      [
+       "very happy",
+       "delighted",
+       "ravi"
+      ],
+      [
+       "very sad",
+       "miserable",
+       "misérable"
+      ],
+      [
+       "very tired",
+       "exhausted",
+       "épuisé"
+      ],
+      [
+       "very angry",
+       "furious",
+       "furieux"
+      ],
+      [
+       "very scared",
+       "terrified",
+       "terrifié"
+      ],
+      [
+       "very big",
+       "massive",
+       "massif"
+      ],
+      [
+       "very small",
+       "tiny",
+       "minuscule"
+      ],
+      [
+       "very hot",
+       "boiling",
+       "bouillant"
+      ],
+      [
+       "very cold",
+       "freezing",
+       "glacial"
+      ],
+      [
+       "very fast",
+       "rapid",
+       " rapide"
+      ],
+      [
+       "very slow",
+       "sluggish",
+       "au ralenti"
+      ],
+      [
+       "very clean",
+       "spotless",
+       "impeccable"
+      ],
+      [
+       "very dirty",
+       "filthy",
+       "crasseux"
+      ],
+      [
+       "very good",
+       "excellent",
+       "excellent"
+      ],
+      [
+       "very bad",
+       "terrible",
+       "affreux"
+      ],
+      [
+       "very famous",
+       "renowned",
+       "renommé"
+      ],
+      [
+       "very boring",
+       "tedious",
+       "ennuyeux à mourir"
+      ],
+      [
+       "very important",
+       "crucial",
+       "crucial"
+      ],
+      [
+       "very easy",
+       "effortless",
+       "facile comme tout"
+      ],
+      [
+       "very hard",
+       "challenging",
+       "éprouvant"
+      ],
+      [
+       "very hungry",
+       "starving",
+       "affamé"
+      ],
+      [
+       "very thirsty",
+       "parched",
+       "assoiffé"
+      ],
+      [
+       "very rich",
+       "wealthy",
+       "fortuné"
+      ],
+      [
+       "very poor",
+       "destitute",
+       "démuni"
+      ],
+      [
+       "very loud",
+       "thunderous",
+       "tonitruant"
+      ],
+      [
+       "very quiet",
+       "silent",
+       "silencieux"
+      ],
+      [
+       "very bright",
+       "brilliant",
+       "éclatant"
+      ],
+      [
+       "very dark",
+       "pitch-dark",
+       "noir comme la nuit"
+      ],
+      [
+       "very beautiful",
+       "gorgeous",
+       "magnifique"
+      ],
+      [
+       "very ugly",
+       "hideous",
+       "hideux"
+      ],
+      [
+       "very funny",
+       "hilarious",
+       "hilarant"
+      ],
+      [
+       "very serious",
+       "grave",
+       "très sérieux"
+      ],
+      [
+       "very weak",
+       "fragile",
+       "fragile"
+      ],
+      [
+       "very strong",
+       "powerful",
+       "puissant"
+      ],
+      [
+       "very smart",
+       "brilliant",
+       "très doué"
+      ],
+      [
+       "very stupid",
+       "ignorant",
+       "bête à pleurer"
+      ],
+      [
+       "very afraid",
+       "petrified",
+       "pétrifié"
+      ],
+      [
+       "very calm",
+       "serene",
+       "serein"
+      ],
+      [
+       "very often",
+       "frequently",
+       "fréquemment"
+      ],
+      [
+       "very painful",
+       "excruciating",
+       "atroce"
+      ],
+      [
+       "very perfect",
+       "flawless",
+       "sans défaut"
+      ],
+      [
+       "very powerful",
+       "compelling",
+       "percutant"
+      ],
+      [
+       "very quick",
+       "swift",
+       "vif"
+      ],
+      [
+       "very rainy",
+       "pouring",
+       "diluvien"
+      ],
+      [
+       "very sharp",
+       "keen",
+       "acéré"
+      ],
+      [
+       "very shiny",
+       "gleaming",
+       "luisant"
+      ],
+      [
+       "very short",
+       "brief",
+       "bref"
+      ],
+      [
+       "very shy",
+       "timid",
+       "timide"
+      ],
+      [
+       "very simple",
+       "basic",
+       "élémentaire"
+      ],
+      [
+       "very clear",
+       "obvious",
+       "évident"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sentence-starters",
+   "title": "Amorces de phrases",
+   "subtitle": "Sentence starters — pour s'exprimer comme à l'écrit",
+   "columns": [
+    "Amorce",
+    "Français"
+   ],
+   "groups": [
+    {
+     "title": "Introduction",
+     "note": "",
+     "rows": [
+      [
+       "In this essay…",
+       "Dans cet essai…"
+      ],
+      [
+       "The central theme…",
+       "Le thème central…"
+      ],
+      [
+       "The essay discusses…",
+       "L'essai traite de…"
+      ],
+      [
+       "The issue focused on…",
+       "La question abordée…"
+      ],
+      [
+       "The key aspect discussed…",
+       "L'aspect clé abordé…"
+      ],
+      [
+       "The theme of this essay…",
+       "Le thème de cet essai…"
+      ],
+      [
+       "We will be discussing…",
+       "Nous allons examiner…"
+      ]
+     ]
+    },
+    {
+     "title": "Comparaison et contraste",
+     "note": "",
+     "rows": [
+      [
+       "Although…",
+       "Bien que…"
+      ],
+      [
+       "However…",
+       "Cependant…"
+      ],
+      [
+       "Complementary to this…",
+       "En complément…"
+      ],
+      [
+       "In comparison…",
+       "Par comparaison…"
+      ],
+      [
+       "Likewise…",
+       "De même…"
+      ],
+      [
+       "Nevertheless…",
+       "Néanmoins…"
+      ],
+      [
+       "On the contrary…",
+       "Au contraire…"
+      ],
+      [
+       "On the one hand…",
+       "D'une part…"
+      ],
+      [
+       "Other than…",
+       "À part…"
+      ],
+      [
+       "Outside of…",
+       "En dehors de…"
+      ],
+      [
+       "Rather…",
+       "Plutôt…"
+      ],
+      [
+       "Whereas…",
+       "Tandis que…"
+      ]
+     ]
+    },
+    {
+     "title": "Cause et résultat",
+     "note": "",
+     "rows": [
+      [
+       "As a result…",
+       "Par conséquent…"
+      ],
+      [
+       "Because…",
+       "Parce que…"
+      ],
+      [
+       "Due to the fact that…",
+       "En raison du fait que…"
+      ],
+      [
+       "For this purpose…",
+       "À cette fin…"
+      ],
+      [
+       "For this reason…",
+       "Pour cette raison…"
+      ],
+      [
+       "Otherwise…",
+       "Sinon…"
+      ],
+      [
+       "Since…",
+       "Puisque…"
+      ],
+      [
+       "Subsequently…",
+       "Par la suite…"
+      ],
+      [
+       "That is why…",
+       "C'est pourquoi…"
+      ],
+      [
+       "Therefore…",
+       "Donc…"
+      ],
+      [
+       "This means that…",
+       "Cela signifie que…"
+      ],
+      [
+       "With regard to…",
+       "Concernant…"
+      ]
+     ]
+    },
+    {
+     "title": "Insister",
+     "note": "",
+     "rows": [
+      [
+       "Above all…",
+       "Surtout…"
+      ],
+      [
+       "As a rule…",
+       "En règle générale…"
+      ],
+      [
+       "As usual…",
+       "Comme d'habitude…"
+      ],
+      [
+       "Certainly…",
+       "Certes…"
+      ],
+      [
+       "Especially…",
+       "Particulièrement…"
+      ],
+      [
+       "For the most part…",
+       "Pour la plupart…"
+      ],
+      [
+       "Generally speaking…",
+       "De manière générale…"
+      ],
+      [
+       "In this situation…",
+       "Dans cette situation…"
+      ],
+      [
+       "Namely…",
+       "À savoir…"
+      ],
+      [
+       "No doubt…",
+       "Sans doute…"
+      ],
+      [
+       "Obviously…",
+       "Évidemment…"
+      ],
+      [
+       "Of course…",
+       "Bien sûr…"
+      ]
+     ]
+    },
+    {
+     "title": "Idées courantes et rares",
+     "note": "",
+     "rows": [
+      [
+       "A few…",
+       "Quelques…"
+      ],
+      [
+       "Not many…",
+       "Pas beaucoup…"
+      ],
+      [
+       "On occasion…",
+       "De temps en temps…"
+      ],
+      [
+       "Rarely…",
+       "Rarement…"
+      ],
+      [
+       "Seldom…",
+       "Guère…"
+      ],
+      [
+       "Unusually…",
+       "Insolitement…"
+      ],
+      [
+       "Almost all…",
+       "Presque tous…"
+      ],
+      [
+       "Commonly…",
+       "Couramment…"
+      ],
+      [
+       "Numerous…",
+       "Nombreux…"
+      ],
+      [
+       "Quite often…",
+       "Assez souvent…"
+      ],
+      [
+       "Significant…",
+       "Importants…"
+      ],
+      [
+       "The majority…",
+       "La majorité…"
+      ]
+     ]
+    },
+    {
+     "title": "Donner des exemples",
+     "note": "",
+     "rows": [
+      [
+       "As an example…",
+       "À titre d'exemple…"
+      ],
+      [
+       "As an illustration…",
+       "Pour illustrer…"
+      ],
+      [
+       "For example…",
+       "Par exemple…"
+      ],
+      [
+       "For instance…",
+       "Par exemple…"
+      ],
+      [
+       "In this case…",
+       "Dans ce cas…"
+      ],
+      [
+       "Markedly…",
+       "Notablement…"
+      ],
+      [
+       "Specifically…",
+       "Précisément…"
+      ],
+      [
+       "Such as…",
+       "Tels que…"
+      ],
+      [
+       "This can be seen…",
+       "On le voit dans…"
+      ],
+      [
+       "To illustrate this…",
+       "Pour illustrer cela…"
+      ],
+      [
+       "You might consider…",
+       "Tu pourrais envisager…"
+      ]
+     ]
+    },
+    {
+     "title": "Temps et ordre",
+     "note": "",
+     "rows": [
+      [
+       "Additionally…",
+       "De plus…"
+      ],
+      [
+       "After this…",
+       "Après cela…"
+      ],
+      [
+       "Afterwards…",
+       "Ensuite…"
+      ],
+      [
+       "Earlier…",
+       "Plus tôt…"
+      ],
+      [
+       "Finally…",
+       "Enfin…"
+      ],
+      [
+       "First of all…",
+       "Tout d'abord…"
+      ],
+      [
+       "Firstly, secondly, thirdly",
+       "Premièrement, deuxièmement, troisièmement"
+      ],
+      [
+       "In the first instance…",
+       "Dans un premier temps…"
+      ],
+      [
+       "To begin with…",
+       "Pour commencer…"
+      ],
+      [
+       "With this in mind…",
+       "Avec cela en tête…"
+      ]
+     ]
+    },
+    {
+     "title": "Conclusion",
+     "note": "",
+     "rows": [
+      [
+       "Hence…",
+       "D'où…"
+      ],
+      [
+       "In conclusion…",
+       "En conclusion…"
+      ],
+      [
+       "In summary…",
+       "En résumé…"
+      ],
+      [
+       "To conclude…",
+       "Pour conclure…"
+      ],
+      [
+       "To review…",
+       "Pour récapituler…"
+      ],
+      [
+       "To sum up…",
+       "Pour résumer…"
+      ],
+      [
+       "To summarize…",
+       "En somme…"
+      ],
+      [
+       "It has been demonstrated that…",
+       "Il a été démontré que…"
+      ],
+      [
+       "We have seen that…",
+       "Nous avons vu que…"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "prepositions-time",
+   "title": "Prépositions de temps",
+   "subtitle": "IN, ON, AT, SINCE, FOR, BY — la carte des temps",
+   "columns": [
+    "Exemple",
+    "Français"
+   ],
+   "groups": [
+    {
+     "title": "IN",
+     "note": "mois, années, saisons, moments de la journée",
+     "rows": [
+      [
+       "In March",
+       "en mars"
+      ],
+      [
+       "In 2025",
+       "en 2025"
+      ],
+      [
+       "In the morning",
+       "le matin"
+      ],
+      [
+       "In summer",
+       "en été"
+      ]
+     ]
+    },
+    {
+     "title": "ON",
+     "note": "jours, dates, occasions précises",
+     "rows": [
+      [
+       "On Monday",
+       "lundi"
+      ],
+      [
+       "On 15th August",
+       "le 15 août"
+      ],
+      [
+       "On my birthday",
+       "le jour de mon anniversaire"
+      ],
+      [
+       "On New Year's Day",
+       "le jour de l'An"
+      ]
+     ]
+    },
+    {
+     "title": "AT",
+     "note": "heures précises, moments",
+     "rows": [
+      [
+       "At 6 o'clock",
+       "à 6 heures"
+      ],
+      [
+       "At noon",
+       "à midi"
+      ],
+      [
+       "At bedtime",
+       "au coucher"
+      ],
+      [
+       "At that moment",
+       "à ce moment-là"
+      ]
+     ]
+    },
+    {
+     "title": "SINCE",
+     "note": "un point de départ passé qui continue maintenant",
+     "rows": [
+      [
+       "Since 2010",
+       "depuis 2010"
+      ],
+      [
+       "Since last week",
+       "depuis la semaine dernière"
+      ],
+      [
+       "Since I moved here",
+       "depuis que j'ai déménagé ici"
+      ]
+     ]
+    },
+    {
+     "title": "FOR",
+     "note": "une durée, une période",
+     "rows": [
+      [
+       "For two hours",
+       "pendant deux heures"
+      ],
+      [
+       "For a week",
+       "pendant une semaine"
+      ],
+      [
+       "For five years",
+       "pendant cinq ans"
+      ]
+     ]
+    },
+    {
+     "title": "BY",
+     "note": "une échéance : pas plus tard que",
+     "rows": [
+      [
+       "By 10 o'clock",
+       "avant 10 heures"
+      ],
+      [
+       "By next Monday",
+       "d'ici lundi prochain"
+      ],
+      [
+       "By the end of today",
+       "d'ici la fin de la journée"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "basic-grammar",
+   "title": "Grammaire de base",
+   "subtitle": "Les réflexes du débutant, sans faute",
+   "columns": [
+    "Exemple"
+   ],
+   "groups": [
+    {
+     "title": "A / AN",
+     "note": "a devant un son de consonne, an devant un son de voyelle",
+     "rows": [
+      [
+       "a book, a pen, a university (son « you »)"
+      ],
+      [
+       "an apple, an hour (h muet), an honest person"
+      ]
+     ]
+    },
+    {
+     "title": "IS / ARE",
+     "note": "is avec un singulier, are avec un pluriel",
+     "rows": [
+      [
+       "He is happy."
+      ],
+      [
+       "She is a teacher."
+      ],
+      [
+       "They are playing."
+      ],
+      [
+       "We are friends."
+      ]
+     ]
+    },
+    {
+     "title": "HAS / HAVE",
+     "note": "has avec he / she / it, have avec I / you / we / they",
+     "rows": [
+      [
+       "She has a car."
+      ],
+      [
+       "He has a pen."
+      ],
+      [
+       "They have books."
+      ],
+      [
+       "We have a lesson."
+      ]
+     ]
+    },
+    {
+     "title": "DO / DOES",
+     "note": "do avec I / you / we / they, does avec he / she / it",
+     "rows": [
+      [
+       "I do my homework."
+      ],
+      [
+       "They do their work."
+      ],
+      [
+       "She does her homework."
+      ],
+      [
+       "He does not like coffee."
+      ]
+     ]
+    },
+    {
+     "title": "TO BE (am / is / are)",
+     "note": "am avec I, is avec he / she / it, are avec we / you / they",
+     "rows": [
+      [
+       "I am a student."
+      ],
+      [
+       "He is intelligent."
+      ],
+      [
+       "You are my friend."
+      ],
+      [
+       "They are in the park."
+      ]
+     ]
+    },
+    {
+     "title": "THIS / THAT / THESE / THOSE",
+     "note": "this proche (sing.), that loin (sing.), these proche (plur.), those loin (plur.)",
+     "rows": [
+      [
+       "This is my book."
+      ],
+      [
+       "That is your bag."
+      ],
+      [
+       "These are my pens."
+      ],
+      [
+       "Those are your books."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "antonyms",
+   "title": "100 antonymes",
+   "subtitle": "Les contraires à connaître par cœur",
+   "columns": [
+    "Mot",
+    "Contraire",
+    "Français"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "note": "",
+     "rows": [
+      [
+       "hot",
+       "cold",
+       "chaud / froid"
+      ],
+      [
+       "big",
+       "small",
+       "grand / petit"
+      ],
+      [
+       "up",
+       "down",
+       "haut / bas"
+      ],
+      [
+       "happy",
+       "sad",
+       "heureux / triste"
+      ],
+      [
+       "day",
+       "night",
+       "jour / nuit"
+      ],
+      [
+       "in",
+       "out",
+       "dedans / dehors"
+      ],
+      [
+       "open",
+       "closed",
+       "ouvert / fermé"
+      ],
+      [
+       "fast",
+       "slow",
+       "rapide / lent"
+      ],
+      [
+       "love",
+       "hate",
+       "aimer / détester"
+      ],
+      [
+       "true",
+       "false",
+       "vrai / faux"
+      ],
+      [
+       "start",
+       "stop",
+       "commencer / arrêter"
+      ],
+      [
+       "rich",
+       "poor",
+       "riche / pauvre"
+      ],
+      [
+       "young",
+       "old",
+       "jeune / vieux"
+      ],
+      [
+       "clean",
+       "dirty",
+       "propre / sale"
+      ],
+      [
+       "full",
+       "empty",
+       "plein / vide"
+      ],
+      [
+       "strong",
+       "weak",
+       "fort / faible"
+      ],
+      [
+       "light",
+       "dark",
+       "clair / sombre"
+      ],
+      [
+       "easy",
+       "difficult",
+       "facile / difficile"
+      ],
+      [
+       "above",
+       "below",
+       "au-dessus / en dessous"
+      ],
+      [
+       "give",
+       "take",
+       "donner / prendre"
+      ],
+      [
+       "accept",
+       "reject",
+       "accepter / refuser"
+      ],
+      [
+       "brave",
+       "cowardly",
+       "courageux / lâche"
+      ],
+      [
+       "soft",
+       "hard",
+       "doux / dur"
+      ],
+      [
+       "win",
+       "lose",
+       "gagner / perdre"
+      ],
+      [
+       "alive",
+       "dead",
+       "vivant / mort"
+      ],
+      [
+       "modern",
+       "ancient",
+       "moderne / ancien"
+      ],
+      [
+       "early",
+       "late",
+       "tôt / tard"
+      ],
+      [
+       "new",
+       "old",
+       "neuf / vieux"
+      ],
+      [
+       "near",
+       "far",
+       "proche / lointain"
+      ],
+      [
+       "right",
+       "wrong",
+       "juste / faux"
+      ],
+      [
+       "peace",
+       "war",
+       "paix / guerre"
+      ],
+      [
+       "lead",
+       "follow",
+       "mener / suivre"
+      ],
+      [
+       "kind",
+       "cruel",
+       "gentil / cruel"
+      ],
+      [
+       "calm",
+       "excited",
+       "calme / agité"
+      ],
+      [
+       "order",
+       "chaos",
+       "ordre / chaos"
+      ],
+      [
+       "tidy",
+       "messy",
+       "rangé / désordonné"
+      ],
+      [
+       "generous",
+       "stingy",
+       "généreux / avare"
+      ],
+      [
+       "safe",
+       "dangerous",
+       "sûr / dangereux"
+      ],
+      [
+       "wide",
+       "narrow",
+       "large / étroit"
+      ],
+      [
+       "useful",
+       "useless",
+       "utile / inutile"
+      ],
+      [
+       "inside",
+       "outside",
+       "intérieur / extérieur"
+      ],
+      [
+       "famous",
+       "unknown",
+       "célèbre / inconnu"
+      ],
+      [
+       "join",
+       "leave",
+       "rejoindre / quitter"
+      ],
+      [
+       "laugh",
+       "cry",
+       "rire / pleurer"
+      ],
+      [
+       "real",
+       "fake",
+       "réel / faux"
+      ],
+      [
+       "sweet",
+       "bitter",
+       "sucré / amer"
+      ],
+      [
+       "simple",
+       "complex",
+       "simple / complexe"
+      ],
+      [
+       "smile",
+       "frown",
+       "sourire / faire la moue"
+      ],
+      [
+       "talk",
+       "listen",
+       "parler / écouter"
+      ],
+      [
+       "visible",
+       "invisible",
+       "visible / invisible"
+      ],
+      [
+       "cheap",
+       "expensive",
+       "bon marché / cher"
+      ],
+      [
+       "increase",
+       "decrease",
+       "augmenter / diminuer"
+      ],
+      [
+       "junior",
+       "senior",
+       "junior / senior"
+      ],
+      [
+       "safe",
+       "risky",
+       "sans risque / risqué"
+      ],
+      [
+       "urban",
+       "rural",
+       "urbain / rural"
+      ],
+      [
+       "sharp",
+       "blunt",
+       "coupant / émoussé"
+      ],
+      [
+       "awake",
+       "asleep",
+       "éveillé / endormi"
+      ],
+      [
+       "borrow",
+       "lend",
+       "emprunter / prêter"
+      ],
+      [
+       "minimum",
+       "maximum",
+       "minimum / maximum"
+      ],
+      [
+       "expand",
+       "contract",
+       "agrandir / rétrécir"
+      ],
+      [
+       "passive",
+       "active",
+       "passif / actif"
+      ],
+      [
+       "knowledge",
+       "ignorance",
+       "savoir / ignorance"
+      ],
+      [
+       "win",
+       "fail",
+       "réussir / échouer"
+      ],
+      [
+       "honesty",
+       "dishonesty",
+       "honnêteté / malhonnêteté"
+      ],
+      [
+       "lazy",
+       "active",
+       "paresseux / actif"
+      ],
+      [
+       "encourage",
+       "discourage",
+       "encourager / décourager"
+      ],
+      [
+       "joy",
+       "sorrow",
+       "joie / chagrin"
+      ],
+      [
+       "over",
+       "under",
+       "au-dessus / en dessous"
+      ],
+      [
+       "absent",
+       "present",
+       "absent / présent"
+      ],
+      [
+       "unity",
+       "division",
+       "unité / division"
+      ],
+      [
+       "friendly",
+       "hostile",
+       "amical / hostile"
+      ],
+      [
+       "allow",
+       "forbid",
+       "permettre / interdire"
+      ],
+      [
+       "wet",
+       "dry",
+       "mouillé / sec"
+      ],
+      [
+       "include",
+       "exclude",
+       "inclure / exclure"
+      ],
+      [
+       "strength",
+       "weakness",
+       "force / faiblesse"
+      ],
+      [
+       "quiet",
+       "chaotic",
+       "calme / chaotique"
+      ],
+      [
+       "visible",
+       "hidden",
+       "visible / caché"
+      ],
+      [
+       "life",
+       "death",
+       "vie / mort"
+      ],
+      [
+       "agree",
+       "disagree",
+       "approuver / désapprouver"
+      ],
+      [
+       "polite",
+       "rude",
+       "poli / impoli"
+      ],
+      [
+       "together",
+       "apart",
+       "ensemble / séparés"
+      ],
+      [
+       "known",
+       "unknown",
+       "connu / inconnu"
+      ],
+      [
+       "empty",
+       "occupied",
+       "vide / occupé"
+      ],
+      [
+       "loud",
+       "soft",
+       "fort / doux (son)"
+      ],
+      [
+       "ordinary",
+       "extraordinary",
+       "ordinaire / extraordinaire"
+      ],
+      [
+       "accept",
+       "deny",
+       "admettre / nier"
+      ],
+      [
+       "smooth",
+       "rough",
+       "lisse / rugueux"
+      ],
+      [
+       "eager",
+       "reluctant",
+       "enthousiaste / réticent"
+      ],
+      [
+       "positive",
+       "negative",
+       "positif / négatif"
+      ],
+      [
+       "thick",
+       "thin",
+       "épais / fin"
+      ],
+      [
+       "private",
+       "public",
+       "privé / public"
+      ],
+      [
+       "entry",
+       "exit",
+       "entrée / sortie"
+      ],
+      [
+       "support",
+       "oppose",
+       "soutenir / s'opposer"
+      ],
+      [
+       "victory",
+       "defeat",
+       "victoire / défaite"
+      ],
+      [
+       "success",
+       "failure",
+       "succès / échec"
+      ],
+      [
+       "begin",
+       "end",
+       "commencer / finir"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "directions",
+   "title": "Mots de direction",
+   "subtitle": "Demander ou donner son chemin",
+   "columns": [
+    "Expression",
+    "Exemple",
+    "Français"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "note": "",
+     "rows": [
+      [
+       "Go straight",
+       "Go straight ahead.",
+       "Avance tout droit."
+      ],
+      [
+       "Turn left",
+       "Turn to the left.",
+       "Tourne à gauche."
+      ],
+      [
+       "Turn right",
+       "Turn to the right.",
+       "Tourne à droite."
+      ],
+      [
+       "Cross the street",
+       "Cross the street.",
+       "Traverse la rue."
+      ],
+      [
+       "Go past",
+       "Go past the place.",
+       "Passe devant l'endroit."
+      ],
+      [
+       "At the corner",
+       "It's at the corner.",
+       "C'est au coin."
+      ],
+      [
+       "On the left",
+       "It's on your left.",
+       "C'est sur ta gauche."
+      ],
+      [
+       "On the right",
+       "It's on your right.",
+       "C'est sur ta droite."
+      ],
+      [
+       "Next to",
+       "It's next to the building.",
+       "C'est à côté du bâtiment."
+      ],
+      [
+       "Opposite",
+       "It's opposite the shop.",
+       "C'est en face du magasin."
+      ],
+      [
+       "Between",
+       "It's between the houses.",
+       "C'est entre les maisons."
+      ],
+      [
+       "Towards",
+       "Go towards the building.",
+       "Va vers le bâtiment."
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "roads",
+   "title": "Sur la route",
+   "subtitle": "Roundabout, crossroads, winding… le vocabulaire de la route",
+   "columns": [
+    "Mot",
+    "Exemple",
+    "Français"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "note": "",
+     "rows": [
+      [
+       "Roundabout",
+       "Take the second exit at the roundabout.",
+       "le rond-point"
+      ],
+      [
+       "Crossroads",
+       "Turn right at the crossroads.",
+       "le carrefour"
+      ],
+      [
+       "Straight",
+       "The road goes straight for ten miles.",
+       "tout droit"
+      ],
+      [
+       "Hard turn",
+       "Slow down, there's a hard turn ahead.",
+       "le virage serré"
+      ],
+      [
+       "Winding",
+       "A winding road through the mountains.",
+       "sinueux"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "symbols",
+   "title": "Symboles et ponctuation",
+   "subtitle": "Comment dire #, @, & … en anglais",
+   "columns": [
+    "Symbole",
+    "Nom anglais",
+    "Nom français"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "note": "",
+     "rows": [
+      [
+       "+",
+       "Plus",
+       "plus / et"
+      ],
+      [
+       "-",
+       "Minus",
+       "moins"
+      ],
+      [
+       ".",
+       "Dot / Point",
+       "point"
+      ],
+      [
+       "%",
+       "Percent",
+       "pour cent"
+      ],
+      [
+       "=",
+       "Equals",
+       "égale"
+      ],
+      [
+       "×",
+       "Multiply",
+       "multiplié par"
+      ],
+      [
+       "÷",
+       "Divide by",
+       "divisé par"
+      ],
+      [
+       "?",
+       "Question mark",
+       "point d'interrogation"
+      ],
+      [
+       "#",
+       "Hashtag",
+       "dièse"
+      ],
+      [
+       "/",
+       "Forward slash / Or",
+       "barre oblique"
+      ],
+      [
+       "[ ]",
+       "Brackets",
+       "crochets"
+      ],
+      [
+       "( )",
+       "Parentheses",
+       "parenthèses"
+      ],
+      [
+       ",",
+       "Comma",
+       "virgule"
+      ],
+      [
+       ":",
+       "Colon",
+       "deux-points"
+      ],
+      [
+       ";",
+       "Semi-colon",
+       "point-virgule"
+      ],
+      [
+       "—",
+       "Hyphen / Dash",
+       "tiret"
+      ],
+      [
+       "@",
+       "At sign",
+       "arobase"
+      ],
+      [
+       "\" \"",
+       "Quotation marks",
+       "guillemets"
+      ],
+      [
+       "_",
+       "Underscore",
+       "tiret bas"
+      ],
+      [
+       "&",
+       "And sign",
+       "esperluette (et)"
+      ],
+      [
+       "*",
+       "Asterisk",
+       "astérisque"
+      ],
+      [
+       "{ }",
+       "Braces",
+       "accolades"
+      ],
+      [
+       "|",
+       "Pipe",
+       "barre verticale"
+      ],
+      [
+       "!",
+       "Exclamation mark",
+       "point d'exclamation"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "irregular-verbs",
+   "title": "Verbes irréguliers essentiels",
+   "subtitle": "Le trio présent / prétérit / futur",
+   "columns": [
+    "Base",
+    "Prétérit",
+    "Futur",
+    "Français"
+   ],
+   "groups": [
+    {
+     "title": "",
+     "note": "",
+     "rows": [
+      [
+       "go",
+       "went",
+       "will go",
+       "aller"
+      ],
+      [
+       "come",
+       "came",
+       "will come",
+       "venir"
+      ],
+      [
+       "eat",
+       "ate",
+       "will eat",
+       "manger"
+      ],
+      [
+       "take",
+       "took",
+       "will take",
+       "prendre"
+      ],
+      [
+       "give",
+       "gave",
+       "will give",
+       "donner"
+      ],
+      [
+       "see",
+       "saw",
+       "will see",
+       "voir"
+      ],
+      [
+       "write",
+       "wrote",
+       "will write",
+       "écrire"
+      ],
+      [
+       "speak",
+       "spoke",
+       "will speak",
+       "parler"
+      ],
+      [
+       "run",
+       "ran",
+       "will run",
+       "courir"
+      ],
+      [
+       "drink",
+       "drank",
+       "will drink",
+       "boire"
+      ],
+      [
+       "break",
+       "broke",
+       "will break",
+       "casser"
+      ],
+      [
+       "begin",
+       "began",
+       "will begin",
+       "commencer"
+      ],
+      [
+       "fly",
+       "flew",
+       "will fly",
+       "voler"
+      ],
+      [
+       "forget",
+       "forgot",
+       "will forget",
+       "oublier"
+      ],
+      [
+       "get",
+       "got",
+       "will get",
+       "obtenir"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "verb-to-be",
+   "title": "Le verbe TO BE",
+   "subtitle": "Être, à tous les temps",
+   "columns": [
+    "Forme"
+   ],
+   "groups": [
+    {
+     "title": "Present simple",
+     "note": "",
+     "rows": [
+      [
+       "I am"
+      ],
+      [
+       "You are"
+      ],
+      [
+       "He / She / It is"
+      ],
+      [
+       "We are"
+      ],
+      [
+       "They are"
+      ]
+     ]
+    },
+    {
+     "title": "Past simple",
+     "note": "",
+     "rows": [
+      [
+       "I was"
+      ],
+      [
+       "You were"
+      ],
+      [
+       "He / She / It was"
+      ],
+      [
+       "We were"
+      ],
+      [
+       "They were"
+      ]
+     ]
+    },
+    {
+     "title": "Future simple",
+     "note": "",
+     "rows": [
+      [
+       "I will be"
+      ],
+      [
+       "You will be"
+      ],
+      [
+       "He / She / It will be"
+      ],
+      [
+       "We will be"
+      ],
+      [
+       "They will be"
+      ]
+     ]
+    },
+    {
+     "title": "Present continuous",
+     "note": "",
+     "rows": [
+      [
+       "I am being"
+      ],
+      [
+       "You are being"
+      ],
+      [
+       "He / She / It is being"
+      ],
+      [
+       "We are being"
+      ],
+      [
+       "They are being"
+      ]
+     ]
+    },
+    {
+     "title": "Past continuous",
+     "note": "",
+     "rows": [
+      [
+       "I was being"
+      ],
+      [
+       "You were being"
+      ],
+      [
+       "He / She / It was being"
+      ],
+      [
+       "We were being"
+      ],
+      [
+       "They were being"
+      ]
+     ]
+    },
+    {
+     "title": "Present perfect",
+     "note": "",
+     "rows": [
+      [
+       "I have been"
+      ],
+      [
+       "You have been"
+      ],
+      [
+       "He / She / It has been"
+      ],
+      [
+       "We have been"
+      ],
+      [
+       "They have been"
+      ]
+     ]
+    },
+    {
+     "title": "Past perfect",
+     "note": "",
+     "rows": [
+      [
+       "I had been"
+      ],
+      [
+       "You had been"
+      ],
+      [
+       "He / She / It had been"
+      ],
+      [
+       "We had been"
+      ],
+      [
+       "They had been"
+      ]
+     ]
+    },
+    {
+     "title": "Future perfect",
+     "note": "",
+     "rows": [
+      [
+       "I will have been"
+      ],
+      [
+       "You will have been"
+      ],
+      [
+       "He / She / It will have been"
+      ],
+      [
+       "We will have been"
+      ],
+      [
+       "They will have been"
+      ]
+     ]
+    },
+    {
+     "title": "Present perfect continuous",
+     "note": "",
+     "rows": [
+      [
+       "I have been being"
+      ],
+      [
+       "You have been being"
+      ],
+      [
+       "He / She / It has been being"
+      ],
+      [
+       "We have been being"
+      ],
+      [
+       "They have been being"
+      ]
+     ]
+    }
+   ]
+  }
+ ]
+}

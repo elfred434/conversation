@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BookOpen, MessageCircle, MessagesSquare, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight, LayoutGrid, Dumbbell, History, Puzzle, Scale, Clock } from 'lucide-react'
+import { BookOpen, MessageCircle, MessagesSquare, Mic, Plane, Sun, Moon, Briefcase, Target, Award, Trash2, ChevronRight, LayoutGrid, Dumbbell, History, Puzzle, Scale, Clock, ClipboardList } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LEVELS, SCENARIOS } from '../lib/prompts'
 import { dayLabel } from '../lib/dayLabel'
@@ -22,6 +22,7 @@ const TOOLS: Tool[] = [
   { view: 'grammar', icon: Puzzle, label: 'Grammaire', desc: 'Le jeu des règles : 25 règles à maîtriser' },
   { view: 'wordrules', icon: Scale, label: 'Mots qui se ressemblent', desc: 'Borrow/lend, say/tell… et leurs règles' },
   { view: 'conjugaison', icon: Clock, label: 'Conjugaisons', desc: 'Présent, passé, continu, modaux : tous les tableaux' },
+  { view: 'fiches', icon: ClipboardList, label: 'Fiches express', desc: 'Antonymes, question words, amorces, TO BE… les aide-mémoires' },
   { view: 'exercises', icon: Target, label: 'Exercices ciblés', desc: "Générés par l'IA selon tes erreurs" },
   { view: 'phrases', icon: MessagesSquare, label: 'Phrases courantes', desc: 'Les plus utilisées + dictionnaire' },
   { view: 'progress', icon: Award, label: 'Ma progression', desc: 'Badges et statistiques' },
