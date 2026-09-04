@@ -1847,3 +1847,69 @@ details[open] .chev {
     font-size: 0.85rem;
   }
 }
+
+/* ---------- Audit responsive ---------- */
+/* Puces de temps (conjugaison) : ce sont des puces, pas des onglets ->
+   retour a la ligne autorise (fini les balles ecrasees sur mobile) */
+.conj-tenses {
+  flex-wrap: wrap;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.conj-tenses .chip {
+  white-space: nowrap; /* le texte du chip ne se plie plus en boule */
+}
+
+/* Titre fluide : lisible a 320px, majestueux en tres grand */
+h1.title {
+  font-size: clamp(1.45rem, 1.2rem + 1vw, 2rem);
+}
+
+/* Les barres d'onglets debordent en scroll fin plutot que d'ecraser */
+.filter-bar {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filter-bar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tres petit ecran : le champ passe au-dessus du bouton (tap cible pleine largeur) */
+@media (max-width: 480px) {
+  .key-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .key-row .btn {
+    width: 100%;
+  }
+}
+
+/* Conjugaison : personne au-dessus, forme en dessous quand l'ecran est trop etroit */
+@media (max-width: 420px) {
+  .conj-row {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+  .conj-p {
+    width: 100%;
+  }
+}
+
+/* Onglets compacts sur les tres petits ecrans */
+@media (max-width: 380px) {
+  .filter-tab {
+    font-size: 0.88rem;
+    padding: 9px 4px 11px;
+  }
+  .tab-count {
+    display: none; /* le compteur passe apres le libelle */
+  }
+}
+
+/* Pouce : cibles tactiles plus hautes sur mobile */
+@media (max-width: 560px) {
+  .chip {
+    padding: 10px 16px;
+  }
+}

@@ -67,7 +67,7 @@ export default function Conjugaison(): JSX.Element {
       </p>
 
       <div className="card">
-        <label className="field">
+        <label className="field conj-select">
           <span>Choisis un verbe</span>
           <select value={v} onChange={(e) => pick(e.target.value)}>
             {options.map((s) => (
