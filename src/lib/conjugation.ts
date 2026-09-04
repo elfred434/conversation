@@ -175,6 +175,54 @@ export const TENSE_RULES: Record<TenseId, string[]> = {
   ],
 }
 
+/** Verbes francais supplementaires (non couverts par IRREG/REG_FR/SUGGESTED) -> anglais. */
+export const FR_EXTRA: Record<string, string> = {
+  laver: 'wash', nettoyer: 'clean', finir: 'finish', choisir: 'choose',
+  grandir: 'grow', reussir: 'succeed', echouer: 'fail', obeir: 'obey',
+  sortir: 'leave', partir: 'leave', entrer: 'enter', monter: 'climb',
+  descendre: 'descend', rentrer: 'return', revenir: 'return',
+  retourner: 'return', habiter: 'live', vivre: 'live', demeurer: 'stay',
+  acheter: 'buy', vendre: 'sell', envoyer: 'send', recevoir: 'receive',
+  connaitre: 'know', croire: 'believe', devoir: 'must', pouvoir: 'can',
+  falloir: 'need', sembler: 'seem', paraitre: 'seem', tenir: 'hold',
+  oublier: 'forget', chercher: 'search', trouver: 'find', ramasser: 'collect',
+  ranger: 'tidy', balayer: 'sweep', gouter: 'taste', toucher: 'touch',
+  tirer: 'pull', pousser: 'push', reparar: 'fix', reparer: 'fix',
+  peindre: 'paint', detruire: 'destroy', sauter: 'jump', glisser: 'slide',
+  compter: 'count', jeter: 'throw', lancer: 'throw', rever: 'dream',
+  briller: 'shine', neiger: 'snow', sonner: 'ring', crier: 'shout',
+  chuchoter: 'whisper', frapper: 'hit', tuer: 'kill', blesser: 'hurt',
+  guerir: 'heal', preparer: 'prepare', commander: 'order', servir: 'serve',
+  emmener: 'take', rapporter: 'bring', oser: 'dare', copier: 'copy',
+  repeter: 'repeat', traduire: 'translate', remarquer: 'notice',
+  continuer: 'continue', respirer: 'breathe', tousser: 'cough',
+  cacher: 'hide', saluer: 'greet', epouser: 'marry', garer: 'park',
+  plonger: 'dive', prier: 'pray', traverser: 'cross', livrer: 'deliver',
+  economiser: 'save', depenser: 'spend', enlever: 'remove',
+  habiller: 'dress', detester: 'hate', preferer: 'prefer',
+  souhaiter: 'wish', proposer: 'suggest', permettre: 'allow',
+  empecher: 'prevent', eviter: 'avoid', risquer: 'risk',
+  enseigner: 'teach', raconter: 'tell', discuter: 'discuss',
+  interrompre: 'interrupt', promettre: 'promise', conseiller: 'advise',
+  hesiter: 'hesitate', demenager: 'move', creer: 'create',
+  inventer: 'invent', observer: 'observe', entendre: 'hear',
+  souffler: 'blow', briser: 'break', ecraser: 'crush',
+}
+
+/** Formes francaises irregulieres (participes, conjugaisons) -> infinitif francais. */
+export const FR_FORMS: Record<string, string> = {
+  'ete': 'être', eu: 'avoir', fait: 'faire', dit: 'dire', pris: 'prendre',
+  appris: 'apprendre', compris: 'comprendre', mis: 'mettre',
+  permis: 'permettre', promis: 'promettre', vu: 'voir', su: 'savoir',
+  voulu: 'vouloir', pu: 'pouvoir', connu: 'connaitre', cru: 'croire',
+  'du': 'devoir', venu: 'venir', devenu: 'devenir', bu: 'boire',
+  lu: 'lire', 'ecrit': 'écrire', ouvert: 'ouvrir', couvert: 'couvrir',
+  'decouvert': 'découvrir', souffert: 'souffrir', offert: 'offrir',
+  mort: 'mourir', peint: 'peindre', construit: 'construire',
+  'détruit': 'détruire', 'traduit': 'traduire', doit: 'devoir',
+  doivent: 'devoir', dois: 'devoir', 'etudie': 'étudier',
+}
+
 /** Normalise une saisie : minuscules, sans accents, apostrophes unifiees. */
 export function normalizeVerb(s: string): string {
   return s
@@ -195,6 +243,7 @@ const FR_TO_EN: Map<string, string> = (() => {
   for (const [v, d] of Object.entries(IRREG)) put(d.fr, v)
   for (const [v, fr] of Object.entries(REG_FR)) put(fr, v)
   for (const s of SUGGESTED) put(s.fr, s.v)
+  for (const [fr, v] of Object.entries(FR_EXTRA)) put(fr, v)
   return map
 })()
 
@@ -203,7 +252,42 @@ const FR_TO_EN: Map<string, string> = (() => {
  * Retourne null si la saisie n'est pas un francais connu (ce sera traite comme anglais).
  */
 export function fromFrench(input: string): string | null {
-  return FR_TO_EN.get(normalizeVerb(input)) ?? null
+  const w = normalizeVerb(input)
+  if (!w) return null
+  // 1) infinitif ou forme deja connue
+  const direct = FR_TO_EN.get(w)
+  if (direct) return direct
+  // 2) forme irreguliere (participe, conjugaison) -> infinitif francais
+  const inf = FR_FORMS[w]
+  if (inf) return FR_TO_EN.get(normalizeVerb(inf)) ?? null
+  // 3) morphologie reguliere : lavE/lave/lavent -> lav -> laver
+  for (const cand of frenchCandidates(w)) {
+    const hit = FR_TO_EN.get(cand)
+    if (hit) return hit
+  }
+  return null
+}
+
+/** Candidats infinitifs francais pour une forme conjuguEe reguliEre. */
+export function frenchCandidates(w: string): string[] {
+  const out = [w]
+  if (/(er|ir|re)$/.test(w)) return out
+  const stems = new Set<string>()
+  const add = (s: string): void => {
+    if (s.length >= 2) stems.add(s)
+  }
+  if (/(ées?|és?)$/.test(w)) add(w.replace(/(ées?|és?)$/, ''))
+  else if (/es$|s$|e$/.test(w)) add(w.replace(/es$|s$|e$/, ''))
+  if (/aient$/.test(w)) add(w.slice(0, -5))
+  else if (/ais$|ait$/.test(w)) add(w.slice(0, -3))
+  if (/ent$/.test(w)) add(w.slice(0, -3))
+  if (/ons$/.test(w)) add(w.slice(0, -3))
+  if (/ez$/.test(w)) add(w.slice(0, -2))
+  if (/ant$/.test(w)) add(w.slice(0, -3))
+  if (/is$|it$/.test(w)) add(w.slice(0, -2))
+  else if (/i$/.test(w)) add(w.slice(0, -1))
+  for (const s of stems) out.push(`${s}er`, `${s}ir`, `${s}re`)
+  return out
 }
 
 /** Liste complete pour le select : suggere d'abord, puis irreguliers, puis reguliers connus. */
@@ -219,6 +303,7 @@ export const VERBS: { v: string; fr: string }[] = (() => {
   SUGGESTED.forEach((s) => push(s.v, s.fr))
   Object.entries(IRREG).forEach(([v, d]) => push(v, d.fr))
   Object.entries(REG_FR).forEach(([v, fr]) => push(v, fr))
+  for (const [fr, v] of Object.entries(FR_EXTRA)) push(v, fr)
   return out
 })()
 

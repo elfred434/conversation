@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { conjugate, fromFrench, ingForm, isIrregular, IRREG, normalizeVerb, pastForm, TENSE_RULES, thirdPerson, VERBS, verbParts } from './conjugation'
+import { conjugate, fromFrench, frenchCandidates, ingForm, isIrregular, IRREG, normalizeVerb, pastForm, TENSE_RULES, thirdPerson, VERBS, verbParts } from './conjugation'
 import { MODALS, PERSONS, SUGGESTED, TENSES } from './conjugation'
 
 describe('formes generees', () => {
@@ -102,6 +102,23 @@ describe('donnees', () => {
     expect(fromFrench('travailler')).toBe('work')
     expect(fromFrench('work')).toBeNull() // anglais : pas une entree francaise
     expect(fromFrench('motinconnu')).toBeNull()
+  })
+  test('fromFrench : formes conjuguees et participes francais', () => {
+    expect(fromFrench('lavé')).toBe('wash')
+    expect(fromFrench('lave')).toBe('wash')
+    expect(fromFrench('lavent')).toBe('wash')
+    expect(fromFrench('laver')).toBe('wash')
+    expect(fromFrench('mangé')).toBe('eat')
+    expect(fromFrench('fini')).toBe('finish')
+    expect(fromFrench('pris')).toBe('take')
+    expect(fromFrench('été')).toBe('be')
+    expect(fromFrench('fait')).toBe('do')
+    expect(fromFrench('lavera')).toBeNull() // futur hors couverture -> anglais
+  })
+  test('frenchCandidates : tiges regulieres er/ir/re', () => {
+    expect(frenchCandidates('laver')).toEqual(['laver'])
+    expect(frenchCandidates('lavé')).toContain('laver')
+    expect(frenchCandidates('fini')).toContain('finir')
   })
   test('normalizeVerb : accents et apostrophes unifies', () => {
     expect(normalizeVerb('  Écouter ')).toBe('ecouter')
