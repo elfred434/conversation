@@ -34,6 +34,7 @@ export type View =
   | 'wordrules'
   | 'conjugaison'
   | 'fiches'
+  | 'legal'
   | 'settings'
   | 'onboarding'
 

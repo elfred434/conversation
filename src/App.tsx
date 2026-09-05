@@ -12,6 +12,7 @@ import Grammar from './views/Grammar'
 import WordRules from './views/WordRules'
 import Conjugaison from './views/Conjugaison'
 import Fiches from './views/Fiches'
+import Legal from './views/Legal'
 import Settings from './views/Settings'
 
 function Header(): JSX.Element {
@@ -32,7 +33,7 @@ function Header(): JSX.Element {
 }
 
 function Body(): JSX.Element | null {
-  const { view } = useApp()
+  const { view, go } = useApp()
   switch (view) {
     case 'onboarding':
       return <Onboarding />
@@ -58,6 +59,8 @@ function Body(): JSX.Element | null {
       return <Conjugaison />
     case 'fiches':
       return <Fiches />
+    case 'legal':
+      return <Legal />
     case 'settings':
       return <Settings />
     default:
@@ -66,7 +69,7 @@ function Body(): JSX.Element | null {
 }
 
 function Shell(): JSX.Element {
-  const { view } = useApp()
+  const { view, go } = useApp()
   return (
     <div className="app">
       <Header />
@@ -76,7 +79,25 @@ function Shell(): JSX.Element {
           <Body />
         </div>
       </main>
-      <footer className="footer">FluentFlow • Apprendre en toute sérénité</footer>
+      <footer className="footer">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <span>FluentFlow • Apprendre en toute sérénité</span>
+          <button
+            onClick={() => go('legal')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'inherit',
+              font: 'inherit',
+              cursor: 'pointer',
+              textDecoration: 'underline',
+              padding: 0,
+            }}
+          >
+            Informations légales
+          </button>
+        </div>
+      </footer>
     </div>
   )
 }
