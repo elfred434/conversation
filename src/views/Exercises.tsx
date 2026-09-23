@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Settings2, Sparkles
 import { CATEGORY_LABELS, EXERCISES, pickTargetedExercises } from '../lib/exercises'
 import { generateExercises } from '../lib/aiExercises'
 import { NO_KEY_MSG } from '../lib/llm'
-import { isAnswerCloseEnough } from '../lib/similarity'
+import { isAnswerCloseEnough, isCopiedFromQuestion, normalizeText } from '../lib/similarity'
 import { useApp } from '../state/store'
 import type { Exercise } from '../lib/exercises'
 
@@ -13,7 +13,7 @@ type Phase = 'loading' | 'active' | 'result'
 type Source = 'ai' | 'bank'
 
 export default function Exercises(): JSX.Element {
-  const { progress, level, settings, go } = useApp()
+  const { progress, level, settings, go, saveScore } = useApp()
   const [round, setRound] = useState(0)
   const [phase, setPhase] = useState<Phase>('loading')
   const [source, setSource] = useState<Source>('bank')
@@ -80,13 +80,26 @@ export default function Exercises(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [round])
 
+  // Score de la serie enregistre une seule fois, a la fin.
+  useEffect(() => {
+    if (phase === 'result' && list.length > 0) {
+      saveScore(source === 'ai' ? 'Exercices IA' : 'Exercices intégrés', score, list.length)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase])
+
   const ex = list[index]
   const blankParts = ex ? ex.question.split('___') : []
   const isBlank = blankParts.length === 2
 
   const check = (): void => {
     if (checked || !ex) return
-    const ok = isAnswerCloseEnough(answer, ex.answer)
+    // « Recopier la faute presente dans l'enonce » n'est jamais une bonne reponse
+    // (orthographe, ordre des mots, correction de phrase) — sauf pour les trous,
+    // et la vraie bonne reponse n'est evidemment jamais bloquee.
+    const exact = normalizeText(answer) === normalizeText(ex.answer)
+    const copied = !isBlank && !exact && isCopiedFromQuestion(answer, ex.question)
+    const ok = !copied && isAnswerCloseEnough(answer, ex.answer)
     setChecked(true)
     setWasCorrect(ok)
     if (ok) setScore((s) => s + 1)
@@ -150,7 +163,15 @@ export default function Exercises(): JSX.Element {
                 : 'Chaque erreur corrigée te fait progresser.'}
           </p>
           <button className="btn" onClick={restart}>
-            <Sparkles size={17} /> Nouvelle série par l'IA
+            {source === 'ai' ? (
+              <>
+                <Sparkles size={17} /> Nouvelle série par l'IA
+              </>
+            ) : (
+              <>
+                <RotateCcw size={17} /> Nouvelle série
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -180,7 +201,7 @@ export default function Exercises(): JSX.Element {
           </>
         ) : (
           <>
-            <WifiOff size={14} /> Banque hors-ligne intégrée
+            <WifiOff size={14} /> Banque intégrée (sans IA)
           </>
         )}
       </div>
@@ -287,7 +308,7 @@ export default function Exercises(): JSX.Element {
 
       <p className="note center" style={{ marginTop: 4 }}>
         <Settings2 size={13} style={{ verticalAlign: '-2px' }} /> La vérification des réponses reste locale et
-        instantanée (similarité) — seul le contenu est généré par l'IA.
+        instantanée — seul le contenu peut être généré par l'IA.
       </p>
     </div>
   )

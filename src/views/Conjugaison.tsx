@@ -63,7 +63,7 @@ export default function Conjugaison(): JSX.Element {
       </button>
       <h1 className="title center">Conjugaisons</h1>
       <p className="subtitle center">
-        Présent simple, passé simple, continus et modaux — tous les tableaux, 100 % hors-ligne.
+        Présent simple, passé simple, continus et modaux — tous les tableaux, calculés dans ton navigateur.
       </p>
 
       <div className="card">

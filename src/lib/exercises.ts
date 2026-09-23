@@ -16,7 +16,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   other: 'Divers',
 }
 
-/** Banque d'exercices hors-ligne (espace = trou a completer). */
+/** Banque d'exercices embarquee (espace = trou a completer). */
 export const EXERCISES: Exercise[] = [
   { category: 'article', question: '___ apple a day keeps the doctor away.', answer: 'An', hint: 'Devant un son voyelle, on utilise "an".' },
   { category: 'article', question: 'She is ___ best student in the class.', answer: 'the', hint: 'Superlatif => article défini "the".' },
@@ -44,8 +44,25 @@ export const EXERCISES: Exercise[] = [
   { category: 'other', question: 'Everybody were happy yesterday. (corrige la phrase)', answer: 'Everybody was happy yesterday.', hint: '"Everybody" est singulier.' },
 ]
 
-/** Priorise les categories ou l'utilisateur fait le plus d'erreurs. */
-export function pickTargetedExercises(bank: Exercise[], stats: Progress, count = 10): Exercise[] {
+/** Priorise les categories ou l'utilisateur fait le plus d'erreurs.
+ * Les tirages sont melanges : chaque « Nouvelle serie » propose d'autres questions. */
+export function pickTargetedExercises(
+  bank: Exercise[],
+  stats: Progress,
+  count = 10,
+  rand: () => number = Math.random,
+): Exercise[] {
+  const shuffle = (list: Exercise[]): Exercise[] => {
+    const a = [...list]
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1))
+      const tmp = a[i]
+      a[i] = a[j]
+      a[j] = tmp
+    }
+    return a
+  }
+
   const byCat = new Map<string, Exercise[]>()
   for (const ex of bank) {
     const list = byCat.get(ex.category) ?? []
@@ -53,11 +70,34 @@ export function pickTargetedExercises(bank: Exercise[], stats: Progress, count =
     byCat.set(ex.category, list)
   }
   const sorted = Object.entries(stats.byCategory).sort((a, b) => b[1] - a[1])
+
+  // Nouvel apprenant (aucune erreur corrigee) : pioche equitablement dans
+  // TOUTES les categories pour qu'aucune ne reste invisible.
+  if (sorted.length === 0) {
+    const pools = [...byCat.values()].map(shuffle)
+    const queue: Exercise[] = []
+    let added = true
+    while (queue.length < count && added) {
+      added = false
+      for (const pool of pools) {
+        if (queue.length >= count) break
+        const ex = pool.pop()
+        if (ex) {
+          queue.push(ex)
+          added = true
+        }
+      }
+    }
+    while (queue.length < count && bank.length > 0) queue.push(...shuffle(bank))
+    return queue.slice(0, count)
+  }
+
+  // Erreurs connues : categories les plus fautives d'abord, melangees de l'interieur.
   const seen = new Set(sorted.map(([c]) => c))
   const priority = [...sorted.map(([c]) => c), ...[...byCat.keys()].filter((c) => !seen.has(c))]
 
   const queue: Exercise[] = []
-  for (const cat of priority) queue.push(...(byCat.get(cat) ?? []))
-  while (queue.length < count && bank.length > 0) queue.push(...bank)
+  for (const cat of priority) queue.push(...shuffle(byCat.get(cat) ?? []))
+  while (queue.length < count && bank.length > 0) queue.push(...shuffle(bank))
   return queue.slice(0, count)
 }

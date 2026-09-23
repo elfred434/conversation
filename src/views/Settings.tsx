@@ -1,13 +1,15 @@
 import { useEffect, useState, type CSSProperties } from 'react'
-import { Eye, EyeOff, GitBranch, MessageCircle, Play, ShieldCheck, Trash2, TriangleAlert, Volume2 } from 'lucide-react'
+import { Eye, EyeOff, GitBranch, GraduationCap, MessageCircle, Play, ShieldCheck, Trash2, TriangleAlert, Volume2 } from 'lucide-react'
 import { failoverChain, PROVIDERS } from '../lib/llm'
+import { LEVELS } from '../lib/prompts'
+import { clearAllData } from '../lib/storage'
 import { onVoicesChanged, getVoices, speak, ttsSupported } from '../lib/tts'
 import { useApp } from '../state/store'
-import type { ProviderId, Settings as SettingsData } from '../types'
+import type { CefrLevel, ProviderId, Settings as SettingsData } from '../types'
 import { ensureBrowserAI, nativeAIAvailable, webgpuSupported } from '../lib/webllm'
 
 export default function Settings(): JSX.Element {
-  const { settings, updateSettings, clearSessions, go } = useApp()
+  const { settings, updateSettings, level, chooseLevel, go } = useApp()
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
   const [showKey, setShowKey] = useState(false)
 
@@ -51,6 +53,31 @@ export default function Settings(): JSX.Element {
           <ShieldCheck size={15} /> Tout est stocké localement dans ton navigateur
         </span>
       </p>
+
+      <div className="card">
+        <div className="card-head">
+          <span className="card-icon">
+            <GraduationCap size={20} />
+          </span>
+          <span>
+            <div className="card-title">Ton niveau</div>
+            <div className="card-sub">Le tuteur et les exercices s'y adaptent</div>
+          </span>
+        </div>
+        <label className="field">
+          <span>Niveau (A1 à C2)</span>
+          <select value={level ?? ''} onChange={(e) => e.target.value && chooseLevel(e.target.value as CefrLevel)}>
+            {(Object.keys(LEVELS) as CefrLevel[]).map((l) => (
+              <option key={l} value={l}>
+                {LEVELS[l].label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="note" style={{ marginTop: 0 }}>
+          Tu peux en changer à tout moment : tes conversations et ta progression sont conservées.
+        </p>
+      </div>
 
       <div className="card">
         <div className="card-head">
@@ -237,16 +264,24 @@ export default function Settings(): JSX.Element {
           <TriangleAlert size={18} /> Données locales
         </p>
         <p className="muted" style={{ marginTop: 0 }}>
-          Supprime tout l'historique de tes conversations et ta progression. Cette action est irréversible.
+          Supprime TOUT de ce navigateur : conversations, progression, niveau, réglages et clés. Cette
+          action est irréversible.
         </p>
         <button
           className="btn btn-danger"
           onClick={() => {
-            clearSessions()
-            alert('Historique effacé.')
+            if (
+              !window.confirm(
+                'Effacer toutes tes données locales (conversations, progression, niveau, réglages et clés) ? Cette action est irréversible.',
+              )
+            )
+              return
+            clearAllData()
+            window.location.hash = ''
+            window.location.reload()
           }}
         >
-          <Trash2 size={16} /> Effacer les données
+          <Trash2 size={16} /> Effacer toutes les données
         </button>
       </div>
 

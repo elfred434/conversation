@@ -70,6 +70,30 @@ export function redact(msg: string): string {
   return msg.replace(/key=[^&\s"]+/g, 'key=***').replace(/sk-[A-Za-z0-9_-]{8,}/g, 'sk-***')
 }
 
+/** Traduit un code HTTP en message clair, en francais, sans jargon ni donnees brutes. */
+export function friendlyHttpError(status: number, provider: ProviderId): Error {
+  const name = PROVIDERS[provider].label.split(' (')[0]
+  if (status === 401 || status === 403) {
+    return new Error(
+      `${name} refuse ta clé. Vérifie-la dans Paramètres (engrenage), ou ajoute une clé de secours : FluentFlow basculera tout seul.`,
+    )
+  }
+  if (status === 404) {
+    return new Error(
+      `${name} ne trouve pas le modèle demandé. Vérifie le nom du modèle dans Paramètres, ou laisse le champ vide pour le modèle par défaut.`,
+    )
+  }
+  if (status === 429) {
+    return new Error(
+      `Limite atteinte chez ${name}. Réessaie dans quelques minutes, ou ajoute une clé de secours gratuite.`,
+    )
+  }
+  if (status >= 500) {
+    return new Error(`Panne temporaire chez ${name}. Réessaie dans un instant.`)
+  }
+  return new Error(`Problème avec ${name} (code ${status}). Vérifie ta clé et le modèle dans Paramètres.`)
+}
+
 export function resolveBaseUrl(s: Settings): string {
   return s.baseUrl.trim() || PROVIDERS[s.provider].baseUrl
 }
@@ -119,7 +143,7 @@ async function* streamOpenAi(
     }),
   })
   if (!res.ok || !res.body) {
-    throw new Error(`HTTP ${res.status} : ${redact(await res.text())}`)
+    throw friendlyHttpError(res.status, s.provider)
   }
   for await (const data of parseSse(res.body.getReader())) {
     try {
@@ -157,7 +181,7 @@ async function* streamGemini(
     }),
   })
   if (!res.ok || !res.body) {
-    throw new Error(`HTTP ${res.status} : ${redact(await res.text())}`)
+    throw friendlyHttpError(res.status, s.provider)
   }
   for await (const data of parseSse(res.body.getReader())) {
     try {

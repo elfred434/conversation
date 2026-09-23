@@ -51,7 +51,9 @@ body {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Inter si elle est deja installee sur l'appareil, sinon polices du systeme :
+     aucune police n'est telechargee chez un tiers (pas de requete hors du site). */
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 17px;
   line-height: 1.65;
   min-height: 100vh;
@@ -248,6 +250,20 @@ h1.title {
   border-color: rgba(34, 211, 238, 0.55);
   transform: translateY(-2px);
   box-shadow: var(--shadow-soft);
+}
+/* Cartes cliquables rendues par des <button> (accessibles au clavier) :
+   on neutralise les styles par defaut du bouton, la carte garde son apparence. */
+button.card.clickable {
+  display: flex;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+.card.clickable:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-color: rgba(34, 211, 238, 0.55);
 }
 .card-head {
   display: flex;
@@ -852,6 +868,19 @@ input[type='checkbox'] {
 .diff-ins {
   font-weight: 700;
 }
+.correction-note {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  animation: pillIn 500ms var(--ease-soft) both;
+}
+.correction-note svg {
+  color: #f5c86b;
+  flex: none;
+}
 .typing {
   display: inline-flex;
   gap: 5px;
@@ -1091,6 +1120,50 @@ input[type='checkbox'] {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   flex: none;
+}
+/* ---------- Activite recente (barres par jour) ---------- */
+.day-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 90px;
+  margin-top: 10px;
+}
+.day-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 0;
+}
+.day-col .day-num {
+  font-size: 0.62rem;
+  color: var(--muted);
+  height: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.day-col i {
+  width: 100%;
+  max-width: 16px;
+  min-height: 2px;
+  border-radius: 3px 3px 0 0;
+  background: rgba(255, 255, 255, 0.08);
+}
+.day-col i[data-on='true'] {
+  background: linear-gradient(180deg, #22d3ee, #2563eb);
+}
+.day-col .day-lab {
+  font-size: 0.58rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.order-note {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #f5c86b;
 }
 
 /* ---------- Prononciation ---------- */

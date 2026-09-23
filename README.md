@@ -7,11 +7,11 @@ Apprendre l'anglais en discutant — **application web** (site 100 % statique, a
 - 💬 **Tuteur IA conversationnel** : réponses en streaming, scénarios (vie quotidienne, voyage, travail, « Raconte ta journée » en mode écoute), conversation libre
 - ✅ **Corrections grammaticales** catégorisées (articles, prépositions, temps, orthographe, ordre des mots) — **fusionnées dans un seul appel LLM** (économie de quota)
 - 🎤🔊 **Voix** : saisie vocale (Web Speech API) + lecture à voix haute avec **voix naturelles** au choix (Edge/Chrome)
-- 🗣 **Prononciation** : écouter → répéter → score de similarité mot à mot
-- 🎯 **Exercices ciblés générés par l'IA** : adaptés à ton niveau et priorisés selon tes erreurs les plus fréquentes (repli automatique sur une banque hors-ligne intégrée)
-- 📚 **Leçons hors-ligne** embarquées
-- 💬 **Phrases courantes** : 6 packs hors-ligne (60 phrases avec sens FR + prononciation en syllabes françaises), **recherche IA** des phrases les plus courantes pour n'importe quelle situation, et dictionnaire gratuit (dictionaryapi.dev) avec phonétique IPA et **audio natif** par mot
-- 🏅 **Progression** : badges + statistiques par type d'erreur
+- 🗣 **Prononciation** : écouter → répéter → score mot à mot **qui tient aussi compte de l'ordre**
+- 🎯 **Exercices ciblés générés par l'IA** : adaptés à ton niveau et priorisés selon tes erreurs les plus fréquentes (repli automatique sur une banque embarquée, sans IA)
+- 📚 **Leçons** embarquées (5 thèmes, 40 phrases)
+- 💬 **Phrases courantes** : 6 packs embarqués (60 phrases avec sens FR + prononciation en syllabes françaises), **recherche IA** des phrases les plus courantes pour n'importe quelle situation, et dictionnaire gratuit (dictionaryapi.dev) avec phonétique IPA et **audio natif** par mot
+- 🏅 **Progression** : médailles basées sur la pratique (messages envoyés), activité des 14 derniers jours, statistiques par type d'erreur et derniers scores d'entraînement
 - 💾 **Sessions** : tes conversations sont sauvegardées localement et reprenables
 
 Fournisseurs IA supportés : **IA intégrée (dans ton navigateur, sans clé — Gemini Nano ou modèle WebGPU)**, OpenAI, OpenRouter, Gemini, Groq, **Cerebras**, Ollama (local) — clé éventuelle stockée uniquement dans ton navigateur.

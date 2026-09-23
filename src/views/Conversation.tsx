@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowLeft, Check, Mic, Send, Square, Volume2 } from 'lucide-react'
+import { ArrowLeft, Check, Lightbulb, Mic, Send, Square, Volume2 } from 'lucide-react'
 import { useApp } from '../state/store'
 import { listen, sttSupported } from '../lib/stt'
 import { speak, stopSpeak } from '../lib/tts'
@@ -67,10 +67,14 @@ export default function Conversation(): JSX.Element {
       lang: 'en-US',
       onInterim: setInterim,
       onFinal: (t) => {
+        setInterim('')
         if (!conv.streaming) sendMessage(t)
       },
       onError: (m) => setMicError(m),
-      onEnd: () => setListening(false),
+      onEnd: () => {
+        setListening(false)
+        setInterim('')
+      },
     })
     setListening(true)
   }
@@ -104,6 +108,11 @@ export default function Conversation(): JSX.Element {
                     ) : (
                       m.correction
                     )}
+                  </div>
+                )}
+                {m.explanation && (
+                  <div className="correction-note">
+                    <Lightbulb size={12} /> {m.explanation}
                   </div>
                 )}
               </div>

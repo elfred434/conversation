@@ -18,7 +18,7 @@ interface Tool {
 
 const TOOLS: Tool[] = [
   { view: 'pronunciation', icon: Mic, label: 'Prononciation', desc: 'Écoute, répète, compare' },
-  { view: 'lessons', icon: BookOpen, label: 'Leçons', desc: 'Mini-leçons hors-ligne' },
+  { view: 'lessons', icon: BookOpen, label: 'Leçons', desc: 'Mini-leçons embarquées' },
   { view: 'grammar', icon: Puzzle, label: 'Grammaire', desc: 'Le jeu des règles : 25 règles à maîtriser' },
   { view: 'wordrules', icon: Scale, label: 'Mots qui se ressemblent', desc: 'Borrow/lend, say/tell… et leurs règles' },
   { view: 'conjugaison', icon: Clock, label: 'Conjugaisons', desc: 'Présent, passé, continu, modaux : tous les tableaux' },
@@ -31,7 +31,7 @@ const TOOLS: Tool[] = [
 function ScenarioCard({ s, onOpen }: { s: Scenario; onOpen: () => void }): JSX.Element {
   const Icon = SC_ICONS[s.id] ?? MessageCircle
   return (
-    <div className="card clickable sc-card" onClick={onOpen}>
+    <button type="button" className="card clickable sc-card" onClick={onOpen}>
       <span className="sc-icon">
         <Icon size={20} />
       </span>
@@ -40,14 +40,14 @@ function ScenarioCard({ s, onOpen }: { s: Scenario; onOpen: () => void }): JSX.E
         <div className="muted">{s.description}</div>
       </span>
       <ChevronRight size={18} style={{ color: 'var(--muted)', flex: 'none' }} />
-    </div>
+    </button>
   )
 }
 
 function ToolTile({ tool, onOpen }: { tool: Tool; onOpen: () => void }): JSX.Element {
   const Icon = tool.icon
   return (
-    <div className="card clickable tool-tile" onClick={onOpen}>
+    <button type="button" className="card clickable tool-tile" onClick={onOpen}>
       <span className="tool-icon">
         <Icon size={18} />
       </span>
@@ -55,7 +55,7 @@ function ToolTile({ tool, onOpen }: { tool: Tool; onOpen: () => void }): JSX.Ele
         <strong>{tool.label}</strong>
         <div className="muted">{tool.desc}</div>
       </span>
-    </div>
+    </button>
   )
 }
 
@@ -145,7 +145,20 @@ export default function Home(): JSX.Element {
             sessions.map((s) => {
             const Icon = SC_ICONS[s.scenarioId] ?? MessageCircle
             return (
-              <div key={s.id} className="card clickable hist-card" onClick={() => resumeSession(s.id)} title="Reprendre">
+              <div
+                key={s.id}
+                className="card clickable hist-card"
+                role="button"
+                tabIndex={0}
+                onClick={() => resumeSession(s.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    resumeSession(s.id)
+                  }
+                }}
+                title="Reprendre"
+              >
                 <span className="sc-icon" style={{ width: 38, height: 38 }}>
                   <Icon size={18} />
                 </span>
@@ -159,7 +172,7 @@ export default function Home(): JSX.Element {
                   className="trash-btn"
                   onClick={(e) => {
                     e.stopPropagation()
-                    deleteSession(s.id)
+                    if (window.confirm(`Supprimer la conversation « ${s.title} » ?`)) deleteSession(s.id)
                   }}
                   aria-label={`Supprimer ${s.title}`}
                 >

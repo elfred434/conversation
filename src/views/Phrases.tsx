@@ -169,7 +169,7 @@ export default function Phrases(): JSX.Element {
               <button className="back" style={{ display: 'inline', padding: 0 }} onClick={() => go('settings')}>
                 Paramètres
               </button>{' '}
-              ) — voici les packs embarqués, 100 % hors-ligne.
+              ) — voici les packs embarqués, consultés sans aucune requête réseau.
             </>
           ) : (
             <>IA indisponible ({genError}) — voici un pack embarqué.</>
@@ -183,7 +183,7 @@ export default function Phrases(): JSX.Element {
       )}
       {source === 'pack' && !genError && (
         <p className="gen-note">
-          <BookOpen size={14} /> {PHRASE_PACKS.find((p) => p.id === packId)?.title} — embarqué, hors-ligne
+          <BookOpen size={14} /> {PHRASE_PACKS.find((p) => p.id === packId)?.title} — embarqué, sans requête réseau
         </p>
       )}
 

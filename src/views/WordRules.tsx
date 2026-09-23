@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, BookOpen, ChevronRight, Loader2, Puzzle, RefreshCw, Search, Shuffle, Volume2 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { familyMatches, loadWordRules, pickQuizQuestions, splitExample, buildQuizPool } from '../lib/wordRules'
@@ -16,30 +16,44 @@ const MODES: { id: Mode; icon: LucideIcon; label: string }[] = [
   { id: 'cards', icon: RefreshCw, label: 'Cartes' },
 ]
 
-/** Petit bouton audio : voix TTS, ou audio natif du dictionnaire si dispo. */
+/** Resultats du dictionnaire gardes en memoire pour la session (evite les re-ecoutes payantes). */
+const AUDIO_CACHE = new Map<string, string | null>()
+
+/** Petit bouton audio : la recherche du dictionnaire ne se fait QU'AU CLIC,
+ * pour ne pas lancer des centaines de requetes a l'ouverture de la page. */
 function WordAudio({ word }: { word: string }): JSX.Element {
   const { settings } = useApp()
-  const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
 
-  useEffect(() => {
-    let alive = true
-    void lookupWord(word).then((e) => {
-      if (alive && e?.audio) setAudioUrl(e.audio)
-    })
-    return () => {
-      alive = false
+  const play = (): void => {
+    const cached = AUDIO_CACHE.get(word)
+    if (cached) {
+      void new Audio(cached).play()
+      return
     }
-  }, [word])
+    if (cached === null) {
+      speak(word, settings.voiceURI, settings.rate)
+      return
+    }
+    setBusy(true)
+    void lookupWord(word)
+      .then((e) => {
+        const url = e?.audio || null
+        AUDIO_CACHE.set(word, url)
+        if (url) void new Audio(url).play()
+        else speak(word, settings.voiceURI, settings.rate)
+      })
+      .finally(() => setBusy(false))
+  }
 
   return (
     <button
       className="icon-btn"
       style={{ width: 30, height: 30, padding: 0 }}
-      onClick={() => {
-        if (audioUrl) void new Audio(audioUrl).play()
-        else speak(word, settings.voiceURI, settings.rate)
-      }}
+      onClick={play}
+      disabled={busy}
       title="Écouter"
+      aria-label={`Écouter ${word}`}
     >
       <Volume2 size={14} />
     </button>
@@ -130,18 +144,29 @@ function GuideTab({ families, q, setQ }: { families: WordRuleFamily[]; q: string
 // ==================== Quiz ====================
 
 function QuizTab({ families }: { families: WordRuleFamily[] }): JSX.Element {
+  const { saveScore } = useApp()
   const pool = useMemo(() => buildQuizPool(families), [families])
   const [questions, setQuestions] = useState<WordQuizQuestion[] | null>(null)
   const [index, setIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [chosen, setChosen] = useState<string | null>(null)
+  const savedRound = useRef(false)
 
   const start = (): void => {
     setQuestions(pickQuizQuestions(pool, 10))
     setIndex(0)
     setScore(0)
     setChosen(null)
+    savedRound.current = false
   }
+
+  // Score du quiz enregistre une seule fois par serie, sur l'ecran des resultats.
+  useEffect(() => {
+    if (questions && index >= questions.length && !savedRound.current) {
+      savedRound.current = true
+      saveScore('Mots qui se ressemblent', score, questions.length)
+    }
+  }, [index, questions, score, saveScore])
 
   if (!questions) {
     return (
