@@ -54,11 +54,14 @@ export function saveSessions(s: Session[]): void {
   localStorage.setItem(KEYS.sessions, JSON.stringify(s))
 }
 
-const EMPTY_PROGRESS: Progress = { total: 0, byCategory: {} }
+const EMPTY_PROGRESS: Progress = { total: 0, byCategory: {}, messages: 0, byDay: {}, scores: [] }
 
 export function loadProgress(): Progress {
   try {
-    return { ...EMPTY_PROGRESS, ...(JSON.parse(localStorage.getItem(KEYS.progress) ?? '{}') as Progress) }
+    const p = { ...EMPTY_PROGRESS, ...(JSON.parse(localStorage.getItem(KEYS.progress) ?? '{}') as Progress) }
+    // D'anciennes versions ne comptaient pas les messages : on part des corrections.
+    if (!p.messages && p.total > 0) p.messages = p.total
+    return p
   } catch {
     return { ...EMPTY_PROGRESS }
   }

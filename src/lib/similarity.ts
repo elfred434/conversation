@@ -36,13 +36,33 @@ export function stringSimilarity(a: string, b: string): number {
   return 1 - levenshteinDistance(a, b) / maxLen
 }
 
-/** Reponse acceptable ? Egalite normalisee ou similarite >= 0.85. */
+/** Reponse acceptable ?
+ * Egalite normalisee (casse, ponctuation, espaces ignores).
+ * La tolerance aux fautes de frappe est volontairement TRES limitee :
+ *  - reponse en un seul mot : une seule lettre de difference, et uniquement si
+ *    le mot attendu fait au moins 6 lettres ;
+ *  - reponse en plusieurs mots : aucune tolerance, car une seule lettre y porte
+ *    souvent tout le sens grammatical (has/had, has/have, was/were, told/said...). */
 export function isAnswerCloseEnough(given: string, expected: string): boolean {
   const g = normalizeText(given)
   const e = normalizeText(expected)
   if (!g || !e) return false
   if (g === e) return true
-  return stringSimilarity(g, e) >= 0.85
+  if (e.includes(' ')) return false
+  return e.length >= 6 && levenshteinDistance(g, e) === 1
+}
+
+/** La reponse saisie n'est-elle que la faute recopiee depuis l'enonce ?
+ * Utilise pour bloquer le « recopier la faute » dans les exercices
+ * d'orthographe / d'ordre des mots / de correction de phrase.
+ * Un mot est compare mot a mot (« beautiful » n'est pas « beautifull »),
+ * une phrase est comparee en bloc. */
+export function isCopiedFromQuestion(given: string, question: string): boolean {
+  const g = normalizeText(given)
+  if (!g) return false
+  const q = normalizeText(question)
+  if (g.includes(' ')) return q.includes(g)
+  return q.split(' ').includes(g)
 }
 
 export interface WordScore {
@@ -64,11 +84,48 @@ export function scoreWords(target: string, transcript: string): WordScore[] {
   }))
 }
 
-/** Score global 0..1. */
+/** Plus longue sous-sequence commune entre deux listes de mots (question d'ordre). */
+function lcsLen(a: string[], b: string[]): number {
+  const m = a.length
+  const n = b.length
+  if (m === 0 || n === 0) return 0
+  let prev = new Array<number>(n + 1).fill(0)
+  let curr = new Array<number>(n + 1).fill(0)
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      curr[j] = a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], curr[j - 1])
+    }
+    const tmp = prev
+    prev = curr
+    curr = new Array<number>(n + 1).fill(0)
+  }
+  return prev[n]
+}
+
+/** Score global 0..1 : mots entendus ET remis dans le bon ordre.
+ * Dire tous les mots mais dans le desordre ne rapporte presque rien. */
 export function pronunciationScore(target: string, transcript: string): number {
   const words = scoreWords(target, transcript)
   if (words.length === 0) return 0
-  return words.filter((w) => w.matched).length / words.length
+  const uWords = normalizeText(transcript)
+    .split(' ')
+    .filter((w) => w)
+  const matchedSeq = words.filter((w) => w.matched).map((w) => w.word)
+  if (matchedSeq.length === 0) return 0
+  const heard = words.filter((w) => w.matched).length / words.length
+  const inOrder = lcsLen(matchedSeq, uWords) / matchedSeq.length
+  return heard * inOrder
+}
+
+/** 0..1 — part des mots entendus qui sont aussi dans le bon ordre.
+ * (1 = ordre parfait ; utile pour expliquer un score bas malgre des mots verts.) */
+export function wordOrderRatio(target: string, transcript: string): number {
+  const words = scoreWords(target, transcript).filter((w) => w.matched)
+  if (words.length === 0) return 0
+  const uWords = normalizeText(transcript)
+    .split(' ')
+    .filter((w) => w)
+  return lcsLen(words.map((w) => w.word), uWords) / words.length
 }
 
 export interface WordDiff {

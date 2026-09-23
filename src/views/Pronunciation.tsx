@@ -3,7 +3,7 @@ import { Mic, SkipForward, Volume2 } from 'lucide-react'
 import { useApp } from '../state/store'
 import { DAILY_PHRASES } from '../lib/lessons'
 import { listen, sttSupported } from '../lib/stt'
-import { scoreWords, pronunciationScore } from '../lib/similarity'
+import { scoreWords, pronunciationScore, wordOrderRatio } from '../lib/similarity'
 import { speak } from '../lib/tts'
 
 const R = 78
@@ -61,7 +61,7 @@ function ScoreRing({ value }: { value: number }): JSX.Element {
 }
 
 export default function Pronunciation(): JSX.Element {
-  const { practicePhrase, settings, go } = useApp()
+  const { practicePhrase, settings, go, saveScore } = useApp()
   const [target, setTarget] = useState<string>(practicePhrase ?? DAILY_PHRASES[0])
   const [free, setFree] = useState('')
   const [transcript, setTranscript] = useState('')
@@ -72,6 +72,13 @@ export default function Pronunciation(): JSX.Element {
 
   const score = useMemo(() => (done ? pronunciationScore(target, transcript) : 0), [done, target, transcript])
   const words = useMemo(() => (done ? scoreWords(target, transcript) : []), [done, target, transcript])
+  const order = useMemo(() => (done ? wordOrderRatio(target, transcript) : 1), [done, target, transcript])
+
+  // Chaque tentative compte dans « Ma progression ».
+  useEffect(() => {
+    if (done) saveScore('Prononciation', Math.round(score * 100), 100)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done])
 
   function setNewTarget(t: string): void {
     setTarget(t)
@@ -134,6 +141,12 @@ export default function Pronunciation(): JSX.Element {
                 </span>
               ))}
             </div>
+            {words.some((w) => w.matched) && order < 0.75 && (
+              <p className="order-note">
+                Des mots ont été entendus, mais pas dans l'ordre de la phrase — l'ordre compte dans le
+                score. Réessaie en suivant la phrase mot à mot.
+              </p>
+            )}
           </>
         )}
         <div className="row" style={{ justifyContent: 'center', marginTop: 14 }}>

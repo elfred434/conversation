@@ -1,11 +1,23 @@
-import { BookOpen, ChevronDown, MessagesSquare, Plane, Sunrise, Volume2 } from 'lucide-react'
+import { BookOpen, Briefcase, ChevronDown, MessagesSquare, Plane, Sunrise, UtensilsCrossed, Volume2 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { LESSONS } from '../lib/lessons'
 import { useApp } from '../state/store'
 import { speak } from '../lib/tts'
 
-const LESSON_ICONS: Record<string, LucideIcon> = { daily: Sunrise, travel: Plane, smalltalk: MessagesSquare }
-const LESSON_LEVEL: Record<string, string> = { daily: 'Bases', travel: 'Intermédiaire', smalltalk: 'Avancé' }
+const LESSON_ICONS: Record<string, LucideIcon> = {
+  daily: Sunrise,
+  travel: Plane,
+  smalltalk: MessagesSquare,
+  work: Briefcase,
+  restaurant: UtensilsCrossed,
+}
+const LESSON_LEVEL: Record<string, string> = {
+  daily: 'Bases',
+  travel: 'Intermédiaire',
+  smalltalk: 'Avancé',
+  work: 'Intermédiaire',
+  restaurant: 'Bases',
+}
 
 export default function Lessons(): JSX.Element {
   const { settings, setPracticePhrase, go } = useApp()
@@ -16,7 +28,7 @@ export default function Lessons(): JSX.Element {
         ← Accueil
       </button>
       <h1 className="title center">Leçons</h1>
-      <p className="subtitle center">Embarquées dans l'app — aucun réseau requis.</p>
+      <p className="subtitle center">Embarquées dans l'application — aucune IA ni serveur nécessaire.</p>
 
       {LESSONS.map((lesson, idx) => (
         <details key={lesson.id} className="lesson" open={idx === 0}>

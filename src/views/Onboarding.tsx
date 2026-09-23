@@ -18,7 +18,7 @@ export default function Onboarding(): JSX.Element {
       <div className="level-grid">
         {(Object.keys(LEVELS) as CefrLevel[]).map((l) => {
           const code = l.toUpperCase()
-          const name = LEVELS[l].label.replace(code, '').replace(/^[·—–-]\s*/, '')
+          const name = LEVELS[l].label.replace(code, '').replace(/^\s*[·—–-]?\s*/, '').trim()
           return (
             <button
               key={l}

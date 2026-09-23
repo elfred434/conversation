@@ -36,7 +36,20 @@ export default function Legal(): JSX.Element {
           <li>Ta progression, tes sessions et tes réglages restent dans le stockage local de ton navigateur (clés « ff_ »). Tu peux tout effacer depuis Paramètres.</li>
           <li>Les clés API que tu ajoutes restent dans ton navigateur et ne sont envoyées qu'au fournisseur que tu as choisi, uniquement quand tu utilises une fonction IA.</li>
           <li>Deux fonctions optionnelles interrogent des services publics sans clé : le dictionnaire (dictionaryapi.dev) et la traduction de secours (MyMemory) — seule la requête est envoyée, jamais ton identité.</li>
-          <li>La voix (synthèse et reconnaissance) utilise les technologies intégrées à ton appareil ; l'option « IA intégrée au navigateur » télécharge un modèle sur ton appareil et fonctionne hors-ligne.</li>
+          <li>
+            Voix : la lecture à voix haute utilise les voix déjà installées sur ton appareil et ne quitte
+            pas ta machine. La reconnaissance vocale (micro) n'existe que sur Chrome et Edge : quand tu
+            l'utilises, ton navigateur envoie l'audio aux serveurs de Google ou de Microsoft pour le
+            transcrire — FluentFlow ne le stocke jamais.
+          </li>
+          <li>
+            L'option « IA intégrée au navigateur » télécharge un modèle une seule fois sur ton appareil,
+            puis fonctionne sans envoyer tes conversations à un serveur.
+          </li>
+          <li>
+            Apparence : le site utilise les polices de ton appareil et ne charge ni police, ni script, ni
+            mesure d'audience depuis un serveur tiers.
+          </li>
           <li>Aucun traceur publicitaire, aucune vente de données : il n'y a rien à vendre, il n'y a pas de compte.</li>
         </ul>
       </div>

@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import type { CefrLevel, Msg, Progress, Session, Settings } from '../types'
+import type { PracticeScore } from '../types'
 import {
   loadLevel,
   loadProgress,
@@ -18,7 +19,7 @@ import {
   saveSettings,
 } from '../lib/storage'
 import { SCENARIOS, buildSystemPrompt } from '../lib/prompts'
-import { PROVIDERS, redact, streamChat, type ChatMsg } from '../lib/llm'
+import { redact, streamChat, type ChatMsg } from '../lib/llm'
 import { extractCorrectionTrailer } from '../lib/correctionTrailer'
 import { speak } from '../lib/tts'
 
@@ -58,6 +59,7 @@ interface AppCtx {
   clearSessions: () => void
   progress: Progress
   resetProgress: () => void
+  saveScore: (tool: string, score: number, total: number) => void
   conv: ConvState | null
   startConversation: (scenarioId: string | null) => void
   resumeSession: (id: string) => void
@@ -79,12 +81,65 @@ function uid(): string {
   return `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
 }
 
+/** Jour local 'AAAA-MM-JJ' pour l'activite recente. */
+function todayKey(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+const ALL_VIEWS: View[] = [
+  'home',
+  'conversation',
+  'progress',
+  'pronunciation',
+  'lessons',
+  'exercises',
+  'phrases',
+  'grammar',
+  'wordrules',
+  'conjugaison',
+  'fiches',
+  'legal',
+  'settings',
+  'onboarding',
+]
+
+/** Lecture de l'ecran demande par l'URL (#/lecons, #/parametres...) — sans risque hors navigateur. */
+function viewFromHash(): View | null {
+  if (typeof window === 'undefined') return null
+  const h = window.location.hash.replace(/^#\/?/, '')
+  return (ALL_VIEWS as string[]).includes(h) ? (h as View) : null
+}
+
+function writeHash(v: View): void {
+  if (typeof window === 'undefined') return
+  const target = v === 'home' ? '' : `#/${v}`
+  if ((window.location.hash || '') === target) return
+  window.history.pushState(null, '', window.location.pathname + window.location.search + target)
+}
+
+/** Les ecrans sans contenu garanti au rechargement ramenent a l'accueil. */
+function initialView(): View {
+  const fromHash = viewFromHash()
+  if (fromHash && fromHash !== 'conversation') return fromHash
+  return loadLevel() ? 'home' : 'onboarding'
+}
+
+/** Erreur d'affichage : jamais de jargon reseau brut, toujours du francais clair. */
+function friendlyError(e: unknown): string {
+  const msg = e instanceof Error ? e.message : String(e)
+  if (/failed to fetch|network|load failed|fetch|econnrefused|timed? ?out/i.test(msg)) {
+    return "Impossible de joindre le service d'IA. Vérifie ta connexion internet, puis réessaie."
+  }
+  return redact(msg)
+}
+
 function titleFor(scenarioId: string | null): string {
   return SCENARIOS.find((s) => s.id === scenarioId)?.title ?? 'Conversation libre'
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [view, setView] = useState<View>(() => (loadLevel() ? 'home' : 'onboarding'))
+  const [view, setView] = useState<View>(initialView)
   const [settings, setSettings] = useState<Settings>(loadSettings)
   const [level, setLevel] = useState<CefrLevel | null>(loadLevel)
   const [sessions, setSessions] = useState<Session[]>(loadSessions)
@@ -107,7 +162,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     levelRef.current = level
   }, [level])
 
-  const go = (v: View): void => setView(v)
+  const go = (v: View): void => {
+    setView(v)
+    writeHash(v)
+  }
+
+  // Boutons precedent / suivant du navigateur : suivre l'URL.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const onPop = (): void => {
+      const v = viewFromHash()
+      setView(v ?? 'home')
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
 
   function updateSettings(patch: Partial<Settings>): void {
     setSettings((prev) => {
@@ -120,7 +189,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   function chooseLevel(l: CefrLevel): void {
     setLevel(l)
     saveLevel(l)
-    setView('home')
+    go('home')
   }
 
   function applyConv(updater: (c: ConvState) => ConvState): ConvState | null {
@@ -189,7 +258,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } catch (e) {
       if (ac.signal.aborted) return
       applyConv((c) =>
-        c.sessionId !== sid ? c : { ...c, streaming: false, error: redact(String(e)) },
+        c.sessionId !== sid ? c : { ...c, streaming: false, error: friendlyError(e) },
       )
       return
     }
@@ -207,17 +276,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ...(parsed.correction ? { cat: parsed.correction.category } : {}),
       }
       if (parsed.correction && userIdx !== null && msgs[userIdx]) {
-        msgs[userIdx] = { ...msgs[userIdx], correction: parsed.correction.corrected }
+        msgs[userIdx] = {
+          ...msgs[userIdx],
+          correction: parsed.correction.corrected,
+          ...(parsed.correction.explanation ? { explanation: parsed.correction.explanation } : {}),
+        }
       }
       return { ...c, messages: msgs, streaming: false }
     })
 
     if (parsed.correction && userIdx !== null) {
       const cat = parsed.correction.category
+      const day = todayKey()
       const p = progressRef.current
+      const byDay = p.byDay ?? {}
       const next: Progress = {
+        ...p,
         total: p.total + 1,
         byCategory: { ...p.byCategory, [cat]: (p.byCategory[cat] ?? 0) + 1 },
+        byDay: { ...byDay, [day]: (byDay[day] ?? 0) + 1 },
       }
       progressRef.current = next
       setProgress(next)
@@ -233,7 +310,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   function startConversation(scenarioId: string | null): void {
     if (!levelRef.current) {
-      setView('onboarding')
+      go('onboarding')
       return
     }
     const sessionId = uid()
@@ -245,7 +322,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
     convRef.current = fresh
     setConv(fresh)
-    setView('conversation')
+    go('conversation')
     void streamInto(sessionId, scenarioId, [{ role: 'user', content: "Hello! I'm ready to practice." }], null)
   }
 
@@ -260,7 +337,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
     convRef.current = restored
     setConv(restored)
-    setView('conversation')
+    go('conversation')
+  }
+
+  /** Compteur de pratique : un message envoye = un pas vers les medailles. */
+  function bumpMessageCount(): void {
+    const p = progressRef.current
+    const next: Progress = { ...p, messages: (p.messages ?? 0) + 1 }
+    progressRef.current = next
+    setProgress(next)
+    saveProgress(next)
   }
 
   function sendMessage(text: string): void {
@@ -268,6 +354,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!c0 || c0.streaming) return
     const trimmed = text.trim()
     if (!trimmed) return
+    bumpMessageCount()
     const userIdx = c0.messages.length
     const messages: Msg[] = [
       ...c0.messages,
@@ -300,15 +387,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   function resetProgress(): void {
-    const p: Progress = { total: 0, byCategory: {} }
+    const p: Progress = { total: 0, byCategory: {}, messages: 0, byDay: {}, scores: [] }
     progressRef.current = p
     setProgress(p)
     saveProgress(p)
   }
 
+  /** Garde les 12 scores d'entrainement les plus recents, du plus recent au plus ancien. */
+  function saveScore(tool: string, score: number, total: number): void {
+    const entry: PracticeScore = { tool, score, total, ts: Date.now() }
+    const p = progressRef.current
+    const next: Progress = { ...p, scores: [entry, ...(p.scores ?? [])].slice(0, 12) }
+    progressRef.current = next
+    setProgress(next)
+    saveProgress(next)
+  }
+
   function setPracticePhrase(p: string): void {
     setPracticePhraseState(p)
-    setView('pronunciation')
+    go('pronunciation')
   }
 
   const ctx: AppCtx = {
@@ -323,6 +420,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     clearSessions,
     progress,
     resetProgress,
+    saveScore,
     conv,
     startConversation,
     resumeSession,

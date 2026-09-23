@@ -343,7 +343,7 @@ export const GRAMMAR_TIERS: GrammarTier[] = [
       },
       {
         id: 'relatives',
-        title: ' Relatives : who / which / that / whose',
+        title: 'Relatives : who / which / that / whose',
         rule: 'who = personne, which = chose, that = les deux. whose = possession (dont).',
         questions: [
           { q: 'The man ___ lives next door is kind.', a: 'who', hint: 'personne → who' },
